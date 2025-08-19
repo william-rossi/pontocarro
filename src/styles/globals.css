@@ -1,0 +1,87 @@
+:root {
+  --max-width: 1400px;
+  --padding: 30px;
+  --font-xxlg: 38px;
+  --font-xlg: 28px;
+  --font-lg: 20px;
+  --font-default: 17px;
+  --font-sm: 15px;
+  --font-xsm: 13px;
+  --scrollbar-width: 7px;
+
+  @media screen and (max-width: 1023px) {
+    --font-xxlg: 32px;
+    --font-xlg: 24px;
+    --font-lg: 16px;
+    --font-default: 14px;
+    --font-sm: 12px;
+    --font-xsm: 10px;
+
+    --padding: 15px;
+  }
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-size: var(--font-default);
+  cursor: default;
+  overflow-x: hidden;
+}
+
+main {
+  max-width: var(--max-width);
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 var(--padding);
+  padding-bottom: 30px;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  transition: .2s;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-size: var(--font-default);
+}
+
+img {
+  user-select: none;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+::selection {
+  color: var(--background-color);
+  background: var(--primary-color);
+}
+
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--border-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-track-thumb);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-track-thumb-hover);
+}

@@ -1,0 +1,78 @@
+.container {
+    position: sticky;
+    top: 0;
+    left: 0;
+    height: 70px;
+    box-shadow: 1px 2px 18px 0px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    z-index: 2;
+    user-select: none;
+    background-color: var(--background-color);
+}
+
+.subContainer {
+    width: 100%;
+    max-width: var(--max-width);
+    padding: 0 var(--padding);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logoArea {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 0.78;
+
+    @media screen and (max-width: 1023px) {
+        font-size: 26px;
+    }
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    align-self: end;
+
+    @media screen and (max-width: 1023px) {
+        width: 9px;
+        height: 9px;
+    }
+}
+
+.actionGroup {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 9px;
+    cursor: pointer;
+    transition: .2s;
+    border-radius: 10px;
+}
+
+.user:hover {
+    background-color: var(--border-color);
+    color: var(--primary-color);
+}
+
+.user:hover img {
+    filter: invert(24%) sepia(82%) saturate(2171%) hue-rotate(214deg) brightness(93%) contrast(96%);
+}
+
+.user span {
+    opacity: 0.7;
+    font-size: var(--font-sm);
+}

@@ -1,0 +1,20 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.foundVehicles {
+    opacity: 0.7;
+}
+
+.vehiclesList {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 15px;
+    padding-bottom: 20px;
+
+    @media screen and (max-width: 1023px) {
+        grid-template-columns: 1fr;
+    }
+}

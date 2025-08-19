@@ -1,0 +1,85 @@
+.carousel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+}
+
+.mainImageContainer {
+    position: relative;
+    width: 100%;
+}
+
+.arrowRight,
+.arrowLeft {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 3px;
+    background-color: rgba(255, 255, 255, 0.627);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.arrowRight:active,
+.arrowLeft:active {
+    transform: scale(0.97);
+}
+
+.arrowLeft {
+    left: 10px;
+}
+
+.arrowRight {
+    margin-left: auto;
+    right: 10px;
+}
+
+.arrowSmall {
+    background-color: rgba(0, 0, 0, 0.723) !important;
+    filter: brightness(50);
+}
+
+.mainImage {
+    width: 100%;
+    height: 350px;
+    border-radius: 8px;
+    object-fit: cover;
+
+    @media screen and (max-width: 1023px) {
+        height: 250px;
+    }
+}
+
+.thumbnailContent {
+    position: relative;
+    width: -webkit-fill-available;
+}
+
+.thumbnailContainer {
+    display: flex;
+    gap: 3px;
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.thumbnailContainer img {
+    width: 85px;
+    height: 85px;
+    border: 2px solid transparent;
+    border-radius: 10x;
+    cursor: pointer;
+    transition: border-color 0.3s;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.thumbnailContainer img.activeThumbnail {
+    border-color: var(--primary-color);
+    border-radius: 10x;
+}

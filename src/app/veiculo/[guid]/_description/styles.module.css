@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.container h3 {
+    font-size: calc(var(--font-lg) - 1px);
+}
+
+.container p {
+    font-size: var(--font-sm);
+    opacity: 0.7;
+    line-height: 1.7;
+}

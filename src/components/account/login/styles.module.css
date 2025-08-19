@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.forgotPassword {
+    color: #2a58da;
+    font-size: var(--font-xsm);
+    cursor: pointer;
+}
+
+.btn {
+    font-weight: 600;
+    height: 50px;
+}
+
+.createAccount {
+    font-size: var(--font-sm);
+    text-align: center;
+    margin-top: 5px;
+}
+
+.createAccount span {
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: pointer;
+}

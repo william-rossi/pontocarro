@@ -1,0 +1,26 @@
+.container {
+    background-color: var(--primary-color);
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: .2s;
+}
+
+.container:hover {
+    @media screen and (min-width: 1024px) {
+        filter: brightness(0.9);
+        transform: scale(1.04);
+    }
+}
+
+.container img {
+    margin-right: 6px;
+
+    @media screen and (max-width: 1023px) {
+        width: 15px;
+        height: 15px;
+    }
+}
