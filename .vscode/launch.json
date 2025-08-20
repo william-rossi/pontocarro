@@ -1,0 +1,37 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // Debug do servidor (Next.js rodando no Node)
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Next.js Server",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "dev"
+            ],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "console": "integratedTerminal",
+        },
+        {
+            // Debug do cliente (React no navegador)
+            "type": "chrome",
+            "request": "launch",
+            "name": "Debug Next.js Client",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Debug Full (Client + Server)",
+            "configurations": [
+                "Debug Next.js Server",
+                "Debug Next.js Client"
+            ]
+        }
+    ]
+}

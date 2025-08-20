@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import styles from "./styles.module.css"
 import Input from "@/components/input/input"
 import Button from "@/components/button/button"
@@ -9,6 +9,8 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AccountProcessType } from "../account-process"
 import { PatternFormat } from "react-number-format"
+import { User } from "@/types"
+import { registerUser } from "@/services/api"
 
 const createAccountSchema = z
     .object({
@@ -54,6 +56,7 @@ interface Props {
 }
 
 export default function CreateAccount({ moveTo }: Props) {
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const {
         register,
         handleSubmit,
@@ -66,13 +69,33 @@ export default function CreateAccount({ moveTo }: Props) {
         },
     })
 
-    const onSubmit = (data: CreateAccountFormData) => {
-        console.log("Account data:", data)
-        // chamada para API de cadastro aqui
+    const onSubmit = async (data: CreateAccountFormData) => {
+        setErrorMessage(null)
+        try {
+            const newUser: Omit<User, "_id" | "created_at"> = {
+                username: data.name,
+                email: data.email,
+                password: data.password,
+                phone: data.phone,
+                location: data.location,
+            }
+
+            const user = registerUser(newUser)
+
+            alert("Conta criada com sucesso!")
+
+            // Overlay.dismiss()
+        }
+        catch (e) {
+            const error = e as Error
+            console.error(e)
+            setErrorMessage(error.message || "Erro ao criar conta. Tente novamente.")
+        }
     }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={styles.container}>
+            {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
             <Input
                 label="Nome completo"
                 placeholder="Seu nome completo"
@@ -150,6 +173,7 @@ export default function CreateAccount({ moveTo }: Props) {
                 text={isSubmitting ? "Criando conta..." : "Criar conta"}
                 type="submit"
                 className={styles.btn}
+                disabled={isSubmitting}
             />
 
             <label className={styles.hasAccount}>
