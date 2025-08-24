@@ -10,6 +10,7 @@ import { Overlay } from '../overlays/overlay'
 import AccountProcess from '../account/account-process'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
+import { getFirstName } from '@/utils/user-helpers'
 
 export default function Header() {
     const [isModal, setIsModal] = useState(false)
@@ -50,7 +51,7 @@ export default function Header() {
                         />
                         <div onClick={() => handleUserPath()} className={styles.user}>
                             <Image src={'/assets/svg/user.svg'} width={19} height={19} alt='user' />
-                            <span>{user ? user.username : 'Entrar'}</span>
+                            <span>{user ? getFirstName(user.username) : 'Entrar'}</span>
                         </div>
                     </div>
                 </div>
