@@ -40,7 +40,8 @@ const createAccountSchema = z
         phone: z
             .string()
             .min(1, "Campo obrigatório")
-            .regex(/^\(?([0-9]{2})\)?[-. ]?([0-9]{5})[-. ]?([0-9]{4})$/, "Telefone inválido"),
+            .min(14, "Telefone inválido (mínimo 14 caracteres)")
+            .max(15, "Telefone inválido (máximo 15 caracteres)"),
         state: z.string().min(1, "Campo obrigatório"),
         city: z.string().min(1, "Campo obrigatório"),
     })
@@ -104,7 +105,8 @@ export default function CreateAccount({ moveTo }: Props) {
                 email: data.email,
                 password: data.password,
                 phone: data.phone,
-                location: `${data.state} - ${data.city}`,
+                city: data.city,
+                state: data.state
             }
 
             const registeredUser = await registerUser(newUser)
@@ -115,7 +117,8 @@ export default function CreateAccount({ moveTo }: Props) {
                 email: newUser.email,
                 password: newUser.password,
                 phone: newUser.phone,
-                location: newUser.location,
+                city: newUser.city,
+                state: newUser.state,
                 refreshToken: registeredUser.refreshToken,
                 created_at: new Date(),
             }

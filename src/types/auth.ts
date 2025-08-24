@@ -4,9 +4,10 @@ export interface User {
     email: string
     password?: string
     phone?: string
-    location?: string
+    city?: string
+    state?: string
     created_at?: Date
-    refreshToken?: string 
+    refreshToken?: string
 }
 
 export interface RegisterUserResponse {

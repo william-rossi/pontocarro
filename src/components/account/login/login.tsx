@@ -45,7 +45,8 @@ export default function Login({ moveTo }: Props) {
                 username: loginResponse.user.username,
                 email: loginResponse.user.email,
                 phone: loginResponse.user.phone,
-                location: loginResponse.user.location,
+                city: loginResponse.user.city,
+                state: loginResponse.user.state,
                 created_at: loginResponse.user.created_at ? new Date(loginResponse.user.created_at) : undefined,
             };
 
