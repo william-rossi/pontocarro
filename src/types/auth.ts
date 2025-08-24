@@ -1,0 +1,29 @@
+export interface User {
+    _id: string
+    username: string
+    email: string
+    password?: string
+    phone?: string
+    location?: string
+    created_at?: Date
+    refreshToken?: string 
+}
+
+export interface RegisterUserResponse {
+    message: string
+    accessToken: string
+    userId: string
+    refreshToken: string
+}
+
+export interface LoginResponse {
+    message: string
+    accessToken: string
+    user: User
+    refreshToken: string
+}
+
+export interface RefreshTokenResponse {
+    message: string;
+    accessToken: string;
+}

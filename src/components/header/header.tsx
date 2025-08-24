@@ -8,9 +8,21 @@ import Button from '../button/button'
 import Modal from '../overlays/modal/modal'
 import { Overlay } from '../overlays/overlay'
 import AccountProcess from '../account/account-process'
+import { useAuth } from '@/context/AuthContext'
+import { useRouter } from 'next/navigation'
 
 export default function Header() {
     const [isModal, setIsModal] = useState(false)
+    const { user } = useAuth();
+    const router = useRouter()
+
+    const handleUserPath = (isAnnounce = false) => {
+        if (user && isAnnounce)
+            router.push('/anunciar')
+
+        if (!user)
+            setIsModal(true)
+    }
 
     useEffect(() => {
         Overlay.startWatch()
@@ -32,13 +44,13 @@ export default function Header() {
                     <div className={styles.actionGroup}>
                         <Button
                             text='Anunciar'
-                            onClick={() => setIsModal(true)}
+                            onClick={() => handleUserPath(true)}
                             alt='plus'
                             svg='/assets/svg/plus.svg'
                         />
-                        <div className={styles.user}>
+                        <div onClick={() => handleUserPath()} className={styles.user}>
                             <Image src={'/assets/svg/user.svg'} width={19} height={19} alt='user' />
-                            <span>Entrar</span>
+                            <span>{user ? user.username : 'Entrar'}</span>
                         </div>
                     </div>
                 </div>

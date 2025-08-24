@@ -1,0 +1,22 @@
+.container {
+    padding: 15px;
+    width: 100%;
+    border-radius: 10px;
+    text-align: center;
+    font-size: var(--font-sm);
+}
+
+.error {
+    background-color: #fae4e4;
+    color: rgb(124, 11, 11);
+}
+
+.info {
+    background-color: #e3f3fb;
+    color: rgb(15, 81, 119);
+}
+
+.success {
+    background-color: #eafbe4;
+    color: rgb(35, 99, 10);
+}

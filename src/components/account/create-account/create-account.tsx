@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import styles from "./styles.module.css"
 import Input from "@/components/input/input"
 import Button from "@/components/button/button"
@@ -9,8 +9,13 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { AccountProcessType } from "../account-process"
 import { PatternFormat } from "react-number-format"
-import { User } from "@/types"
-import { registerUser } from "@/services/api"
+import { User } from "@/types/auth"
+import { registerUser } from "@/services/auth"
+import { useAuth } from '@/context/AuthContext';
+import Message from "@/components/message/message"
+import { Overlay } from "@/components/overlays/overlay"
+import Select from "@/components/select/select"
+import { CityProps, locations, StateProps } from "@/app/constants/locations"
 
 const createAccountSchema = z
     .object({
@@ -34,19 +39,22 @@ const createAccountSchema = z
         confirmPassword: z.string().min(1, "Confirmação de senha é obrigatória"),
         phone: z
             .string()
-            .min(14, "Telefone inválido")
-            .regex(
-                /^\(\d{2}\)\s\d{4,5}-\d{4}$/,
-                "Telefone deve estar no formato (11) 99999-9999 ou (11) 3333-3333"
-            ),
-        location: z
-            .string()
-            .min(2, "Localização é obrigatória")
-            .max(80, "Localização muito longa"),
+            .min(1, "Campo obrigatório")
+            .regex(/^\(?([0-9]{2})\)?[-. ]?([0-9]{5})[-. ]?([0-9]{4})$/, "Telefone inválido"),
+        state: z.string().min(1, "Campo obrigatório"),
+        city: z.string().min(1, "Campo obrigatório"),
     })
     .refine((data) => data.password === data.confirmPassword, {
+        message: "As senhas não coincidem!",
         path: ["confirmPassword"],
-        message: "As senhas não coincidem",
+    })
+    .refine((data) => data.state !== "", {
+        message: "Por favor, selecione um estado",
+        path: ["state"],
+    })
+    .refine((data) => data.city !== "", {
+        message: "Por favor, selecione uma cidade",
+        path: ["city"],
     })
 
 type CreateAccountFormData = z.infer<typeof createAccountSchema>
@@ -56,46 +64,75 @@ interface Props {
 }
 
 export default function CreateAccount({ moveTo }: Props) {
-    const [errorMessage, setErrorMessage] = useState<string | null>(null)
+    const [errorMessage, setErrorMessage] = useState<string>()
+    const { login } = useAuth();
+    const [selectedState, setSelectedState] = useState<StateProps>()
+    const [filteredCities, setFilteredCities] = useState<{ value: string; label: string }[]>([])
+
     const {
         register,
         handleSubmit,
         control,
         formState: { errors, isSubmitting },
+        setValue,
     } = useForm<CreateAccountFormData>({
         resolver: zodResolver(createAccountSchema),
         defaultValues: {
             phone: "",
+            state: "", // Define o valor padrão para o estado
+            city: "",  // Define o valor padrão para a cidade
         },
     })
 
+    useEffect(() => {
+        if (selectedState) {
+            const cities = locations.cities.filter(city => city.state_id === selectedState!.state_id)
+            const filteredCities = cities.map((city) => ({ label: city.name, value: city.name }))
+            setFilteredCities(filteredCities)
+            setValue("city", "") // Limpa a cidade selecionada quando o estado muda
+        } else {
+            setFilteredCities([])
+            setValue("city", "")
+        }
+    }, [selectedState, setValue])
+
     const onSubmit = async (data: CreateAccountFormData) => {
-        setErrorMessage(null)
+        setErrorMessage(undefined)
         try {
             const newUser: Omit<User, "_id" | "created_at"> = {
                 username: data.name,
                 email: data.email,
                 password: data.password,
                 phone: data.phone,
-                location: data.location,
+                location: `${data.state} - ${data.city}`,
             }
 
-            const user = registerUser(newUser)
+            const registeredUser = await registerUser(newUser)
 
-            alert("Conta criada com sucesso!")
+            const user: User = {
+                _id: registeredUser.userId,
+                username: newUser.username,
+                email: newUser.email,
+                password: newUser.password,
+                phone: newUser.phone,
+                location: newUser.location,
+                refreshToken: registeredUser.refreshToken,
+                created_at: new Date(),
+            }
 
-            // Overlay.dismiss()
+            login(user, registeredUser.accessToken, registeredUser.refreshToken); // Faz o login automático após o registro
+
+            Overlay.dismiss()
         }
         catch (e) {
             const error = e as Error
-            console.error(e)
+            console.error(error)
             setErrorMessage(error.message || "Erro ao criar conta. Tente novamente.")
         }
     }
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className={styles.container}>
-            {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
             <Input
                 label="Nome completo"
                 placeholder="Seu nome completo"
@@ -160,14 +197,32 @@ export default function CreateAccount({ moveTo }: Props) {
                 }}
             />
 
-            <Input
-                label="Localização"
-                placeholder="São Paulo, SP"
-                startIcon="/assets/svg/location.svg"
-                maxLength={80}
-                error={errors.location?.message}
-                {...register("location")}
-            />
+            <div className={styles.locationGroup}>
+                <Select
+                    label="Estado"
+                    options={[
+                        { value: "", label: "Selecione" },
+                        ...locations.states.map(state => ({ value: state.acronym, label: state.acronym }))
+                    ]}
+                    error={errors.state?.message}
+                    {...register("state", {
+                        onChange: (e) => {
+                            const selectedStateObject = locations.states.find(state => state.acronym === e.target.value);
+                            setSelectedState(selectedStateObject);
+                        },
+                    })}
+                />
+                <Select
+                    label="Cidade"
+                    options={[
+                        { value: "", label: "Selecione uma cidade" },
+                        ...filteredCities,
+                    ]}
+                    error={errors.city?.message}
+                    {...register("city")}
+                    disabled={!selectedState}
+                />
+            </div>
 
             <Button
                 text={isSubmitting ? "Criando conta..." : "Criar conta"}
@@ -175,6 +230,8 @@ export default function CreateAccount({ moveTo }: Props) {
                 className={styles.btn}
                 disabled={isSubmitting}
             />
+
+            {errorMessage && <Message message={errorMessage} type={'error'} />}
 
             <label className={styles.hasAccount}>
                 Já tem uma conta?{" "}

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "../styles/globals.css"
 import "../styles/themify.css"
 import Header from "@/components/header/header";
+import { AuthProvider } from '@/context/AuthContext';
 
 const geistSans = Inter({
   subsets: ["latin"],
@@ -21,10 +22,12 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${geistSans.className} light`}>
-        <Header />
-        <main>
-          {children}
-        </main>
+        <AuthProvider>
+          <Header />
+          <main>
+              {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,17 +1,14 @@
-import { LoginResponse, User } from "@/types"
-import { NextResponse } from "next/server"
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!
+import { API_BASE_URL, JWT_SECRET } from "@/app/constants/secrets"
+import {  User } from "@/types/auth"
+import { handleApiResponse, validateBody, handleInternalError } from "@/utils/api-routes"
 
 export async function POST(req: Request) {
     try {
         const body = await req.json()
 
-        if (!body) {
-            return NextResponse.json(
-                { error: "Body vazio" },
-                { status: 400 }
-            )
+        const bodyValidation = validateBody(body)
+        if (bodyValidation) {
+            return bodyValidation
         }
 
         const user = body as Pick<User, 'email' | 'password'>
@@ -21,40 +18,14 @@ export async function POST(req: Request) {
             headers: {
                 "Content-Type": "application/json",
                 accept: "application/json",
-                Authorization: `Bearer ${process.env.JWT_SECRET!}`,
+                Authorization: `Bearer ${JWT_SECRET}`,
             },
             body: JSON.stringify(user),
         })
 
-        const text = await response.text()
-
-        if (!response.ok) {
-            // tenta parsear JSON, senão devolve o texto cru
-            try {
-                const json = JSON.parse(text)
-                return NextResponse.json(
-                    { error: json.message ?? json },
-                    { status: response.status }
-                )
-            } catch {
-                return NextResponse.json(
-                    { error: text },
-                    { status: response.status }
-                )
-            }
-        }
-
-        // resposta de sucesso
-        const data = JSON.parse(text) as LoginResponse
-        return NextResponse.json(
-            { success: true, data },
-            { status: response.status }
-        )
-    } catch (error) {
-        console.error("Erro interno:", error)
-        return NextResponse.json(
-            { error: "Erro interno do servidor" },
-            { status: 500 }
-        )
+        return handleApiResponse(response)
+    } 
+    catch (error) {
+        return handleInternalError(error)
     }
 }

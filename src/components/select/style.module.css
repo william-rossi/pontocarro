@@ -1,0 +1,62 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.selectWrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 10px;
+    transition: all 0.2s ease-in-out;
+    position: relative; /* Adicionado para posicionar o ícone */
+}
+
+.selectWrapper:focus-within {
+    border-color: var(--primary-color-o-3);
+    box-shadow: 0px 0px 8px 0px var(--primary-color-o);
+}
+
+.select {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: var(--font-sm);
+    background: transparent;
+    min-height: 35px;
+    width: 100%; /* Garante que o select ocupe todo o espaço disponível */
+    padding-right: 25px; /* Adicionado espaço para o ícone */
+    /* appearance: none; */ /* Removido para testar o estilo padrão do navegador nas opções */
+}
+
+.select::placeholder {
+    opacity: 0.7;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    filter: invert(66%) sepia(23%) saturate(6%) hue-rotate(349deg) brightness(92%) contrast(89%);
+    position: absolute; /* Posiciona o ícone */
+    right: 10px; /* Alinha o ícone à direita */
+    pointer-events: none; /* Garante que o clique no ícone passe para o select */
+}
+
+.errorBorder {
+    border-color: #e53e3e !important;
+}
+
+.errorText {
+    color: #e53e3e;
+    font-size: 12px;
+}

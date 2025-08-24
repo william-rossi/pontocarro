@@ -4,14 +4,20 @@
     gap: 20px;
 }
 
-.passwordGroup {
+.passwordGroup,
+.locationGroup {
     display: flex;
+    flex-direction: row-reverse;
     align-items: center;
     gap: 7px;
 }
 
 .passwordGroup input {
     width: 50%;
+}
+
+.locationGroup div:first-child {
+    width: 40% !important;
 }
 
 .btn {
