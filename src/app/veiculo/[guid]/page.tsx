@@ -1,10 +1,10 @@
 import React from 'react'
 import styles from './styles.module.css'
 import Back from './_back/page'
-import VehicleCarousel from './_vehicle-carousel/page'
 import VehicleBasic from './_vehicle-basic/page'
 import Description from './_description/page'
 import Specifications from './_specifications/page'
+import VehicleCarousel from './_vehicle-vehicle-carousel/page'
 
 export default function Veiculo() {
     return (
