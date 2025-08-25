@@ -14,7 +14,7 @@ import { registerUser } from "@/services/auth"
 import { useAuth } from '@/context/AuthContext';
 import Message from "@/components/message/message"
 import { Overlay } from "@/components/overlays/overlay"
-import Select from "@/components/select/select"
+import LocationSelect from "@/components/location-select/location-select"
 import { CityProps, locations, StateProps } from "@/app/constants/locations"
 
 const createAccountSchema = z
@@ -67,8 +67,6 @@ interface Props {
 export default function CreateAccount({ moveTo }: Props) {
     const [errorMessage, setErrorMessage] = useState<string>()
     const { login } = useAuth();
-    const [selectedState, setSelectedState] = useState<StateProps>()
-    const [filteredCities, setFilteredCities] = useState<{ value: string; label: string }[]>([])
 
     const {
         register,
@@ -76,6 +74,7 @@ export default function CreateAccount({ moveTo }: Props) {
         control,
         formState: { errors, isSubmitting },
         setValue,
+        watch,
     } = useForm<CreateAccountFormData>({
         resolver: zodResolver(createAccountSchema),
         defaultValues: {
@@ -84,18 +83,6 @@ export default function CreateAccount({ moveTo }: Props) {
             city: "",  // Define o valor padrão para a cidade
         },
     })
-
-    useEffect(() => {
-        if (selectedState) {
-            const cities = locations.cities.filter(city => city.state_id === selectedState!.state_id)
-            const filteredCities = cities.map((city) => ({ label: city.name, value: city.name }))
-            setFilteredCities(filteredCities)
-            setValue("city", "") // Limpa a cidade selecionada quando o estado muda
-        } else {
-            setFilteredCities([])
-            setValue("city", "")
-        }
-    }, [selectedState, setValue])
 
     const onSubmit = async (data: CreateAccountFormData) => {
         setErrorMessage(undefined)
@@ -200,32 +187,15 @@ export default function CreateAccount({ moveTo }: Props) {
                 }}
             />
 
-            <div className={styles.locationGroup}>
-                <Select
-                    label="Estado"
-                    options={[
-                        { value: "", label: "Selecione" },
-                        ...locations.states.map(state => ({ value: state.acronym, label: state.acronym }))
-                    ]}
-                    error={errors.state?.message}
-                    {...register("state", {
-                        onChange: (e) => {
-                            const selectedStateObject = locations.states.find(state => state.acronym === e.target.value);
-                            setSelectedState(selectedStateObject);
-                        },
-                    })}
-                />
-                <Select
-                    label="Cidade"
-                    options={[
-                        { value: "", label: "Selecione uma cidade" },
-                        ...filteredCities,
-                    ]}
-                    error={errors.city?.message}
-                    {...register("city")}
-                    disabled={!selectedState}
-                />
-            </div>
+            <LocationSelect
+                selectedStateValue={watch("state")}
+                selectedCityValue={watch("city")}
+                onStateChange={(value) => setValue("state", value)}
+                onCityChange={(value) => setValue("city", value)}
+                stateError={errors.state?.message}
+                cityError={errors.city?.message}
+                disabledCity={!watch("state")}
+            />
 
             <Button
                 text={isSubmitting ? "Criando conta..." : "Criar conta"}

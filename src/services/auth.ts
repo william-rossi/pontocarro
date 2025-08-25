@@ -1,6 +1,6 @@
 import { API_BASE_URL } from '@/app/constants/secrets'
 import { User, LoginResponse, RegisterUserResponse, RefreshTokenResponse } from '../types/auth'
-import {  getErrorMessage } from './utils'
+import { getErrorMessage } from './utils'
 
 export const registerUser = async (newUser: Omit<User, '_id' | 'created_at'>): Promise<RegisterUserResponse> => {
     const response = await fetch('/api/register-user', {
@@ -45,7 +45,7 @@ export const refreshToken = async (refreshToken: string): Promise<RefreshTokenRe
 
     if (!response.ok)
         throw new Error(await getErrorMessage(response))
-    
+
     return response.json()
 }
 

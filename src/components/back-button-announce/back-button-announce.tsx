@@ -5,7 +5,7 @@ import styles from './styles.module.css'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
-export default function Back() {
+export default function BackButtonAnnounce() {
     const router = useRouter()
 
     const handleBack = () => {

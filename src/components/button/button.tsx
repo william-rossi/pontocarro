@@ -4,9 +4,10 @@ import Image from 'next/image'
 
 interface Props extends InputHTMLAttributes<HTMLButtonElement> {
     svg?: string
+    iconSize?: number
     alt?: string
     text: string
-    onClick?(): void
+    onClick?(event: React.MouseEvent<HTMLButtonElement>): void
     disabled?: boolean
     className?: string
 }
@@ -15,12 +16,13 @@ export default function Button({
     svg,
     alt,
     text,
+    iconSize = 16,
     onClick,
     ...props
 }: Props) {
     return (
         <button onClick={onClick && onClick} className={`${props.className ?? ''} ${styles.container}`}>
-            {svg && <Image src={svg} width={16} height={16} alt={alt ?? ''} />}
+            {svg && <Image src={svg} width={iconSize} height={iconSize} alt={alt ?? ''} />}
             {text}
         </button>
     )

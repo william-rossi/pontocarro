@@ -34,7 +34,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       const currentTime = Date.now() / 1000
       return decoded.exp < currentTime
-    } 
+    }
     catch (error) {
       console.error("Erro ao decodificar token:", error)
       return true
@@ -84,13 +84,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (isTokenExpired(storedAccessToken)) {
         console.log("Token de acesso expirado na inicialização. Tentando atualizar...")
         refreshAccessToken()
-      } 
+      }
       else {
         setUser(storedUser)
         setAccessToken(storedAccessToken)
         setRefreshToken(storedRefreshToken)
       }
-    } 
+    }
     else {
       logout()
     }
@@ -103,14 +103,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setAccessToken(newAccessToken)
     setRefreshToken(newRefreshToken)
 
-    setCookie(null, 'user', JSON.stringify(userData), {maxAge: maxAge,path: '/',})
-    setCookie(null, 'accessToken', newAccessToken, {maxAge: maxAge, path: '/',})
-    setCookie(null, 'refreshToken', newRefreshToken, {maxAge: maxAge, path: '/', })
+    setCookie(null, 'user', JSON.stringify(userData), { maxAge: maxAge, path: '/', })
+    setCookie(null, 'accessToken', newAccessToken, { maxAge: maxAge, path: '/', })
+    setCookie(null, 'refreshToken', newRefreshToken, { maxAge: maxAge, path: '/', })
   }
 
   // Verifica a expiração do token periodicamente (opcional, mas bom para sessões de longa duração)
   useEffect(() => {
-    const minutes =  1 * 60 * 1000 // Verifica a cada 1 minuto
+    const minutes = 1 * 60 * 1000 // Verifica a cada 1 minuto
 
     const interval = setInterval(() => {
       if (accessToken && isTokenExpired(accessToken)) {

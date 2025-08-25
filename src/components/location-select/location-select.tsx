@@ -1,32 +1,41 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { UseFormRegister, FieldErrors, UseFormSetValue } from "react-hook-form"
 import Select from "@/components/select/select"
 import { locations, StateProps } from "@/app/constants/locations"
 import styles from "./style.module.css"
 
 interface LocationSelectProps {
-    register: UseFormRegister<any>;
-    errors: FieldErrors<any>;
-    setValue: UseFormSetValue<any>;
+    selectedStateValue: string;
+    selectedCityValue: string;
+    onStateChange: (value: string) => void;
+    onCityChange: (value: string) => void;
+    stateError?: string;
+    cityError?: string;
+    disabledCity?: boolean;
 }
 
-export default function LocationSelect({ register, errors, setValue }: LocationSelectProps) {
-    const [selectedState, setSelectedState] = useState<StateProps | undefined>(undefined)
+export default function LocationSelect({
+    selectedStateValue,
+    selectedCityValue,
+    onStateChange,
+    onCityChange,
+    stateError,
+    cityError,
+    disabledCity,
+}: LocationSelectProps) {
     const [filteredCities, setFilteredCities] = useState<{ value: string; label: string }[]>([])
 
     useEffect(() => {
-        if (selectedState) {
-            const potentialCities = locations.cities.filter(city => city.state_id === selectedState!.state_id);
-            const stateCities: { name: string }[] = potentialCities as { name: string }[];
-            setFilteredCities(stateCities.map((city: { name: string }) => ({ value: city.name, label: city.name })))
-            setValue("city", "")
+        if (selectedStateValue) {
+            const stateObject = locations.states.find(s => s.acronym === selectedStateValue)
+            const cities = locations.cities.filter(city => city.state_id === stateObject?.state_id)
+            const mappedCities = cities.map((city) => ({ label: city.name, value: city.name }))
+            setFilteredCities(mappedCities)
         } else {
             setFilteredCities([])
-            setValue("city", "")
         }
-    }, [selectedState, setValue])
+    }, [selectedStateValue])
 
     return (
         <div className={styles.locationGroup}>
@@ -36,14 +45,9 @@ export default function LocationSelect({ register, errors, setValue }: LocationS
                     { value: "", label: "Selecione" },
                     ...locations.states.map(state => ({ value: state.acronym, label: state.acronym }))
                 ]}
-                error={errors.state?.message?.toString()}
-                {...register("state", {
-                    onChange: (e) => {
-                        const stateAcronym = e.target.value;
-                        const foundState = locations.states.find(state => state.acronym === stateAcronym);
-                        setSelectedState(foundState);
-                    },
-                })}
+                error={stateError}
+                onChange={(e) => onStateChange(e.target.value)}
+                value={selectedStateValue}
             />
             <Select
                 label="Cidade"
@@ -51,9 +55,10 @@ export default function LocationSelect({ register, errors, setValue }: LocationS
                     { value: "", label: "Selecione uma cidade" },
                     ...filteredCities,
                 ]}
-                error={errors.city?.message?.toString()}
-                {...register("city")}
-                disabled={!selectedState}
+                error={cityError}
+                onChange={(e) => onCityChange(e.target.value)}
+                value={selectedCityValue}
+                disabled={disabledCity || !selectedStateValue}
             />
         </div>
     )
