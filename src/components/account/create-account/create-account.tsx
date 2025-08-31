@@ -15,7 +15,6 @@ import { useAuth } from '@/context/AuthContext';
 import Message from "@/components/message/message"
 import { Overlay } from "@/components/overlays/overlay"
 import LocationSelect from "@/components/location-select/location-select"
-import { CityProps, locations, StateProps } from "@/app/constants/locations"
 
 const createAccountSchema = z
     .object({

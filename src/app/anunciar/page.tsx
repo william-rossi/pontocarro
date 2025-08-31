@@ -5,7 +5,7 @@ import styles from './styles.module.css'
 import BackButtonAnnounce from '@/components/back-button-announce/back-button-announce'
 import Input from '@/components/input/input'
 import Select from '@/components/select/select'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Button from '@/components/button/button'
@@ -14,6 +14,8 @@ import LocationSelect from '@/components/location-select/location-select'
 import TextArea from '@/components/textarea/textarea'
 import FeatureInput from '@/components/feature-input/feature-input'
 import ImageUpload from '@/components/image-upload/image-upload'
+import { PatternFormat } from 'react-number-format'
+import { useRouter } from 'next/navigation'
 
 const announceVehicleSchema = z.object({
     title: z.string().min(1, "Título é obrigatório").max(100, "Título muito longo"),
@@ -32,6 +34,20 @@ const announceVehicleSchema = z.object({
     description: z.string().min(1, "Descrição é obrigatória").max(1000, "Descrição muito longa"),
     features: z.array(z.string()).max(10, "Máximo de 10 características").optional(),
     images: z.array(z.string()).max(10, "Máximo de 10 fotos").optional(),
+    name: z
+        .string()
+        .min(3, "Nome deve ter no mínimo 3 caracteres")
+        .max(100, "Nome muito longo"),
+    email: z
+        .string()
+        .min(1, "E-mail é obrigatório")
+        .max(150, "E-mail muito longo")
+        .email("E-mail inválido"),
+    phone: z
+        .string()
+        .min(1, "Campo obrigatório")
+        .min(14, "Telefone inválido (mínimo 14 caracteres)")
+        .max(15, "Telefone inválido (máximo 15 caracteres)")
 })
 
 export type AnnounceVehicleFormData = z.infer<typeof announceVehicleSchema>
@@ -58,6 +74,8 @@ export default function Anunciar() {
             images: [],
         },
     })
+
+    const router = useRouter()
 
     const onSubmit = async (data: AnnounceVehicleFormData) => {
         setErrorMessage(undefined)
@@ -219,33 +237,51 @@ export default function Anunciar() {
                     <div className={styles.inputGroup}>
                         <Input
                             label="Seu nome"
-                            {...register("title")}
-                            error={errors.title?.message}
+                            {...register("name")}
+                            error={errors.name?.message}
                         />
-                        <Input
-                            label="Telefone"
-                            {...register("brand")}
-                            error={errors.brand?.message}
+                        <Controller
+                            name="phone"
+                            control={control}
+                            render={({ field }) => {
+                                const digits = (field.value || "").replace(/\D/g, "")
+                                const isMobile = digits.length > 10
+
+                                return (
+                                    <PatternFormat
+                                        value={field.value ?? ""}
+                                        onValueChange={(vals) => field.onChange(vals.formattedValue)}
+                                        format={isMobile ? "(##) #####-####" : "(##) ####-####"}
+                                        customInput={Input}
+                                        mask={'_'}
+                                        label="Telefone"
+                                        type="tel"
+                                        error={errors.phone?.message}
+                                    />
+                                )
+                            }}
                         />
                     </div>
+                    <div className={styles.inputGroup}>
+                        <Input
+                            label="E-mail"
+                            type='email'
+                            {...register("email")}
+                            error={errors.email?.message}
+                        />
+                        <div className={styles.inputGroupFill} />
+                    </div>
                 </div>
-
-                <div className={styles.inputGroup}>
-                    <Input
-                        label="E-mail"
-                        {...register("mileage", { valueAsNumber: true })}
-                        error={errors.mileage?.message}
-                    />
-                    <div className={styles.inputGroupFill} />
-                </div>
-
-                {/* Ajuste as Informações de contato junto com o e-mail, se possível unifique a lógica do telefone,
-                nome e e-mail como no cadastro do cliente. E consegui adicionar mais 10 fotos. */}
 
                 <div className={styles.btnGroup}>
                     <Button
                         text={'Cancelar'}
                         className={styles.btn}
+                        invert
+                        onClick={(e) => {
+                            e.preventDefault();
+                            router.back()
+                        }}
                     />
                     <Button
                         text={isSubmitting ? "Anunciando..." : "Anunciar veículo"}

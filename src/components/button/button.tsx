@@ -10,6 +10,7 @@ interface Props extends InputHTMLAttributes<HTMLButtonElement> {
     onClick?(event: React.MouseEvent<HTMLButtonElement>): void
     disabled?: boolean
     className?: string
+    invert?: boolean
 }
 
 export default function Button({
@@ -18,10 +19,11 @@ export default function Button({
     text,
     iconSize = 16,
     onClick,
+    invert,
     ...props
 }: Props) {
     return (
-        <button onClick={onClick && onClick} className={`${props.className ?? ''} ${styles.container}`}>
+        <button onClick={onClick && onClick} className={`${props.className ?? ''} ${styles.container} ${invert ? styles.invert : ''}`}>
             {svg && <Image src={svg} width={iconSize} height={iconSize} alt={alt ?? ''} />}
             {text}
         </button>

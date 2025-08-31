@@ -7,6 +7,12 @@
     justify-content: center;
     color: white;
     transition: .2s;
+    border: 1.5px solid var(--border-color);
+}
+
+.invert {
+    background-color: transparent !important;
+    color: var(--text-color);
 }
 
 .container:hover {
