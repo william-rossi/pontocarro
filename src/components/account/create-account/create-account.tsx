@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState } from "react"
 import styles from "./styles.module.css"
 import Input from "@/components/input/input"
 import Button from "@/components/button/button"

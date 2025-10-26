@@ -1,16 +1,23 @@
 export interface Vehicle {
     _id: string
-    make: string
-    model: string
+    owner_id: string
+    title: string
+    brand: string
+    vehicleModel: string
+    engine: string
     year: number
     price: number
-    location: string
-    engineType: string
-    vehicleType: string
-    fuelType: string
-    transmission: string
     mileage: number
-    imageUrl: string
+    state: string
+    city: string
+    fuel: string
+    exchange: string
+    bodyType: string
+    color: string
     description: string
-    created_at: Date
+    features?: string[]
+    announcerName: string;
+    announcerEmail: string;
+    announcerPhone: string;
+    created_at?: Date
 }

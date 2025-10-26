@@ -5,7 +5,7 @@ export const getErrorMessage = async (response: Response) => {
     return data.message || 'Houve uma falha ao executar a operação.'
 }
 
-export const fetchWithAuth = async (url: string, options: RequestInit = {}, accessToken: string | null, refreshAccessToken: () => Promise<void>, maxRetries = 1): Promise<Response> => {
+export const fetchWithAuth = async (url: string, options: RequestInit = {}, accessToken: string | null, refreshAccessToken: () => Promise<void>, maxRetries = 1, json = true): Promise<Response> => {
     let currentAccessToken = accessToken;
     let retries = 0;
 
@@ -23,11 +23,21 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}, acce
             currentAccessToken = ""; // Placeholder, será substituído pelo token atualizado na próxima iteração
         }
 
-        const headers = {
-            ...options.headers,
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${currentAccessToken}`,
-        };
+        let headers = {};
+
+        if (json) {
+            headers = {
+                ...options.headers,
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${currentAccessToken}`,
+            }
+        }
+        else {
+            headers = {
+                ...options.headers,
+                'Authorization': `Bearer ${currentAccessToken}`,
+            }
+        }
 
         const response = await fetch(url, { ...options, headers });
 

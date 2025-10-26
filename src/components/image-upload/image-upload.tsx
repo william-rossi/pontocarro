@@ -24,32 +24,20 @@ export default function ImageUpload({
     return (
 
         <Controller
-            name={"images" as Path<AnnounceVehicleFormData>}
+            name="images"
             control={control}
             render={({ field }) => {
-                const images = (field.value || []) as string[]
+                const images = (field.value || []) as File[]
 
                 const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
                     if (e.target.files) {
                         const filesArray = Array.from(e.target.files);
-                        const newImages: string[] = [];
+                        const newImages: File[] = [];
 
-                        for (const file of filesArray) {
-                            if (images.length + newImages.length < maxImages) {
-                                const reader = new FileReader();
-                                reader.onload = (event) => {
-                                    if (event.target?.result) {
-                                        newImages.push(event.target.result as string);
-                                        if (newImages.length === filesArray.length || images.length + newImages.length === maxImages) {
-                                            field.onChange([...images, ...newImages]);
-                                        }
-                                    }
-                                };
-                                reader.readAsDataURL(file);
-                            } else {
-                                break;
-                            }
-                        }
+                        const availableSlots = maxImages - images.length;
+                        const filesToUpload = filesArray.slice(0, availableSlots);
+
+                        field.onChange([...images, ...filesToUpload]);
                     }
                 }
 
@@ -86,18 +74,21 @@ export default function ImageUpload({
                         />
                         {errors.images && <Message message={errors.images.message as string || "Erro nas fotos"} type={'error'} />}
                         <div className={styles.imagePreviewsContainer}>
-                            {images.map((image, index) => (
-                                <div key={index} className={styles.imagePreviewWrapper}>
-                                    <Image src={image} alt={`Foto ${index + 1}`} width={100} height={100} className={styles.imagePreview} />
-                                    <button
-                                        type="button"
-                                        onClick={() => handleRemoveImage(index)}
-                                        className={styles.removeImageButton}
-                                    >
-                                        ✕
-                                    </button>
-                                </div>
-                            ))}
+                            {images.map((file, index) => {
+                                const imageUrl = URL.createObjectURL(file);
+                                return (
+                                    <div key={file.name + index} className={styles.imagePreviewWrapper}>
+                                        <Image src={imageUrl} alt={`Foto ${index + 1}`} width={100} height={100} className={styles.imagePreview} />
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveImage(index)}
+                                            className={styles.removeImageButton}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </>
                 )

@@ -14,8 +14,12 @@ import LocationSelect from '@/components/location-select/location-select'
 import TextArea from '@/components/textarea/textarea'
 import FeatureInput from '@/components/feature-input/feature-input'
 import ImageUpload from '@/components/image-upload/image-upload'
-import { PatternFormat } from 'react-number-format'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useAuth } from '@/context/AuthContext'
+import { createVehicle, uploadVehicleImages } from '@/services/vehicles'
+import { Vehicle } from '@/types/vehicles'
+import { PatternFormat } from 'react-number-format'
 
 const announceVehicleSchema = z.object({
     title: z.string().min(1, "Título é obrigatório").max(100, "Título muito longo"),
@@ -32,28 +36,37 @@ const announceVehicleSchema = z.object({
     bodyType: z.string().min(1, "Tipo de carroceria é obrigatório"),
     color: z.string().min(1, "Cor é obrigatória").max(50, "Cor muito longa"),
     description: z.string().min(1, "Descrição é obrigatória").max(1000, "Descrição muito longa"),
-    features: z.array(z.string()).max(10, "Máximo de 10 características").optional(),
-    images: z.array(z.string()).max(10, "Máximo de 10 fotos").optional(),
-    name: z
+    features: z.array(z.string()).optional(),
+    images: z.array(z.instanceof(File)).optional(), // Update type to File array
+}).extend({
+    announcerName: z
         .string()
-        .min(3, "Nome deve ter no mínimo 3 caracteres")
-        .max(100, "Nome muito longo"),
-    email: z
+        .min(3, "Nome do anunciante deve ter no mínimo 3 caracteres")
+        .max(100, "Nome do anunciante muito longo"),
+    announcerPhone: z
         .string()
-        .min(1, "E-mail é obrigatório")
-        .max(150, "E-mail muito longo")
-        .email("E-mail inválido"),
-    phone: z
+        .min(1, "Telefone do anunciante é obrigatório")
+        .min(14, "Telefone do anunciante inválido (mínimo 14 caracteres)")
+        .max(15, "Telefone do anunciante inválido (máximo 15 caracteres)"),
+    announcerEmail: z
         .string()
-        .min(1, "Campo obrigatório")
-        .min(14, "Telefone inválido (mínimo 14 caracteres)")
-        .max(15, "Telefone inválido (máximo 15 caracteres)")
+        .min(1, "E-mail do anunciante é obrigatório")
+        .max(150, "E-mail do anunciante muito longo")
+        .email("E-mail do anunciante inválido"),
 })
 
 export type AnnounceVehicleFormData = z.infer<typeof announceVehicleSchema>
 
 export default function Anunciar() {
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+    const { user, accessToken, refreshAccessToken } = useAuth()
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!user) {
+            router.push('/')
+        }
+    }, [user, router])
 
     const {
         register,
@@ -66,24 +79,59 @@ export default function Anunciar() {
         resolver: zodResolver(announceVehicleSchema),
         defaultValues: {
             year: new Date().getFullYear(),
-            price: 0,
-            mileage: 0,
             state: "",
             city: "",
             features: [],
             images: [],
+            // Default values for new fields
+            announcerName: user?.username || "",
+            announcerPhone: user?.phone || "",
+            announcerEmail: user?.email || "",
         },
     })
 
-    const router = useRouter()
-
     const onSubmit = async (data: AnnounceVehicleFormData) => {
         setErrorMessage(undefined)
+        if (!user || !accessToken) {
+            setErrorMessage("Usuário não autenticado. Faça login para anunciar um veículo.")
+            return
+        }
+
         try {
-            console.log("Dados do veículo:", data)
-            // Aqui você integraria a chamada da API para anunciar o veículo
-            // await announceVehicle(data);
+            const vehicle: Omit<Vehicle, '_id' | 'created_at'> = {
+                owner_id: user._id,
+                title: data.title,
+                brand: data.brand,
+                vehicleModel: data.model,
+                engine: data.engine,
+                year: data.year,
+                price: data.price,
+                mileage: data.mileage,
+                state: data.state,
+                city: data.city,
+                fuel: data.fuel,
+                exchange: data.exchange,
+                bodyType: data.bodyType,
+                color: data.color,
+                description: data.description,
+                features: data.features,
+                announcerName: data.announcerName,
+                announcerPhone: data.announcerPhone,
+                announcerEmail: data.announcerEmail,
+            }
+
+            const vehicleCreated = await createVehicle(vehicle, accessToken, refreshAccessToken)
+
+            if (data.images && data.images.length > 0) {
+                const formData = new FormData();
+                for (let i = 0; i < data.images.length; i++) {
+                    formData.append('images', data.images[i]);
+                }
+                await uploadVehicleImages(vehicleCreated._id, formData, accessToken, refreshAccessToken);
+            }
+
             alert("Veículo anunciado com sucesso!")
+            router.push('/meus-veiculos') // Redirecionar para a página de meus veículos após o sucesso
         } catch (e) {
             const error = e as Error
             console.error(error)
@@ -102,12 +150,14 @@ export default function Anunciar() {
                         <Input
                             label="Título do anúncio"
                             placeholder="ex: Toyota Corolla bem conservado"
+                            value={'Toyota Corolla bem conservado'}
                             {...register("title")}
                             error={errors.title?.message}
                         />
                         <Input
                             label="Marca"
                             placeholder="ex: Toyota"
+                            value={'Toyota'}
                             {...register("brand")}
                             error={errors.brand?.message}
                         />
@@ -116,12 +166,14 @@ export default function Anunciar() {
                         <Input
                             label="Modelo"
                             placeholder="ex: Corolla"
+                            value={'Corolla'}
                             {...register("model")}
                             error={errors.model?.message}
                         />
                         <Input
                             label="Motorização"
                             placeholder="ex: 1.6, 2.0, 1.0 Turbo"
+                            value={'1.6'}
                             {...register("engine")}
                             error={errors.engine?.message}
                         />
@@ -131,6 +183,7 @@ export default function Anunciar() {
                             label="Ano"
                             type='number'
                             placeholder="2025"
+                            value={2025}
                             {...register("year", { valueAsNumber: true })}
                             error={errors.year?.message}
                         />
@@ -138,6 +191,7 @@ export default function Anunciar() {
                             label="Preço"
                             placeholder="R$ 20.000,00"
                             type='number'
+                            value={20000}
                             {...register("price", { valueAsNumber: true })}
                             error={errors.price?.message}
                         />
@@ -146,6 +200,7 @@ export default function Anunciar() {
                         <Input
                             label="Quilometragem (km)"
                             placeholder="180.000"
+                            value={180000}
                             type='number'
                             {...register("mileage", { valueAsNumber: true })}
                             error={errors.mileage?.message}
@@ -211,6 +266,7 @@ export default function Anunciar() {
                             placeholder="ex: Preto"
                             {...register("color")}
                             error={errors.color?.message}
+                            value={'Preto'}
                         />
                     </div>
                     <TextArea
@@ -218,6 +274,7 @@ export default function Anunciar() {
                         placeholder="Descreva o estado do veículo, histórico de manutenção e outros detalhes importantes..."
                         {...register("description")}
                         error={errors.description?.message}
+                        value={'descrição do veículo'}
                         rows={5}
                     />
                 </div>
@@ -236,12 +293,13 @@ export default function Anunciar() {
                     <h2>Informações de contato</h2>
                     <div className={styles.inputGroup}>
                         <Input
-                            label="Seu nome"
-                            {...register("name")}
-                            error={errors.name?.message}
+                            label="Nome do anunciante"
+                            max={100}
+                            error={errors.announcerName?.message}
+                            {...register("announcerName")}
                         />
                         <Controller
-                            name="phone"
+                            name="announcerPhone"
                             control={control}
                             render={({ field }) => {
                                 const digits = (field.value || "").replace(/\D/g, "")
@@ -255,8 +313,9 @@ export default function Anunciar() {
                                         customInput={Input}
                                         mask={'_'}
                                         label="Telefone"
+                                        placeholder="(11) 99999-9999"
                                         type="tel"
-                                        error={errors.phone?.message}
+                                        error={errors.announcerPhone?.message}
                                     />
                                 )
                             }}
@@ -264,10 +323,11 @@ export default function Anunciar() {
                     </div>
                     <div className={styles.inputGroup}>
                         <Input
-                            label="E-mail"
-                            type='email'
-                            {...register("email")}
-                            error={errors.email?.message}
+                            label="E-mail do anunciante"
+                            type="email"
+                            maxLength={150}
+                            error={errors.announcerEmail?.message}
+                            {...register("announcerEmail")}
                         />
                         <div className={styles.inputGroupFill} />
                     </div>
