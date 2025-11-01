@@ -18,7 +18,7 @@
     border-radius: 8px;
     padding: 6px 10px;
     transition: all 0.2s ease-in-out;
-    position: relative; /* Adicionado para posicionar o ícone */
+    position: relative;
 }
 
 .selectWrapper:focus-within {
@@ -33,9 +33,11 @@
     font-size: var(--font-sm);
     background: transparent;
     min-height: 35px;
-    width: 100%; /* Garante que o select ocupe todo o espaço disponível */
-    padding-right: 25px; /* Adicionado espaço para o ícone */
-    /* appearance: none; */ /* Removido para testar o estilo padrão do navegador nas opções */
+    width: 100%;
+    padding-right: 25px;
+    /* Added space for the dropdown arrow */
+    appearance: none;
+    /* Hide default arrow */
 }
 
 .select::placeholder {
@@ -47,9 +49,18 @@
     align-items: center;
     justify-content: center;
     filter: invert(66%) sepia(23%) saturate(6%) hue-rotate(349deg) brightness(92%) contrast(89%);
-    position: absolute; /* Posiciona o ícone */
-    right: 10px; /* Alinha o ícone à direita */
-    pointer-events: none; /* Garante que o clique no ícone passe para o select */
+    position: absolute;
+    right: 10px;
+    pointer-events: none;
+}
+
+.optionsList,
+.optionItem,
+.dropdownArrow,
+.dropdownArrowOpen {
+    /* Remove these styles as they are no longer needed for a native select */
+    display: none;
+    /* Hide any lingering combobox-specific elements */
 }
 
 .errorBorder {

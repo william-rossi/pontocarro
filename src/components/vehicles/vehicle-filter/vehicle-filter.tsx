@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Select from '@/components/select/select'
 import { useEffect, useState } from 'react'
 import { VehicleFilter as VehicleFilterType } from '@/services/vehicles'
+import Button from '@/components/button/button'
 
 interface VehicleFilterProps {
     onApplyFilters: (filters: VehicleFilterType) => void
@@ -24,6 +25,7 @@ export default function VehicleFilter({
     const [filters, setFilters] = useState<VehicleFilterType>({
         brand: '',
         vehicleModel: '',
+        name: '',
         engine: '',
         fuel: '',
         exchange: '',
@@ -38,20 +40,41 @@ export default function VehicleFilter({
     })
 
     const handleInputChange = (key: keyof VehicleFilterType, value: string | number | undefined) => {
+        let processedValue: string | number | undefined = value
+        if (typeof value === 'string' && (key === 'minPrice' || key === 'maxPrice' || key === 'minYear' || key === 'maxYear' || key === 'mileage')) {
+            const parsedValue = parseFloat(value)
+            processedValue = isNaN(parsedValue) ? undefined : parsedValue
+        }
+
         setFilters(prevFilters => ({
             ...prevFilters,
-            [key]: value === "" ? undefined : value
+            [key]: processedValue === "" ? undefined : processedValue
         }))
     }
 
+    const validateFilters = (): boolean => {
+        if (filters.minPrice !== undefined && filters.maxPrice !== undefined && filters.minPrice > filters.maxPrice) {
+            alert("O preço mínimo não pode ser maior que o preço máximo.")
+            return false
+        }
+        if (filters.minYear !== undefined && filters.maxYear !== undefined && filters.minYear > filters.maxYear) {
+            alert("O ano mínimo não pode ser maior que o ano máximo.")
+            return false
+        }
+        return true
+    }
+
     const applyFilters = () => {
-        onApplyFilters(filters)
+        if (validateFilters()) {
+            onApplyFilters(filters)
+        }
     }
 
     const clearFilters = () => {
         setFilters({
             brand: '',
             vehicleModel: '',
+            name: '',
             engine: '',
             fuel: '',
             exchange: '',
@@ -120,6 +143,13 @@ export default function VehicleFilter({
         { value: "MG", label: "Minas Gerais" },
     ]
 
+    const cities = [
+        { value: "", label: "Todas as cidades" },
+        { value: "São Paulo", label: "São Paulo" },
+        { value: "Rio de Janeiro", label: "Rio de Janeiro" },
+        { value: "Belo Horizonte", label: "Belo Horizonte" },
+    ]
+
     return (
         <div className={styles.container}>
             <div className={styles.inputArea}>
@@ -128,8 +158,13 @@ export default function VehicleFilter({
                     startIcon="/assets/svg/magnifying-glass.svg"
                     className={styles.input}
                     iconSize={23}
-                    value={filters.vehicleModel || ""}
-                    onChange={(e) => handleInputChange('vehicleModel', e.target.value)}
+                    value={filters.name || ""}
+                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            applyFilters()
+                        }
+                    }}
                 />
                 <div className={styles.filterBtn} onClick={toggleFilterOptions}>
                     <Image src={'/assets/svg/filter.svg'} alt='filter' width={21} height={21} />
@@ -174,46 +209,52 @@ export default function VehicleFilter({
 
                     <div className={styles.filterOptions}>
                         <Input
-                            placeholder="Preço mínimo"
-                            label="Faixa de Preço (R$)"
+                            label="Ano mínimo"
                             type="number"
-                            value={filters.minPrice || ""}
-                            onChange={(e) => handleInputChange('minPrice', parseFloat(e.target.value))}
-                        />
-                        <Input
-                            placeholder="Preço máximo"
-                            type="number"
-                            value={filters.maxPrice || ""}
-                            onChange={(e) => handleInputChange('maxPrice', parseFloat(e.target.value))}
-                        />
-                        <Input
-                            placeholder="Ano mínimo"
-                            label="Ano do Veículo"
-                            type="number"
+                            placeholder="Ex: 2000"
                             value={filters.minYear || ""}
-                            onChange={(e) => handleInputChange('minYear', parseFloat(e.target.value))}
+                            onChange={(e) => handleInputChange('minYear', e.target.value)}
+                            min="1900"
+                            max={new Date().getFullYear()}
                         />
                         <Input
-                            placeholder="Ano máximo"
+                            label="Ano máximo"
                             type="number"
+                            placeholder="Ex: 2023"
                             value={filters.maxYear || ""}
-                            onChange={(e) => handleInputChange('maxYear', parseFloat(e.target.value))}
-                        />
-                        <Input
-                            placeholder="Km mínimo"
-                            label="Quilometragem (km)"
-                            type="number"
-                            value={filters.mileage || ""}
-                            onChange={(e) => handleInputChange('mileage', parseFloat(e.target.value))}
-                        />
-                        <Input
-                            placeholder="Km máximo"
-                            type="number"
-                            value={filters.mileage || ""}
-                            onChange={(e) => handleInputChange('mileage', parseFloat(e.target.value))}
+                            onChange={(e) => handleInputChange('maxYear', e.target.value)}
+                            min="1900"
+                            max={new Date().getFullYear()}
                         />
                     </div>
-
+                    <div className={styles.filterOptions}>
+                        <Input
+                            label="Preço mínimo"
+                            type="number"
+                            placeholder="Ex: 20.000"
+                            value={filters.minPrice || ""}
+                            onChange={(e) => handleInputChange('minPrice', e.target.value)}
+                            min="0"
+                        />
+                        <Input
+                            label="Preço máximo"
+                            type="number"
+                            placeholder="Ex: 100.000"
+                            value={filters.maxPrice || ""}
+                            onChange={(e) => handleInputChange('maxPrice', e.target.value)}
+                            min="0"
+                        />
+                    </div>
+                    <div className={styles.filterOptions}>
+                        <Input
+                            label="Quilometragem mínima"
+                            type="number"
+                            placeholder="Ex: 10.000"
+                            value={filters.mileage || ""}
+                            onChange={(e) => handleInputChange('mileage', e.target.value)}
+                            min="0"
+                        />
+                    </div>
                     <div className={styles.filterOptions}>
                         <Select
                             label="Estado"
@@ -221,16 +262,16 @@ export default function VehicleFilter({
                             value={filters.state || ""}
                             onChange={(e) => handleInputChange('state', e.target.value)}
                         />
-                        {/* <Select
+                        <Select
                             label="Cidade"
                             options={cities}
                             value={filters.city || ""}
                             onChange={(e) => handleInputChange('city', e.target.value)}
-                        /> */}
+                        />
                     </div>
                     <div className={styles.filterActions}>
-                        <button onClick={applyFilters} className={styles.applyButton}>Aplicar Filtros</button>
-                        <button onClick={clearFilters} className={styles.clearButton}>Limpar Filtros</button>
+                        <Button text="Aplicar Filtros" onClick={applyFilters} className={styles.applyButton} />
+                        <Button text="Limpar Filtros" onClick={clearFilters} className={styles.clearButton} />
                     </div>
                 </>
             )}

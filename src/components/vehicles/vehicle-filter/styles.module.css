@@ -15,7 +15,8 @@
 
 .filterOptions {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+    /* Adjusted to 3 columns for better grouping */
     gap: 15px;
     margin-top: 20px;
     width: 100%;
@@ -26,8 +27,17 @@
     min-width: 150px;
 }
 
+.filterOptions>*:nth-child(n+1):nth-child(-n+5) {
+    grid-column: span 1;
+}
+
+.filterOptions>*:nth-child(n+6):nth-child(-n+10) {
+    grid-column: span 1;
+}
+
 .filterOptions>*:first-child {
-    grid-column: span 2;
+    grid-column: span 1;
+    /* Reset first-child to single column if needed, depends on actual layout */
 }
 
 .filterActions {

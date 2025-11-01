@@ -61,3 +61,11 @@ export const formatPrice = (price: number): string => {
         currency: 'BRL',
     }).format(price)
 }
+
+export const formatMileage = (mileage: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'decimal',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(mileage)
+}

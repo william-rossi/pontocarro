@@ -19,7 +19,7 @@ import { useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { createVehicle, uploadVehicleImages } from '@/services/vehicles'
 import { Vehicle } from '@/types/vehicles'
-import { PatternFormat } from 'react-number-format'
+import { NumericFormat, PatternFormat } from 'react-number-format'
 
 const announceVehicleSchema = z.object({
     title: z.string().min(1, "Título é obrigatório").max(100, "Título muito longo"),
@@ -150,14 +150,12 @@ export default function Anunciar() {
                         <Input
                             label="Título do anúncio"
                             placeholder="ex: Toyota Corolla bem conservado"
-                            value={'Toyota Corolla bem conservado'}
                             {...register("title")}
                             error={errors.title?.message}
                         />
                         <Input
                             label="Marca"
                             placeholder="ex: Toyota"
-                            value={'Toyota'}
                             {...register("brand")}
                             error={errors.brand?.message}
                         />
@@ -166,14 +164,12 @@ export default function Anunciar() {
                         <Input
                             label="Modelo"
                             placeholder="ex: Corolla"
-                            value={'Corolla'}
                             {...register("model")}
                             error={errors.model?.message}
                         />
                         <Input
                             label="Motorização"
                             placeholder="ex: 1.6, 2.0, 1.0 Turbo"
-                            value={'1.6'}
                             {...register("engine")}
                             error={errors.engine?.message}
                         />
@@ -183,27 +179,63 @@ export default function Anunciar() {
                             label="Ano"
                             type='number'
                             placeholder="2025"
-                            value={2025}
                             {...register("year", { valueAsNumber: true })}
                             error={errors.year?.message}
                         />
-                        <Input
-                            label="Preço"
-                            placeholder="R$ 20.000,00"
-                            type='number'
-                            value={20000}
-                            {...register("price", { valueAsNumber: true })}
-                            error={errors.price?.message}
+                        <Controller
+                            control={control}
+                            name="price"
+                            render={({ field }) => (
+                                <NumericFormat
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    prefix="R$ "
+                                    allowNegative={false}
+                                    decimalScale={2}
+                                    fixedDecimalScale={true}
+                                    customInput={Input}
+                                    type="text"
+                                    label="Preço"
+                                    placeholder="R$ 20.000,00"
+                                    error={errors.price?.message}
+                                    value={field.value ?? ""}
+                                    onValueChange={(values) => {
+                                        // O floatValue é um número, ideal para o z.number()
+                                        field.onChange(values.floatValue ?? 0)
+                                    }}
+                                />
+                            )}
                         />
                     </div>
                     <div className={styles.inputGroup}>
-                        <Input
-                            label="Quilometragem (km)"
-                            placeholder="180.000"
-                            value={180000}
-                            type='number'
-                            {...register("mileage", { valueAsNumber: true })}
-                            error={errors.mileage?.message}
+                        <Controller
+                            control={control}
+                            name="mileage"
+                            render={({ field }) => (
+                                <NumericFormat
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    allowNegative={false}
+                                    decimalScale={0}
+                                    customInput={Input}
+                                    type="text"
+                                    label="Quilometragem (km)"
+                                    placeholder="180.000"
+                                    error={errors.mileage?.message}
+                                    value={field.value ?? ""}
+                                    onValueChange={(values) => {
+                                        const onlyDigits = values.value.replace(/\D/g, "")
+                                        if (onlyDigits.length <= 10) {
+                                            // floatValue é número (ou undefined), ideal para o Zod
+                                            field.onChange(values.floatValue ?? 0)
+                                        }
+                                    }}
+                                    isAllowed={(values) => {
+                                        const onlyDigits = values.value.replace(/\D/g, "")
+                                        return onlyDigits.length <= 10
+                                    }}
+                                />
+                            )}
                         />
                         <div className={styles.inputGroupFill} />
                     </div>
@@ -257,6 +289,7 @@ export default function Anunciar() {
                                 { value: "Conversível", label: "Conversível" },
                                 { value: "Picape", label: "Picape" },
                                 { value: "Van", label: "Van" },
+                                { value: "Fastback", label: "Fastback" },
                             ]}
                             {...register("bodyType")}
                             error={errors.bodyType?.message}
@@ -266,7 +299,6 @@ export default function Anunciar() {
                             placeholder="ex: Preto"
                             {...register("color")}
                             error={errors.color?.message}
-                            value={'Preto'}
                         />
                     </div>
                     <TextArea
@@ -274,7 +306,6 @@ export default function Anunciar() {
                         placeholder="Descreva o estado do veículo, histórico de manutenção e outros detalhes importantes..."
                         {...register("description")}
                         error={errors.description?.message}
-                        value={'descrição do veículo'}
                         rows={5}
                     />
                 </div>

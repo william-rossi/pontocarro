@@ -3,7 +3,7 @@ import styles from './styles.module.css'
 import Image from 'next/image'
 import ContactButton from '../_contact-button/page'
 import { Vehicle } from '@/types/vehicles'
-import { formatPrice } from '@/services/utils'
+import { formatMileage, formatPrice } from '@/services/utils'
 
 interface VehicleBasicProps {
     vehicle: Vehicle
@@ -13,7 +13,7 @@ export default function VehicleBasic({ vehicle }: VehicleBasicProps) {
     return (
         <div className={styles.container}>
             <div className={styles.name}>
-                <h1>{`${vehicle.year} ${vehicle.brand} ${vehicle.title} ${vehicle.engine}`}</h1>
+                <h1>{`${vehicle.year} ${vehicle.brand} ${vehicle.vehicleModel} ${vehicle.engine}`}</h1>
                 <div className={styles.city}>
                     <Image src={'/assets/svg/location.svg'} width={18} height={18} alt='' />
                     <span>{`${vehicle.city}, ${vehicle.state}`}</span>
@@ -26,7 +26,7 @@ export default function VehicleBasic({ vehicle }: VehicleBasicProps) {
                         <Image src={'/assets/svg/speedometer.svg'} width={18} height={18} alt='' />
                         <span>Quilometragem</span>
                     </div>
-                    <b>{vehicle.mileage} km</b>
+                    <b>{formatMileage(vehicle.mileage)} km</b>
                 </div>
                 <div className={styles.resource}>
                     <div className={styles.resourceTitle}>

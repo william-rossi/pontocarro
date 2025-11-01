@@ -5,7 +5,7 @@ import styles from './styles.module.css'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Vehicle } from '@/types/vehicles'
-import { formatMileage, formatPrice } from '@/services/utils'
+import { formatPrice, formatMileage } from '@/services/utils'
 
 interface VehicleCardProps {
     vehicle: Vehicle

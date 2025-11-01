@@ -7,8 +7,12 @@ import { useEffect, useState } from 'react'
 import { getVehicles, searchVehicles, VehicleFilter as VehicleFilterType } from '@/services/vehicles'
 import { Vehicle } from '@/types/vehicles'
 import VehicleCard from './vehicle-card/vehicle-card'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function Vehicles() {
+    const router = useRouter()
+    const searchParams = useSearchParams()
+
     const [vehicles, setVehicles] = useState<Vehicle[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -20,18 +24,36 @@ export default function Vehicles() {
     const vehiclesPerPage = 6
 
     useEffect(() => {
+        const pageFromUrl = Number(searchParams.get('page')) || 1
+        const limitFromUrl = Number(searchParams.get('limit')) || vehiclesPerPage
+        const filtersFromUrl: VehicleFilterType = {}
+        searchParams.forEach((value, key) => {
+            if (key !== 'page' && key !== 'limit') {
+                (filtersFromUrl as any)[key] = value
+            }
+        })
+
+        const filtersChanged = JSON.stringify(filtersFromUrl) !== JSON.stringify(currentFilters)
+        const pageChanged = pageFromUrl !== currentPage
+
+        if (pageChanged) {
+            setCurrentPage(pageFromUrl)
+        }
+        if (filtersChanged) {
+            setCurrentFilters(filtersFromUrl)
+        }
+    }, [searchParams]) // Removed currentPage, currentFilters, vehiclesPerPage from dependencies
+
+    useEffect(() => {
         const fetchVehicles = async () => {
             setLoading(true)
             setError(null)
             try {
                 let responseData: { vehicles: Vehicle[], currentPage: number, totalPages: number, totalVehicles: number }
+                const filtersToSend = { ...currentFilters, page: currentPage, limit: vehiclesPerPage }
+
                 if (Object.keys(currentFilters).some(key => currentFilters[key as keyof VehicleFilterType] !== undefined && currentFilters[key as keyof VehicleFilterType] !== '')) {
-                    const filtersWithPageAndLimit = {
-                        ...currentFilters,
-                        page: currentPage,
-                        limit: vehiclesPerPage,
-                    }
-                    responseData = await searchVehicles(filtersWithPageAndLimit)
+                    responseData = await searchVehicles(filtersToSend)
                 } else {
                     responseData = await getVehicles(currentPage, vehiclesPerPage)
                 }
@@ -47,23 +69,32 @@ export default function Vehicles() {
         }
 
         fetchVehicles()
-    }, [currentPage, currentFilters])
+    }, [currentPage, currentFilters, vehiclesPerPage])
 
-    const handleFilterChange = (filters: VehicleFilterType) => {
-        setCurrentFilters(filters)
-        setCurrentPage(1)
+    const updateUrl = (page: number, filters: VehicleFilterType) => {
+        const newSearchParams = new URLSearchParams()
+        newSearchParams.set('page', page.toString())
+        newSearchParams.set('limit', vehiclesPerPage.toString())
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== undefined && value !== '') {
+                newSearchParams.set(key, String(value))
+            }
+        })
+        router.push(`?${newSearchParams.toString()}`)
     }
 
     const handleApplyFilters = (filters: VehicleFilterType) => {
         setCurrentFilters(filters)
         setCurrentPage(1)
-        setShowFilterOptions(false) // Hide filters after applying
+        setShowFilterOptions(false)
+        updateUrl(1, filters)
     }
 
     const handleClearFilters = () => {
         setCurrentFilters({})
         setCurrentPage(1)
-        setShowFilterOptions(false) // Hide filters after clearing
+        setShowFilterOptions(false)
+        updateUrl(1, {})
     }
 
     const toggleFilterOptions = () => {
@@ -80,17 +111,19 @@ export default function Vehicles() {
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
-            setCurrentPage(prev => prev + 1)
+            const newPage = currentPage + 1
+            setCurrentPage(newPage)
+            updateUrl(newPage, currentFilters)
         }
     }
 
     const handlePrevPage = () => {
         if (currentPage > 1) {
-            setCurrentPage(prev => prev - 1)
+            const newPage = currentPage - 1
+            setCurrentPage(newPage)
+            updateUrl(newPage, currentFilters)
         }
     }
-
-    // Remove displayVehicles slice as pagination is now handled by the API
 
     return (
         <section className={styles.container}>
@@ -100,7 +133,13 @@ export default function Vehicles() {
                 showFilterOptions={showFilterOptions}
                 toggleFilterOptions={toggleFilterOptions}
             />
-            <span className={styles.foundVehicles}>{totalVehicles} vehicles encontrados</span>
+            {
+                totalVehicles > 1
+                    ?
+                    <span className={styles.foundVehicles}>{totalVehicles} veículos encontrados</span>
+                    :
+                    <span className={styles.foundVehicles}>{totalVehicles} veículo encontrado</span>
+            }
             <div className={styles.vehiclesList}>
                 {vehicles.length > 0 ? (
                     vehicles.map(vehicle => (

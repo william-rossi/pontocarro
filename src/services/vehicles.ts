@@ -5,6 +5,7 @@ import { getErrorMessage, fetchWithAuth } from './utils'
 export interface VehicleFilter {
     brand?: string
     vehicleModel?: string
+    name?: string // New filter for vehicle name
     minYear?: number
     maxYear?: number
     minPrice?: number
@@ -16,6 +17,8 @@ export interface VehicleFilter {
     exchange?: string
     bodyType?: string
     mileage?: number
+    page?: number
+    limit?: number
 }
 
 // Vehicles API
@@ -152,23 +155,4 @@ export const deleteVehicle = async (id: string, token: string, refreshAccessToke
         throw new Error(await getErrorMessage(response))
 
     return response.status
-}
-
-export const getFirstImageByVehicleId = async (vehicleId: string): Promise<Image> => {
-    const response = await fetch(`${API_BASE_URL}/images/${vehicleId}/first`)
-
-    if (!response.ok)
-        throw new Error(await getErrorMessage(response))
-
-    return response.json()
-}
-
-export const getImageById = async (imageId: string): Promise<Image> => {
-    const response = await fetch(`${API_BASE_URL}/images/${imageId}`)
-
-    if (!response.ok)
-        throw new Error(await getErrorMessage(response))
-
-    const image: Image = await response.json()
-    return { ...image, imageUrl: `http://localhost:3001${image.imageUrl}` }
 }
