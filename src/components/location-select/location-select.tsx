@@ -13,6 +13,7 @@ interface LocationSelectProps {
     stateError?: string;
     cityError?: string;
     disabledCity?: boolean;
+    className?: string
 }
 
 export default function LocationSelect({
@@ -23,6 +24,7 @@ export default function LocationSelect({
     stateError,
     cityError,
     disabledCity,
+    className
 }: LocationSelectProps) {
     const [filteredCities, setFilteredCities] = useState<{ value: string; label: string }[]>([])
 
@@ -38,7 +40,7 @@ export default function LocationSelect({
     }, [selectedStateValue])
 
     return (
-        <div className={styles.locationGroup}>
+        <div className={`${styles.locationGroup} ${className}`}>
             <Select
                 label="Estado"
                 options={[

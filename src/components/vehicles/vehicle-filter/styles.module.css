@@ -91,18 +91,7 @@
 }
 
 .filterBtn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    width: 130px;
-    height: -webkit-fill-available;
-    border: 1px solid var(--border-color);
-    padding: 5px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: .2s;
-    user-select: none;
+    height: -webkit-fill-available !important;
 }
 
 .filterBtn:hover {
@@ -111,6 +100,5 @@
 }
 
 .filterBtn span {
-    opacity: 0.5;
     font-weight: 600;
 }

@@ -17,6 +17,7 @@ export interface VehicleFilter {
     exchange?: string
     bodyType?: string
     mileage?: number
+    maxMileage?: number
     page?: number
     limit?: number
 }

@@ -20,6 +20,7 @@ import { useAuth } from '@/context/AuthContext'
 import { createVehicle, uploadVehicleImages } from '@/services/vehicles'
 import { Vehicle } from '@/types/vehicles'
 import { NumericFormat, PatternFormat } from 'react-number-format'
+import { BODY_TYPE, EXCHANGE, FUEL } from '../constants/select-box-items'
 
 const announceVehicleSchema = z.object({
     title: z.string().min(1, "Título é obrigatório").max(100, "Título muito longo"),
@@ -254,25 +255,13 @@ export default function Anunciar() {
                     <div className={styles.inputGroup}>
                         <Select
                             label="Combustível"
-                            options={[
-                                { value: "", label: "Selecione" },
-                                { value: "Gasolina", label: "Gasolina" },
-                                { value: "Etanol", label: "Etanol" },
-                                { value: "Diesel", label: "Diesel" },
-                                { value: "Flex", label: "Flex" },
-                                { value: "Elétrico", label: "Elétrico" },
-                                { value: "Híbrido", label: "Híbrido" },
-                            ]}
+                            options={FUEL}
                             {...register("fuel")}
                             error={errors.fuel?.message}
                         />
                         <Select
                             label="Câmbio"
-                            options={[
-                                { value: "", label: "Selecione" },
-                                { value: "Automático", label: "Automático" },
-                                { value: "Manual", label: "Manual" },
-                            ]}
+                            options={EXCHANGE}
                             {...register("exchange")}
                             error={errors.exchange?.message}
                         />
@@ -280,17 +269,7 @@ export default function Anunciar() {
                     <div className={styles.inputGroup}>
                         <Select
                             label="Tipo de carroceria"
-                            options={[
-                                { value: "", label: "Selecione" },
-                                { value: "Sedã", label: "Sedã" },
-                                { value: "SUV", label: "SUV" },
-                                { value: "Hatch", label: "Hatch" },
-                                { value: "Cupê", label: "Cupê" },
-                                { value: "Conversível", label: "Conversível" },
-                                { value: "Picape", label: "Picape" },
-                                { value: "Van", label: "Van" },
-                                { value: "Fastback", label: "Fastback" },
-                            ]}
+                            options={BODY_TYPE}
                             {...register("bodyType")}
                             error={errors.bodyType?.message}
                         />

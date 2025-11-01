@@ -7,12 +7,8 @@ import { useEffect, useState } from 'react'
 import { getVehicles, searchVehicles, VehicleFilter as VehicleFilterType } from '@/services/vehicles'
 import { Vehicle } from '@/types/vehicles'
 import VehicleCard from './vehicle-card/vehicle-card'
-import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function Vehicles() {
-    const router = useRouter()
-    const searchParams = useSearchParams()
-
     const [vehicles, setVehicles] = useState<Vehicle[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -22,27 +18,6 @@ export default function Vehicles() {
     const [currentFilters, setCurrentFilters] = useState<VehicleFilterType>({})
     const [showFilterOptions, setShowFilterOptions] = useState(false)
     const vehiclesPerPage = 6
-
-    useEffect(() => {
-        const pageFromUrl = Number(searchParams.get('page')) || 1
-        const limitFromUrl = Number(searchParams.get('limit')) || vehiclesPerPage
-        const filtersFromUrl: VehicleFilterType = {}
-        searchParams.forEach((value, key) => {
-            if (key !== 'page' && key !== 'limit') {
-                (filtersFromUrl as any)[key] = value
-            }
-        })
-
-        const filtersChanged = JSON.stringify(filtersFromUrl) !== JSON.stringify(currentFilters)
-        const pageChanged = pageFromUrl !== currentPage
-
-        if (pageChanged) {
-            setCurrentPage(pageFromUrl)
-        }
-        if (filtersChanged) {
-            setCurrentFilters(filtersFromUrl)
-        }
-    }, [searchParams]) // Removed currentPage, currentFilters, vehiclesPerPage from dependencies
 
     useEffect(() => {
         const fetchVehicles = async () => {
@@ -71,30 +46,20 @@ export default function Vehicles() {
         fetchVehicles()
     }, [currentPage, currentFilters, vehiclesPerPage])
 
-    const updateUrl = (page: number, filters: VehicleFilterType) => {
-        const newSearchParams = new URLSearchParams()
-        newSearchParams.set('page', page.toString())
-        newSearchParams.set('limit', vehiclesPerPage.toString())
-        Object.entries(filters).forEach(([key, value]) => {
-            if (value !== undefined && value !== '') {
-                newSearchParams.set(key, String(value))
-            }
-        })
-        router.push(`?${newSearchParams.toString()}`)
-    }
+    // Removida a função updateUrl
 
     const handleApplyFilters = (filters: VehicleFilterType) => {
         setCurrentFilters(filters)
         setCurrentPage(1)
         setShowFilterOptions(false)
-        updateUrl(1, filters)
+        // updateUrl(1, filters)
     }
 
     const handleClearFilters = () => {
         setCurrentFilters({})
         setCurrentPage(1)
         setShowFilterOptions(false)
-        updateUrl(1, {})
+        // updateUrl(1, {})
     }
 
     const toggleFilterOptions = () => {
@@ -113,7 +78,7 @@ export default function Vehicles() {
         if (currentPage < totalPages) {
             const newPage = currentPage + 1
             setCurrentPage(newPage)
-            updateUrl(newPage, currentFilters)
+            // updateUrl(newPage, currentFilters)
         }
     }
 
@@ -121,7 +86,7 @@ export default function Vehicles() {
         if (currentPage > 1) {
             const newPage = currentPage - 1
             setCurrentPage(newPage)
-            updateUrl(newPage, currentFilters)
+            // updateUrl(newPage, currentFilters)
         }
     }
 
@@ -132,6 +97,7 @@ export default function Vehicles() {
                 onClearFilters={handleClearFilters}
                 showFilterOptions={showFilterOptions}
                 toggleFilterOptions={toggleFilterOptions}
+                currentAppliedFilters={currentFilters} // Passa os filtros atualmente aplicados
             />
             {
                 totalVehicles > 1

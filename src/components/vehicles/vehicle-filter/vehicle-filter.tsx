@@ -8,36 +8,30 @@ import Select from '@/components/select/select'
 import { useEffect, useState } from 'react'
 import { VehicleFilter as VehicleFilterType } from '@/services/vehicles'
 import Button from '@/components/button/button'
+import { BODY_TYPE, EXCHANGE, FUEL } from '@/app/constants/select-box-items'
+import LocationSelect from '@/components/location-select/location-select' // Importa LocationSelect
 
 interface VehicleFilterProps {
     onApplyFilters: (filters: VehicleFilterType) => void
     onClearFilters: () => void
     showFilterOptions: boolean
     toggleFilterOptions: () => void
+    currentAppliedFilters: VehicleFilterType // Adicionei a nova prop
 }
 
 export default function VehicleFilter({
     onApplyFilters,
     onClearFilters,
     showFilterOptions,
-    toggleFilterOptions
+    toggleFilterOptions,
+    currentAppliedFilters // Recebo a nova prop
 }: VehicleFilterProps) {
-    const [filters, setFilters] = useState<VehicleFilterType>({
-        brand: '',
-        vehicleModel: '',
-        name: '',
-        engine: '',
-        fuel: '',
-        exchange: '',
-        bodyType: '',
-        minPrice: undefined,
-        maxPrice: undefined,
-        minYear: undefined,
-        maxYear: undefined,
-        state: '',
-        city: '',
-        mileage: undefined,
-    })
+    const [filters, setFilters] = useState<VehicleFilterType>(currentAppliedFilters) // Inicializo com a prop
+
+    useEffect(() => {
+        // Atualiza o estado interno de filters quando currentAppliedFilters do pai muda
+        setFilters(currentAppliedFilters)
+    }, [currentAppliedFilters])
 
     const handleInputChange = (key: keyof VehicleFilterType, value: string | number | undefined) => {
         let processedValue: string | number | undefined = value
@@ -86,69 +80,12 @@ export default function VehicleFilter({
             state: '',
             city: '',
             mileage: undefined,
+            maxMileage: undefined,
         })
         onClearFilters()
     }
 
-    const brands = [
-        { value: "", label: "Todas as marcas" },
-        { value: "Chevrolet", label: "Chevrolet" },
-        { value: "Fiat", label: "Fiat" },
-        { value: "Volkswagen", label: "Volkswagen" },
-        { value: "Ford", label: "Ford" },
-        { value: "Honda", label: "Honda" },
-        { value: "Hyundai", label: "Hyundai" },
-        { value: "Toyota", label: "Toyota" },
-    ]
-
-    const engineTypes = [
-        { value: "", label: "Todas" },
-        { value: "1.0", label: "1.0" },
-        { value: "1.4", label: "1.4" },
-        { value: "1.6", label: "1.6" },
-        { value: "1.8", label: "1.8" },
-        { value: "2.0", label: "2.0" },
-        { value: "Outro", label: "Outro" },
-    ]
-
-    const bodyTypes = [
-        { value: "", label: "Todos os tipos" },
-        { value: "Hatch", label: "Hatch" },
-        { value: "Sedan", label: "Sedan" },
-        { value: "SUV", label: "SUV" },
-        { value: "Picape", label: "Picape" },
-        { value: "Perua", label: "Perua" },
-    ]
-
-    const fuelTypes = [
-        { value: "", label: "Todos" },
-        { value: "Gasolina", label: "Gasolina" },
-        { value: "Etanol", label: "Etanol" },
-        { value: "Flex", label: "Flex" },
-        { value: "Diesel", label: "Diesel" },
-        { value: "Elétrico", label: "Elétrico" },
-        { value: "Híbrido", label: "Híbrido" },
-    ]
-
-    const exchangeTypes = [
-        { value: "", label: "Todos" },
-        { value: "Automático", label: "Automático" },
-        { value: "Manual", label: "Manual" },
-    ]
-
-    const states = [
-        { value: "", label: "Todos os estados" },
-        { value: "SP", label: "São Paulo" },
-        { value: "RJ", label: "Rio de Janeiro" },
-        { value: "MG", label: "Minas Gerais" },
-    ]
-
-    const cities = [
-        { value: "", label: "Todas as cidades" },
-        { value: "São Paulo", label: "São Paulo" },
-        { value: "Rio de Janeiro", label: "Rio de Janeiro" },
-        { value: "Belo Horizonte", label: "Belo Horizonte" },
-    ]
+    // Removido os arrays brands e engineTypes, pois serão substituídos por Inputs de texto.
 
     return (
         <div className={styles.container}>
@@ -166,42 +103,49 @@ export default function VehicleFilter({
                         }
                     }}
                 />
-                <div className={styles.filterBtn} onClick={toggleFilterOptions}>
-                    <Image src={'/assets/svg/filter.svg'} alt='filter' width={21} height={21} />
-                    <span>Filtros</span>
-                </div>
+
+                <Button
+                    text='Filtros'
+                    onClick={toggleFilterOptions}
+                    svg='/assets/svg/filter.svg'
+                    width={21}
+                    height={21}
+                    className={styles.filterBtn}
+                />
             </div>
 
             {showFilterOptions && (
                 <>
                     <div className={styles.filterOptions}>
-                        <Select
+                        {/* Substitui o Select de Marca por Input */}
+                        <Input
                             label="Marca"
-                            options={brands}
+                            placeholder="Ex: Chevrolet"
                             value={filters.brand || ""}
                             onChange={(e) => handleInputChange('brand', e.target.value)}
                         />
-                        <Select
+                        {/* Substitui o Select de Motorização por Input */}
+                        <Input
                             label="Motorização"
-                            options={engineTypes}
+                            placeholder="Ex: 1.0, 2.0 Turbo"
                             value={filters.engine || ""}
                             onChange={(e) => handleInputChange('engine', e.target.value)}
                         />
                         <Select
                             label="Tipo"
-                            options={bodyTypes}
+                            options={BODY_TYPE}
                             value={filters.bodyType || ""}
                             onChange={(e) => handleInputChange('bodyType', e.target.value)}
                         />
                         <Select
                             label="Combustível"
-                            options={fuelTypes}
+                            options={FUEL}
                             value={filters.fuel || ""}
                             onChange={(e) => handleInputChange('fuel', e.target.value)}
                         />
                         <Select
                             label="Câmbio"
-                            options={exchangeTypes}
+                            options={EXCHANGE}
                             value={filters.exchange || ""}
                             onChange={(e) => handleInputChange('exchange', e.target.value)}
                         />
@@ -246,32 +190,27 @@ export default function VehicleFilter({
                         />
                     </div>
                     <div className={styles.filterOptions}>
+                        {/* Removido o Input para Quilometragem mínima */}
                         <Input
-                            label="Quilometragem mínima"
+                            label="Quilometragem máxima"
                             type="number"
-                            placeholder="Ex: 10.000"
-                            value={filters.mileage || ""}
-                            onChange={(e) => handleInputChange('mileage', e.target.value)}
+                            placeholder="Ex: 100.000"
+                            value={filters.maxMileage || ""}
+                            onChange={(e) => handleInputChange('maxMileage', e.target.value)}
                             min="0"
                         />
                     </div>
-                    <div className={styles.filterOptions}>
-                        <Select
-                            label="Estado"
-                            options={states}
-                            value={filters.state || ""}
-                            onChange={(e) => handleInputChange('state', e.target.value)}
-                        />
-                        <Select
-                            label="Cidade"
-                            options={cities}
-                            value={filters.city || ""}
-                            onChange={(e) => handleInputChange('city', e.target.value)}
-                        />
-                    </div>
+                    {/* Substitui os Selects de Estado e Cidade por LocationSelect */}
+                    <LocationSelect
+                        className={styles.filterOptions}
+                        selectedStateValue={filters.state || ""}
+                        selectedCityValue={filters.city || ""}
+                        onStateChange={(value) => handleInputChange('state', value)}
+                        onCityChange={(value) => handleInputChange('city', value)}
+                    />
                     <div className={styles.filterActions}>
-                        <Button text="Aplicar Filtros" onClick={applyFilters} className={styles.applyButton} />
-                        <Button text="Limpar Filtros" onClick={clearFilters} className={styles.clearButton} />
+                        <Button text="Aplicar Filtros" onClick={applyFilters} />
+                        <Button text="Limpar Filtros" onClick={clearFilters} invert />
                     </div>
                 </>
             )}
