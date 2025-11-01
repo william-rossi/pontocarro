@@ -16,8 +16,17 @@ export interface Vehicle {
     color: string
     description: string
     features?: string[]
+    images?: string[]
+    firstImageUrl?: string
     announcerName: string;
     announcerEmail: string;
     announcerPhone: string;
     created_at?: Date
+}
+
+export interface Image {
+    _id: string;
+    vehicle_id: string;
+    imageUrl: string;
+    created_at?: Date;
 }

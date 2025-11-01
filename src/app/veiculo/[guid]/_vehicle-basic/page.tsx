@@ -2,48 +2,52 @@ import React from 'react'
 import styles from './styles.module.css'
 import Image from 'next/image'
 import ContactButton from '../_contact-button/page'
+import { Vehicle } from '@/types/vehicles'
+import { formatPrice } from '@/services/utils'
 
-export default function VehicleBasic() {
+interface VehicleBasicProps {
+    vehicle: Vehicle
+}
 
-
+export default function VehicleBasic({ vehicle }: VehicleBasicProps) {
     return (
         <div className={styles.container}>
             <div className={styles.name}>
-                <h1>2020 Volkswagen Gol 1.6</h1>
+                <h1>{`${vehicle.year} ${vehicle.brand} ${vehicle.title} ${vehicle.engine}`}</h1>
                 <div className={styles.city}>
                     <Image src={'/assets/svg/location.svg'} width={18} height={18} alt='' />
-                    <span>São Paulo, SP</span>
+                    <span>{`${vehicle.city}, ${vehicle.state}`}</span>
                 </div>
             </div>
-            <span className={styles.price}>R$ 52.000</span>
+            <span className={styles.price}>{formatPrice(vehicle.price)}</span>
             <div className={styles.resources}>
                 <div className={styles.resource}>
                     <div className={styles.resourceTitle}>
                         <Image src={'/assets/svg/speedometer.svg'} width={18} height={18} alt='' />
                         <span>Quilometragem</span>
                     </div>
-                    <b>35.000 km</b>
+                    <b>{vehicle.mileage} km</b>
                 </div>
                 <div className={styles.resource}>
                     <div className={styles.resourceTitle}>
                         <Image src={'/assets/svg/fuel.svg'} width={18} height={18} alt='' />
                         <span>Combustível</span>
                     </div>
-                    <b>Flex</b>
+                    <b>{vehicle.fuel}</b>
                 </div>
                 <div className={styles.resource}>
                     <div className={styles.resourceTitle}>
                         <Image src={'/assets/svg/paint.svg'} width={18} height={18} alt='' />
                         <span>Câmbio</span>
                     </div>
-                    <b>Manual</b>
+                    <b>{vehicle.exchange}</b>
                 </div>
                 <div className={styles.resource}>
                     <div className={styles.resourceTitle}>
                         <Image src={'/assets/svg/paint.svg'} width={18} height={18} alt='' />
                         <span>Tipo</span>
                     </div>
-                    <b>Hatch</b>
+                    <b>{vehicle.bodyType}</b>
                 </div>
             </div>
             <ContactButton />

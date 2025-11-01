@@ -2,34 +2,22 @@ import React from 'react'
 import styles from './styles.module.css'
 import Image from 'next/image'
 
-export default function Specifications() {
-    const resources = [
-        {
-            id: 1,
-            name: 'Câmera de Ré',
-        },
-        {
-            id: 2,
-            name: 'Bluetooth',
-        },
-        {
-            id: 3,
-            name: 'Controle de Velocidade',
-        },
-        {
-            id: 4,
-            name: 'Vidros Elétricos',
-        }
-    ]
+interface SpecificationsProps {
+    features?: string[]
+}
+
+export default function Specifications({ features }: SpecificationsProps) {
+    if (!features)
+        return null
 
     return (
         <div className={styles.container}>
             <h3>Características</h3>
             <div className={styles.resources}>
-                {resources.map((item, index) => (
+                {features.map((feature, index) => (
                     <div className={styles.resource} key={index}>
                         <Image src={'/assets/svg/check.svg'} width={19} height={19} alt='' />
-                        <span>{item.name}</span>
+                        <span>{feature.charAt(0).toUpperCase() + feature.slice(1)}</span>
                     </div>
                 ))}
             </div>

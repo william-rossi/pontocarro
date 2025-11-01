@@ -6,25 +6,41 @@ import Image from 'next/image'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import ScrollContainer from 'react-indiana-drag-scroll'
+import { getVehicleImages } from '@/services/vehicles'
 
-const images = [
-    'https://cotac.com.br/blog/wp-content/uploads/2024/09/carros-da-chevrolet.jpg',
-    'https://blog.autocompara.com.br/wp-content/uploads/2024/06/carros-esportivos.jpeg',
-    'https://forbes.com.br/wp-content/uploads/2020/08/Neg%C3%B3cios-CarrosdeLuxo-180820-Divulga%C3%A7%C3%A3o9-1.jpg',
-    'https://cdn.motor1.com/images/mgl/8ANEqW/240:0:1440:1080/carros-mais-baratos-2024---fiat-mobi.webp',
-    'https://www.kovi.com.br/hubfs/AnyConv.com__Os%20melhores%20carros%20para%20motoristas%20iniciantes.webp',
-    'https://t.ctcdn.com.br/SorSJSoTOjwxL_oijkXTNu4HfYQ=/640x360/smart/i956025.jpeg',
-    'https://forbes.com.br/wp-content/uploads/2020/08/Neg%C3%B3cios-CarrosdeLuxo-180820-Divulga%C3%A7%C3%A3o9-1.jpg',
-    'https://forbes.com.br/wp-content/uploads/2020/08/Neg%C3%B3cios-CarrosdeLuxo-180820-Divulga%C3%A7%C3%A3o9-1.jpg',
-    'https://forbes.com.br/wp-content/uploads/2020/08/Neg%C3%B3cios-CarrosdeLuxo-180820-Divulga%C3%A7%C3%A3o9-1.jpg',
-]
+interface VehicleCarouselProps {
+    vehicleId: string
+}
 
-const VehicleCarousel = () => {
+const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
     const [currentIndex, setCurrentIndex] = useState(0)
     const scrollRef = useRef<HTMLDivElement>(null)
 
     const [showLeftArrow, setShowLeftArrow] = useState(false)
     const [showRightArrow, setShowRightArrow] = useState(false)
+
+    const [images, setImages] = useState<string[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        const fetchImages = async () => {
+            try {
+                setLoading(true)
+                setError(null)
+                const fetchedImages = await getVehicleImages(vehicleId)
+                setImages(fetchedImages.map(img => img.imageUrl))
+            } catch (err: any) {
+                setError(err.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        if (vehicleId) {
+            fetchImages()
+        }
+    }, [vehicleId])
 
     const nextImage = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
@@ -87,6 +103,18 @@ const VehicleCarousel = () => {
             window.removeEventListener('resize', checkScrollPosition)
         }
     }, [])
+
+    if (loading) {
+        return <div className={styles.carousel}><p>Carregando imagens...</p></div>
+    }
+
+    if (error) {
+        return <div className={styles.carousel}><p className={styles.error}>Erro ao carregar imagens: {error}</p></div>
+    }
+
+    if (images.length === 0) {
+        return <div className={styles.carousel}><p>Nenhuma imagem disponível.</p></div>
+    }
 
     return (
         <div className={styles.carousel}>

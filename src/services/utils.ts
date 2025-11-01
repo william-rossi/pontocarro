@@ -54,3 +54,10 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}, acce
     }
     throw new Error("Falha ao concluir a requisição após retentativas devido a problemas de autenticação.");
 };
+
+export const formatPrice = (price: number): string => {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    }).format(price)
+}

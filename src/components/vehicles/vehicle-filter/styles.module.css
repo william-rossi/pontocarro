@@ -6,10 +6,72 @@
 .inputArea {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 
     @media screen and (max-width: 1023px) {
         gap: 8px;
+    }
+}
+
+.filterOptions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+    width: 100%;
+}
+
+.filterOptions>* {
+    flex: 1;
+    min-width: 150px;
+}
+
+.filterOptions>*:first-child {
+    grid-column: span 2;
+}
+
+.filterActions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.applyButton,
+.clearButton {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+.applyButton {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.applyButton:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.clearButton {
+    background-color: var(--color-light-gray);
+    color: var(--color-text);
+}
+
+.clearButton:hover {
+    background-color: var(--color-gray);
+}
+
+@media (max-width: 768px) {
+    .filterOptions {
+        grid-template-columns: 1fr;
+    }
+
+    .filterOptions>*:first-child {
+        grid-column: span 1;
     }
 }
 

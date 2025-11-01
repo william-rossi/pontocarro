@@ -1,11 +1,12 @@
 import { API_BASE_URL } from '@/app/constants/secrets'
-import { Vehicle } from "../types/vehicles"
+import { Image, Vehicle } from "../types/vehicles"
 import { getErrorMessage, fetchWithAuth } from './utils'
 
-interface VehicleFilter {
+export interface VehicleFilter {
     brand?: string
     vehicleModel?: string
-    year?: number
+    minYear?: number
+    maxYear?: number
     minPrice?: number
     maxPrice?: number
     state?: string
@@ -18,28 +19,62 @@ interface VehicleFilter {
 }
 
 // Vehicles API
-export const getVehicles = async (): Promise<Vehicle[]> => {
-    const response = await fetch(`${API_BASE_URL}/vehicles`)
-    if (!response.ok) {
+export const getVehicles = async (page: number = 1, limit: number = 10, sortBy: string = 'created_at:desc'): Promise<{ vehicles: Vehicle[], currentPage: number, totalPages: number, totalVehicles: number }> => {
+    const response = await fetch(`${API_BASE_URL}/vehicles?page=${page}&limit=${limit}&sortBy=${sortBy}`)
+
+    if (!response.ok)
         throw new Error('Failed to fetch vehicles')
-    }
-    return response.json()
+
+    const data = await response.json()
+    const vehiclesWithImages = await Promise.all(data.vehicles.map(async (vehicle: Vehicle) => {
+        try {
+            const firstImage = await getVehicleImageFirst(vehicle._id)
+            return { ...vehicle, firstImageUrl: firstImage.imageUrl }
+        } catch (error) {
+            console.error(`Failed to fetch first image for vehicle ${vehicle._id}:`, error)
+            return { ...vehicle, firstImageUrl: 'https://via.placeholder.com/150' } // Fallback image
+        }
+    }))
+
+    return { ...data, vehicles: vehiclesWithImages }
 }
 
-export const searchVehicles = async (filters: VehicleFilter): Promise<Vehicle[]> => {
+export const searchVehicles = async (filters: VehicleFilter): Promise<{ vehicles: Vehicle[], currentPage: number, totalPages: number, totalVehicles: number }> => {
     const query = new URLSearchParams(filters as Record<string, string>).toString()
     const response = await fetch(`${API_BASE_URL}/vehicles/search?${query}`)
-    if (!response.ok) {
-        throw new Error('Failed to search vehicles')
-    }
-    return response.json()
+
+    if (!response.ok)
+        throw new Error(await getErrorMessage(response))
+
+    const data = await response.json()
+    const vehiclesWithImages = await Promise.all(data.vehicles.map(async (vehicle: Vehicle) => {
+        try {
+            const firstImage = await getVehicleImageFirst(vehicle._id)
+            return { ...vehicle, firstImageUrl: firstImage.imageUrl }
+        } catch (error) {
+            console.error(`Failed to fetch first image for vehicle ${vehicle._id}:`, error)
+            return { ...vehicle, firstImageUrl: 'https://via.placeholder.com/150' } // Fallback image
+        }
+    }))
+
+    return { ...data, vehicles: vehiclesWithImages }
 }
 
 export const getVehiclesByLocation = async (state: string, city: string): Promise<Vehicle[]> => {
     const response = await fetch(`${API_BASE_URL}/vehicles/by-city-state?state=${state}&city=${city}`)
-    if (!response.ok) {
-        throw new Error('Failed to fetch vehicles by location')
-    }
+
+    if (!response.ok)
+        throw new Error(await getErrorMessage(response))
+
+    return response.json()
+}
+
+export const getVehicleById = async (id: string): Promise<Vehicle> => {
+    const response = await fetch(`${API_BASE_URL}/vehicles/${id}`)
+
+    if (!response.ok)
+        throw new Error(await getErrorMessage(response))
+
     return response.json()
 }
 
@@ -67,14 +102,33 @@ export const uploadVehicleImages = async (vehicleId: string, images: FormData, t
     return response.json()
 }
 
+export const getVehicleImages = async (vehicleId: string): Promise<Image[]> => {
+    const response = await fetch(`${API_BASE_URL}/images/${vehicleId}`)
+
+    if (!response.ok)
+        throw new Error(await getErrorMessage(response))
+
+    const images: Image[] = await response.json()
+    return images.map(image => ({ ...image, imageUrl: `http://localhost:3001${image.imageUrl}` }))
+}
+
+export const getVehicleImageFirst = async (vehicleId: string): Promise<Image> => {
+    const response = await fetch(`${API_BASE_URL}/images/${vehicleId}/first`)
+
+    if (!response.ok)
+        throw new Error(await getErrorMessage(response))
+
+    const image: Image = await response.json()
+    return { ...image, imageUrl: `http://localhost:3001${image.imageUrl}` }
+}
+
 export const deleteVehicleImage = async (vehicleId: string, imageName: string, token: string, refreshAccessToken: () => Promise<void>): Promise<void> => {
     const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${vehicleId}/images/${imageName}`, {
         method: 'DELETE',
     }, token, refreshAccessToken);
 
-    if (!response.ok) {
+    if (!response.ok)
         throw new Error(await getErrorMessage(response));
-    }
 }
 
 export const updateVehicle = async (id: string, vehicleData: Partial<Omit<Vehicle, '_id' | 'created_at'>>, token: string, refreshAccessToken: () => Promise<void>): Promise<Vehicle> => {
@@ -98,4 +152,23 @@ export const deleteVehicle = async (id: string, token: string, refreshAccessToke
         throw new Error(await getErrorMessage(response))
 
     return response.status
+}
+
+export const getFirstImageByVehicleId = async (vehicleId: string): Promise<Image> => {
+    const response = await fetch(`${API_BASE_URL}/images/${vehicleId}/first`)
+
+    if (!response.ok)
+        throw new Error(await getErrorMessage(response))
+
+    return response.json()
+}
+
+export const getImageById = async (imageId: string): Promise<Image> => {
+    const response = await fetch(`${API_BASE_URL}/images/${imageId}`)
+
+    if (!response.ok)
+        throw new Error(await getErrorMessage(response))
+
+    const image: Image = await response.json()
+    return { ...image, imageUrl: `http://localhost:3001${image.imageUrl}` }
 }
