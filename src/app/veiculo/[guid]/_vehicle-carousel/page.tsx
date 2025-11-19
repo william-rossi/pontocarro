@@ -7,6 +7,7 @@ import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import ScrollContainer from 'react-indiana-drag-scroll'
 import { getVehicleImages } from '@/services/vehicles'
+import VehicleCarouselSkeleton from './vehicle-carousel-skeleton'
 
 interface VehicleCarouselProps {
     vehicleId: string
@@ -105,7 +106,7 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
     }, [])
 
     if (loading) {
-        return <div className={styles.carousel}><p>Carregando imagens...</p></div>
+        return <VehicleCarouselSkeleton />
     }
 
     if (error) {

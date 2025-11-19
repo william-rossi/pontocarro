@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { getVehicles, searchVehicles, VehicleFilter as VehicleFilterType } from '@/services/vehicles'
 import { Vehicle } from '@/types/vehicles'
 import VehicleCard from './vehicle-card/vehicle-card'
+import VehicleCardSkeleton from './vehicle-card/vehicle-card-skeleton'
 
 export default function Vehicles() {
     const [vehicles, setVehicles] = useState<Vehicle[]>([])
@@ -67,7 +68,22 @@ export default function Vehicles() {
     }
 
     if (loading) {
-        return <section className={styles.container}><p>Carregando veículos...</p></section>
+        return (
+            <section className={styles.container}>
+                <VehicleFilter
+                    onApplyFilters={handleApplyFilters}
+                    onClearFilters={handleClearFilters}
+                    showFilterOptions={showFilterOptions}
+                    toggleFilterOptions={toggleFilterOptions}
+                    currentAppliedFilters={currentFilters}
+                />
+                <div className={styles.vehiclesList}>
+                    {Array.from({ length: vehiclesPerPage }).map((_, index) => (
+                        <VehicleCardSkeleton key={index} />
+                    ))}
+                </div>
+            </section>
+        )
     }
 
     if (error) {
