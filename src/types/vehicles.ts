@@ -11,7 +11,7 @@ export interface Vehicle {
     state: string
     city: string
     fuel: string
-    exchange: string
+    transmission: string
     bodyType: string
     color: string
     description: string

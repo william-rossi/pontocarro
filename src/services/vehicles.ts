@@ -14,7 +14,7 @@ export interface VehicleFilter {
     city?: string
     engine?: string
     fuel?: string
-    exchange?: string
+    transmission?: string
     bodyType?: string
     mileage?: number
     maxMileage?: number
@@ -23,8 +23,8 @@ export interface VehicleFilter {
 }
 
 // Vehicles API
-export const getVehicles = async (page: number = 1, limit: number = 10, sortBy: string = 'created_at:desc'): Promise<{ vehicles: Vehicle[], currentPage: number, totalPages: number, totalVehicles: number }> => {
-    const response = await fetch(`${API_BASE_URL}/vehicles?page=${page}&limit=${limit}&sortBy=${sortBy}`)
+export const getVehicles = async (page: number = 1, limit: number = 10): Promise<{ vehicles: Vehicle[], currentPage: number, totalPages: number, totalVehicles: number }> => {
+    const response = await fetch(`${API_BASE_URL}/vehicles?page=${page}&limit=${limit}`)
 
     if (!response.ok)
         throw new Error('Failed to fetch vehicles')
@@ -44,7 +44,14 @@ export const getVehicles = async (page: number = 1, limit: number = 10, sortBy: 
 }
 
 export const searchVehicles = async (filters: VehicleFilter): Promise<{ vehicles: Vehicle[], currentPage: number, totalPages: number, totalVehicles: number }> => {
-    const query = new URLSearchParams(filters as Record<string, string>).toString()
+    const validFilters: Record<string, string> = {};
+    (Object.keys(filters) as (keyof VehicleFilter)[]).forEach(key => {
+        const value = filters[key];
+        if (value !== undefined && value !== null && value !== '') {
+            validFilters[key] = String(value);
+        }
+    });
+    const query = new URLSearchParams(validFilters).toString();
     const response = await fetch(`${API_BASE_URL}/vehicles/search?${query}`)
 
     if (!response.ok)

@@ -10,7 +10,7 @@ export const BODY_TYPE = [
     { value: "Fastback", label: "Fastback" }
 ]
 
-export const EXCHANGE = [
+export const TRANSMISSION = [
     { value: "", label: "Selecione" },
     { value: "Automático", label: "Automático" },
     { value: "Manual", label: "Manual" }

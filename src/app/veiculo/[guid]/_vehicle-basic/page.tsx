@@ -40,7 +40,7 @@ export default function VehicleBasic({ vehicle }: VehicleBasicProps) {
                         <Image src={'/assets/svg/paint.svg'} width={18} height={18} alt='' />
                         <span>Câmbio</span>
                     </div>
-                    <b>{vehicle.exchange}</b>
+                    <b>{vehicle.transmission}</b>
                 </div>
                 <div className={styles.resource}>
                     <div className={styles.resourceTitle}>

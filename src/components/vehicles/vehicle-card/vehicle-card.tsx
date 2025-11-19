@@ -36,7 +36,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
                     </div>
                     <div className={styles.resource}>
                         <Image src={'/assets/svg/schedule.svg'} width={17} height={17} alt='' />
-                        <span>{vehicle.exchange}</span>
+                        <span>{vehicle.transmission}</span>
                     </div>
                     <div className={styles.resource}>
                         <Image src={'/assets/svg/paint.svg'} width={17} height={17} alt='' />

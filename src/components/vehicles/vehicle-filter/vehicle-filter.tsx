@@ -8,7 +8,7 @@ import Select from '@/components/select/select'
 import { useEffect, useState } from 'react'
 import { VehicleFilter as VehicleFilterType } from '@/services/vehicles'
 import Button from '@/components/button/button'
-import { BODY_TYPE, EXCHANGE, FUEL } from '@/app/constants/select-box-items'
+import { BODY_TYPE, TRANSMISSION, FUEL } from '@/app/constants/select-box-items'
 import LocationSelect from '@/components/location-select/location-select' // Importa LocationSelect
 
 interface VehicleFilterProps {
@@ -71,7 +71,7 @@ export default function VehicleFilter({
             name: '',
             engine: '',
             fuel: '',
-            exchange: '',
+            transmission: '',
             bodyType: '',
             minPrice: undefined,
             maxPrice: undefined,
@@ -145,9 +145,9 @@ export default function VehicleFilter({
                         />
                         <Select
                             label="Câmbio"
-                            options={EXCHANGE}
-                            value={filters.exchange || ""}
-                            onChange={(e) => handleInputChange('exchange', e.target.value)}
+                            options={TRANSMISSION}
+                            value={filters.transmission || ""}
+                            onChange={(e) => handleInputChange('transmission', e.target.value)}
                         />
                     </div>
 

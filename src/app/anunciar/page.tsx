@@ -20,7 +20,7 @@ import { useAuth } from '@/context/AuthContext'
 import { createVehicle, uploadVehicleImages } from '@/services/vehicles'
 import { Vehicle } from '@/types/vehicles'
 import { NumericFormat, PatternFormat } from 'react-number-format'
-import { BODY_TYPE, EXCHANGE, FUEL } from '../constants/select-box-items'
+import { BODY_TYPE, TRANSMISSION, FUEL } from '../constants/select-box-items'
 
 const announceVehicleSchema = z.object({
     title: z.string().min(1, "Título é obrigatório").max(100, "Título muito longo"),
@@ -33,7 +33,7 @@ const announceVehicleSchema = z.object({
     state: z.string().min(1, "Estado é obrigatório"),
     city: z.string().min(1, "Cidade é obrigatória"),
     fuel: z.string().min(1, "Combustível é obrigatório"),
-    exchange: z.string().min(1, "Câmbio é obrigatório"),
+    transmission: z.string().min(1, "Câmbio é obrigatório"),
     bodyType: z.string().min(1, "Tipo de carroceria é obrigatório"),
     color: z.string().min(1, "Cor é obrigatória").max(50, "Cor muito longa"),
     description: z.string().min(1, "Descrição é obrigatória").max(1000, "Descrição muito longa"),
@@ -111,7 +111,7 @@ export default function Anunciar() {
                 state: data.state,
                 city: data.city,
                 fuel: data.fuel,
-                exchange: data.exchange,
+                transmission: data.transmission,
                 bodyType: data.bodyType,
                 color: data.color,
                 description: data.description,
@@ -261,9 +261,9 @@ export default function Anunciar() {
                         />
                         <Select
                             label="Câmbio"
-                            options={EXCHANGE}
-                            {...register("exchange")}
-                            error={errors.exchange?.message}
+                            options={TRANSMISSION}
+                            {...register("transmission")}
+                            error={errors.transmission?.message}
                         />
                     </div>
                     <div className={styles.inputGroup}>
