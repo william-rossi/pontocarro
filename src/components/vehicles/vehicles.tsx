@@ -9,6 +9,7 @@ import VehicleCard from './vehicle-card/vehicle-card'
 import VehicleCardSkeleton from './vehicle-card/vehicle-card-skeleton'
 import Button from '../button/button'
 import { locations } from '@/app/constants/locations'
+import { toast } from 'react-toastify'; // Importa a função toast
 
 export default function Vehicles() {
     const [vehicles, setVehicles] = useState<VehicleSummary[]>([])
@@ -26,7 +27,7 @@ export default function Vehicles() {
 
     // Função assíncrona para obter e geocodificar a localização (pura, sem lógica de state/filtro)
     const requestUserLocation = useCallback(async () => {
-        return new Promise<{ city: string; state: string } | null>((resolve) => {
+        return new Promise<{ city: string; state: string } | null | { status: 'denied' | 'not_supported' | 'error' }>((resolve) => {
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     async (position) => {
@@ -41,22 +42,26 @@ export default function Vehicles() {
                             if (city && state) {
                                 resolve({ city, state })
                             } else {
-                                resolve(null)
+                                resolve({ status: 'error' })
                             }
                         } catch (geoError) {
-                            console.error("Erro durante a geocodificação reversa:", geoError)
-                            resolve(null)
+                            console.warn("Erro durante a geocodificação reversa:", geoError)
+                            resolve({ status: 'error' })
                         }
                     },
                     (geoError) => {
-                        console.error("Erro ao obter a localização do usuário:", geoError)
-                        resolve(null)
+                        console.warn("Erro ao obter a localização do usuário:", geoError)
+                        if (geoError.code === geoError.PERMISSION_DENIED) {
+                            resolve({ status: 'denied' })
+                        } else {
+                            resolve({ status: 'error' })
+                        }
                     },
                     { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } // Adiciona opções para forçar precisão
                 )
             } else {
                 console.log("Geolocalização não é suportada por este navegador.")
-                resolve(null)
+                resolve({ status: 'not_supported' })
             }
         })
     }, [])
@@ -81,17 +86,9 @@ export default function Vehicles() {
                 setUseLocationFilter(false)
                 setUserLocation(storedLocation ? JSON.parse(storedLocation) : null); // Mantém a localização salva, mas não a usa
             } else {
-                // Caso 3: Primeira visita ou estado desconhecido/limpo. Tenta geolocalização.
-                const newLocation = await requestUserLocation()
-                if (newLocation) {
-                    setUserLocation(newLocation)
-                    setUseLocationFilter(true)
-                    localStorage.setItem('userLocation', JSON.stringify(newLocation))
-                    localStorage.setItem('useLocationFilter', 'true')
-                } else {
-                    setUseLocationFilter(false)
-                    localStorage.setItem('useLocationFilter', 'false')
-                }
+                // Caso 3: Primeira visita ou estado desconhecido/limpo. Não tenta geolocalização automaticamente.
+                setUseLocationFilter(false);
+                localStorage.setItem('useLocationFilter', 'false');
             }
 
             setIsLocationChecked(true)
@@ -149,13 +146,23 @@ export default function Vehicles() {
     }, [currentPage, currentFilters, vehiclesPerPage, useLocationFilter, userLocation, isLocationChecked])
 
     const handleApplyFilters = (filters: VehicleFilterType) => {
-        setCurrentFilters(filters)
-        setCurrentPage(1)
-        setShowFilterOptions(false)
-        if (Object.keys(filters).some(key => key !== 'city' && key !== 'state')) {
-            setUseLocationFilter(false)
-            localStorage.setItem('useLocationFilter', 'false')
-        }
+        setCurrentFilters(prevFilters => {
+            const newFilters = { ...filters };
+
+            // Se o usuário selecionou manualmente cidade ou estado, desativa a geolocalização
+            if (newFilters.city || newFilters.state) {
+                setUseLocationFilter(false);
+                localStorage.setItem('useLocationFilter', 'false');
+            } else if (useLocationFilter && userLocation) {
+                // Caso contrário, se a geolocalização estiver ativa e houver userLocation, aplica-a
+                newFilters.city = userLocation.city;
+                newFilters.state = userLocation.state;
+            }
+
+            return newFilters;
+        });
+        setCurrentPage(1);
+        setShowFilterOptions(false);
     }
 
     const handleClearFilters = () => {
@@ -190,15 +197,31 @@ export default function Vehicles() {
             const newLocation = await requestUserLocation();
             setLoading(false);
 
-            if (newLocation) {
+            if (newLocation && 'status' in newLocation) {
+                if (newLocation.status === 'denied') {
+                    toast.error("A permissão de geolocalização foi negada. Por favor, habilite-a nas configurações do seu navegador para usar esta funcionalidade.");
+                } else if (newLocation.status === 'not_supported') {
+                    toast.error("Seu navegador não suporta geolocalização.");
+                } else {
+                    toast.error("Não foi possível obter sua localização.");
+                }
+                setUseLocationFilter(false);
+                localStorage.setItem('useLocationFilter', 'false');
+                return;
+            } else if (newLocation && !('status' in newLocation)) {
                 // Localização obtida com sucesso no clique
                 setUserLocation(newLocation);
                 localStorage.setItem('userLocation', JSON.stringify(newLocation));
                 localStorage.setItem('useLocationFilter', 'true');
                 setUseLocationFilter(true);
                 setCurrentPage(1);
+                setCurrentFilters(prevFilters => ({
+                    ...prevFilters,
+                    city: (newLocation as { city: string; state: string }).city,
+                    state: (newLocation as { city: string; state: string }).state,
+                }));
             } else {
-                alert("Não foi possível obter sua localização. Por favor, verifique se a permissão de geolocalização está concedida para este site.");
+                toast.error("Não foi possível obter sua localização.");
                 setUseLocationFilter(false);
                 localStorage.setItem('useLocationFilter', 'false');
                 return;
@@ -208,6 +231,11 @@ export default function Vehicles() {
             setUseLocationFilter(true);
             localStorage.setItem('useLocationFilter', 'true');
             setCurrentPage(1);
+            setCurrentFilters(prevFilters => ({
+                ...prevFilters,
+                city: userLocation.city,
+                state: userLocation.state,
+            }));
         }
     }
 
@@ -264,7 +292,7 @@ export default function Vehicles() {
                         ?
                         <span className={styles.foundVehicles}>{totalVehicles} veículos encontrados</span>
                         :
-                        totalVehicles <= 0 ? <></> : <span className={styles.foundVehicles}>{totalVehicles} veículo encontrado</span>
+                        totalVehicles <= 0 ? <div /> : <span className={styles.foundVehicles}>{totalVehicles} veículo encontrado</span>
                 }
                 {
                     userLocation && useLocationFilter ? (

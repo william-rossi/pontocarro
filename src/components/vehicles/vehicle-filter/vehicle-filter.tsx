@@ -3,7 +3,6 @@
 import Input from '@/components/input/input'
 import React from 'react'
 import styles from './styles.module.css'
-import Image from 'next/image'
 import Select from '@/components/select/select'
 import { useEffect, useState } from 'react'
 import { VehicleFilter as VehicleFilterType } from '@/services/vehicles'
@@ -90,7 +89,7 @@ export default function VehicleFilter({
     const handleClearSearch = () => {
         setFilters(prevFilters => ({ ...prevFilters, name: '' }))
         // Trigger a new search with cleared name filter
-        onApplyFilters({ ...filters, name: '' })
+        onApplyFilters({ ...currentAppliedFilters, name: '' })
     }
 
     return (

@@ -4,6 +4,13 @@
     gap: 30px;
 }
 
+.foundVehiclesArea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
 .foundVehicles {
     opacity: 0.7;
 }
@@ -79,11 +86,4 @@
 .pagination span {
     font-size: var(--font-default);
     color: var(--text-color);
-}
-
-.foundVehiclesArea {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
 }
