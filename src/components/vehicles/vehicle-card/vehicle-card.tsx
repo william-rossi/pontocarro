@@ -4,15 +4,15 @@ import React from 'react'
 import styles from './styles.module.css'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Vehicle } from '@/types/vehicles'
+import { VehicleSummary } from '@/types/vehicles'
 import { formatMileage, formatPrice } from '@/services/utils'
 
 interface VehicleCardProps {
-    vehicle: Vehicle
+    vehicle: VehicleSummary
 }
 
 export default function VehicleCard({ vehicle }: VehicleCardProps) {
-    const imageUrl = vehicle.firstImageUrl || 'https://via.placeholder.com/150' // Use firstImageUrl from prop
+    const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${vehicle.firstImageUrl}`
 
     return (
         <Link href={`/veiculo/${vehicle._id}`} className={styles.container}>

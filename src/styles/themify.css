@@ -12,6 +12,7 @@
     --border-track: #dedede;
     --border-track-thumb: #b8b8b8;
     --border-track-thumb-hover: #a0a0a0;
+    --footer-color: #111827;
 }
 
 .dark {
@@ -28,4 +29,5 @@
     --border-track: #314162;
     --border-track-thumb: #738099;
     --border-track-thumb-hover: #606a7e;
+    --footer-color: #2c3853;
 }

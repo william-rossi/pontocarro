@@ -1,5 +1,5 @@
 import { API_BASE_URL } from '@/app/constants/secrets'
-import { Image, Vehicle } from "../types/vehicles"
+import { Image, Vehicle, VehiclesList } from "../types/vehicles"
 import { getErrorMessage, fetchWithAuth } from './utils'
 
 export interface VehicleFilter {
@@ -22,28 +22,26 @@ export interface VehicleFilter {
     limit?: number
 }
 
+type SortBy = 'createdAt' | 'price' | 'year' | 'mileage'
+
 // Vehicles API
-export const getVehicles = async (page: number = 1, limit: number = 10): Promise<{ vehicles: Vehicle[], currentPage: number, totalPages: number, totalVehicles: number }> => {
-    const response = await fetch(`${API_BASE_URL}/vehicles?page=${page}&limit=${limit}`)
+export const getVehicles = async (
+    page: number = 1,
+    limit: number = 10,
+    sortBy: SortBy = 'createdAt',
+    sortOrder: 'asc' | 'desc' = 'desc'
+): Promise<VehiclesList> => {
+    const response = await fetch(`${API_BASE_URL}/vehicles?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`)
 
     if (!response.ok)
         throw new Error('Failed to fetch vehicles')
 
     const data = await response.json()
-    const vehiclesWithImages = await Promise.all(data.vehicles.map(async (vehicle: Vehicle) => {
-        try {
-            const firstImage = await getVehicleImageFirst(vehicle._id)
-            return { ...vehicle, firstImageUrl: firstImage.imageUrl }
-        } catch (error) {
-            console.error(`Failed to fetch first image for vehicle ${vehicle._id}:`, error)
-            return { ...vehicle, firstImageUrl: 'https://via.placeholder.com/150' } // Fallback image
-        }
-    }))
 
-    return { ...data, vehicles: vehiclesWithImages }
+    return data
 }
 
-export const searchVehicles = async (filters: VehicleFilter): Promise<{ vehicles: Vehicle[], currentPage: number, totalPages: number, totalVehicles: number }> => {
+export const searchVehicles = async (filters: VehicleFilter): Promise<VehiclesList> => {
     const validFilters: Record<string, string> = {};
     (Object.keys(filters) as (keyof VehicleFilter)[]).forEach(key => {
         const value = filters[key];
@@ -58,17 +56,8 @@ export const searchVehicles = async (filters: VehicleFilter): Promise<{ vehicles
         throw new Error(await getErrorMessage(response))
 
     const data = await response.json()
-    const vehiclesWithImages = await Promise.all(data.vehicles.map(async (vehicle: Vehicle) => {
-        try {
-            const firstImage = await getVehicleImageFirst(vehicle._id)
-            return { ...vehicle, firstImageUrl: firstImage.imageUrl }
-        } catch (error) {
-            console.error(`Failed to fetch first image for vehicle ${vehicle._id}:`, error)
-            return { ...vehicle, firstImageUrl: 'https://via.placeholder.com/150' } // Fallback image
-        }
-    }))
 
-    return { ...data, vehicles: vehiclesWithImages }
+    return data
 }
 
 export const getVehiclesByLocation = async (state: string, city: string): Promise<Vehicle[]> => {
@@ -120,7 +109,7 @@ export const getVehicleImages = async (vehicleId: string): Promise<Image[]> => {
         throw new Error(await getErrorMessage(response))
 
     const images: Image[] = await response.json()
-    return images.map(image => ({ ...image, imageUrl: `http://localhost:3001${image.imageUrl}` }))
+    return images.map(image => ({ ...image, imageUrl: `${process.env.NEXT_PUBLIC_API_URL}${image.imageUrl}` }))
 }
 
 export const getVehicleImageFirst = async (vehicleId: string): Promise<Image> => {
@@ -130,7 +119,7 @@ export const getVehicleImageFirst = async (vehicleId: string): Promise<Image> =>
         throw new Error(await getErrorMessage(response))
 
     const image: Image = await response.json()
-    return { ...image, imageUrl: `http://localhost:3001${image.imageUrl}` }
+    return { ...image, imageUrl: `${process.env.NEXT_PUBLIC_API_URL}${image.imageUrl}` }
 }
 
 export const deleteVehicleImage = async (vehicleId: string, imageName: string, token: string, refreshAccessToken: () => Promise<void>): Promise<void> => {

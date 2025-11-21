@@ -4,6 +4,7 @@ import "../styles/globals.css"
 import "../styles/themify.css"
 import Header from "@/components/header/header";
 import { AuthProvider } from '@/context/AuthContext';
+import Footer from "@/components/footer/footer";
 
 const geistSans = Inter({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
           <main>
             {children}
           </main>
+          <Footer />
         </AuthProvider>
       </body>
     </html>

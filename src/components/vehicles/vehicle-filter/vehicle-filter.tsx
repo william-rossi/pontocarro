@@ -87,12 +87,20 @@ export default function VehicleFilter({
 
     // Removido os arrays brands e engineTypes, pois serão substituídos por Inputs de texto.
 
+    const handleClearSearch = () => {
+        setFilters(prevFilters => ({ ...prevFilters, name: '' }))
+        // Trigger a new search with cleared name filter
+        onApplyFilters({ ...filters, name: '' })
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.inputArea}>
                 <Input
                     placeholder="Busca por marca, modelo, cor, localização..."
                     startIcon="/assets/svg/magnifying-glass.svg"
+                    endIcon={filters.name ? "/assets/svg/close.svg" : undefined}
+                    onEndIconClick={filters.name ? handleClearSearch : undefined}
                     className={styles.input}
                     iconSize={23}
                     value={filters.name || ""}

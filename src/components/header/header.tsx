@@ -11,6 +11,7 @@ import AccountProcess from '../account/account-process'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { getFirstName } from '@/utils/user-helpers'
+import Logo from '../logo/logo'
 
 export default function Header() {
     const [isModal, setIsModal] = useState(false)
@@ -91,10 +92,7 @@ export default function Header() {
             )}
             <header className={styles.container}>
                 <div className={styles.subContainer}>
-                    <Link href={'/'} className={styles.logoArea}>
-                        <div className={styles.dot} />
-                        <span>CARRO</span>
-                    </Link>
+                    <Logo />
                     <div className={styles.actionGroup}>
                         <Button
                             text='Anunciar'

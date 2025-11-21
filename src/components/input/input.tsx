@@ -10,6 +10,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     endIcon?: string
     iconSize?: number
     togglePasswordIcons?: { show: string; hide: string }
+    onEndIconClick?: () => void
 }
 
 export default function Input({
@@ -24,6 +25,7 @@ export default function Input({
         show: "/icons/eye.svg",
         hide: "/icons/eye-off.svg"
     },
+    onEndIconClick,
     ...props
 }: InputProps) {
     const [showPassword, setShowPassword] = useState(false)
@@ -63,11 +65,16 @@ export default function Input({
                             height={iconSize}
                         />
                     </button>
-                ) : (
+                ) : ( // If not a password input
                     endIcon && (
-                        <span className={styles.icon}>
+                        <button
+                            type="button"
+                            onClick={onEndIconClick}
+                            className={styles.icon}
+                            style={{ background: "none", border: "none", cursor: "pointer" }}
+                        >
                             <Image src={endIcon} alt="icon" width={iconSize} height={iconSize} />
-                        </span>
+                        </button>
                     )
                 )}
             </div>

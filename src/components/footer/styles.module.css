@@ -1,0 +1,132 @@
+.container {
+    font-size: var(--font-sm);
+    border-top: 2px solid var(--primary-color);
+    color: var(--background-color);
+    background-color: var(--footer-color);
+}
+
+.subContainer {
+    width: 100%;
+    max-width: var(--max-width);
+    padding: 30px var(--padding);
+    margin: 0 auto;
+}
+
+.infos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.logoSection {
+    flex: 2;
+    min-width: 250px;
+}
+
+.logoSection p {
+    margin-top: 15px;
+    line-height: 1.6;
+}
+
+.linksSection,
+.contactSection,
+.socialSection {
+    flex: 1;
+    min-width: 150px;
+}
+
+.linksSection h4,
+.contactSection h4,
+.socialSection h4 {
+    /* Títulos em azul */
+    margin-bottom: 12px;
+    font-size: var(--font-lg);
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.linksSection h4::after,
+.contactSection h4::after,
+.socialSection h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 30px;
+    height: 2px;
+}
+
+.linksSection ul {
+    list-style: none;
+    padding: 0;
+}
+
+.linksSection li {
+    margin-bottom: 10px;
+}
+
+.linksSection a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.linksSection a:hover {
+    color: var(--primary-color);
+}
+
+.contactSection p {
+    margin-bottom: 10px;
+}
+
+.copyRight {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 1023px) {
+    .infos {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .logoSection,
+    .linksSection,
+    .contactSection,
+    .socialSection {
+        min-width: unset;
+        width: 100%;
+    }
+
+    .linksSection h4::after,
+    .contactSection h4::after,
+    .socialSection h4::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .socialIcons {
+        justify-content: center;
+    }
+
+    .bottomBar,
+    .logoSection {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .logoSection {
+        margin-bottom: 25px;
+    }
+}
+
+.bottomBar {
+    border-top: 2px solid var(--primary-color-o);
+    padding-top: 30px;
+    margin-top: 30px;
+}

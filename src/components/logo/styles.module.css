@@ -1,0 +1,25 @@
+.logoArea {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 0.78;
+
+    @media screen and (max-width: 1023px) {
+        font-size: 26px;
+    }
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    align-self: end;
+
+    @media screen and (max-width: 1023px) {
+        width: 9px;
+        height: 9px;
+    }
+}
