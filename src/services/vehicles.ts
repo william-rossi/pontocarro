@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/app/constants/secrets'
+import { API_BASE_URL } from '@/constants/secrets'
 import { Image, Vehicle, VehiclesList } from "../types/vehicles"
 import { getErrorMessage, fetchWithAuth } from './utils'
 
@@ -101,6 +101,21 @@ export const uploadVehicleImages = async (vehicleId: string, images: FormData, t
 
     return response.json()
 }
+
+// export const getMyVehicles = async (page: number = 1,
+//     limit: number = 10,
+//     sortBy: SortBy = 'createdAt',
+//     sortOrder: 'asc' | 'desc' = 'desc', token: string, refreshAccessToken: () => Promise<void>): Promise<VehiclesList> => {
+//     const response = await fetchWithAuth(`${API_BASE_URL}/vehicles`, {
+//         method: 'GET',
+//         body: JSON.stringify(vehicleData),
+//     }, token, refreshAccessToken)
+
+//     if (!response.ok)
+//         throw new Error(await getErrorMessage(response))
+
+//     return response.json()
+// }
 
 export const getVehicleImages = async (vehicleId: string): Promise<Image[]> => {
     const response = await fetch(`${API_BASE_URL}/images/${vehicleId}`)

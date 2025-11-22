@@ -20,7 +20,7 @@ import { useAuth } from '@/context/AuthContext'
 import { createVehicle, uploadVehicleImages } from '@/services/vehicles'
 import { Vehicle } from '@/types/vehicles'
 import { NumericFormat, PatternFormat } from 'react-number-format'
-import { BODY_TYPE, TRANSMISSION, FUEL } from '../constants/select-box-items'
+import { BODY_TYPE, FUEL, TRANSMISSION } from '@/constants/select-box-items'
 
 const announceVehicleSchema = z.object({
     title: z.string().min(1, "Título é obrigatório").max(100, "Título muito longo"),

@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/app/constants/secrets'
+import { API_BASE_URL } from '@/constants/secrets'
 import { User } from '../types/auth'
 import { getErrorMessage, fetchWithAuth } from './utils'
 
@@ -11,6 +11,6 @@ export const updateUserProfile = async (userData: Partial<User>, token: string, 
 
     if (!response.ok)
         throw new Error(await getErrorMessage(response))
-    
+
     return response.json()
 }

@@ -7,7 +7,7 @@ import Select from '@/components/select/select'
 import { useEffect, useState } from 'react'
 import { VehicleFilter as VehicleFilterType } from '@/services/vehicles'
 import Button from '@/components/button/button'
-import { BODY_TYPE, TRANSMISSION, FUEL } from '@/app/constants/select-box-items'
+import { BODY_TYPE, TRANSMISSION, FUEL } from '@/constants/select-box-items'
 import LocationSelect from '@/components/location-select/location-select' // Importa LocationSelect
 
 interface VehicleFilterProps {
@@ -115,8 +115,7 @@ export default function VehicleFilter({
                     text='Filtros'
                     onClick={toggleFilterOptions}
                     svg='/assets/svg/filter.svg'
-                    width={21}
-                    height={21}
+                    iconSize={21}
                     className={styles.filterBtn}
                 />
             </div>

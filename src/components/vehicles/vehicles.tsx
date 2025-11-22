@@ -8,7 +8,7 @@ import { VehicleSummary } from '@/types/vehicles'
 import VehicleCard from './vehicle-card/vehicle-card'
 import VehicleCardSkeleton from './vehicle-card/vehicle-card-skeleton'
 import Button from '../button/button'
-import { locations } from '@/app/constants/locations'
+import { locations } from '@/constants/locations'
 import { toast } from 'react-toastify'; // Importa a função toast
 import { useRouter, useSearchParams } from 'next/navigation'; // Importa useRouter e useSearchParams
 import Pagination from './pagination/pagination'; // Importa o componente Pagination

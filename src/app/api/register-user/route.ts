@@ -1,4 +1,4 @@
-import { API_BASE_URL, JWT_SECRET } from "@/app/constants/secrets"
+import { API_BASE_URL, JWT_SECRET } from "@/constants/secrets"
 import { User } from "@/types/auth"
 import { handleApiResponse, validateBody, handleInternalError } from "@/utils/api-routes"
 

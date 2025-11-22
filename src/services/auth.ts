@@ -1,4 +1,4 @@
-import { API_BASE_URL } from '@/app/constants/secrets'
+import { API_BASE_URL } from '@/constants/secrets'
 import { User, LoginResponse, RegisterUserResponse, RefreshTokenResponse } from '../types/auth'
 import { getErrorMessage } from './utils'
 
