@@ -3,6 +3,7 @@
     border-top: 2px solid var(--primary-color);
     color: var(--background-color);
     background-color: var(--footer-color);
+    margin-top: 70px;
 }
 
 .subContainer {

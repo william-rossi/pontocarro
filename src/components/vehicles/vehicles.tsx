@@ -112,12 +112,14 @@ export default function Vehicles() {
                 const filtersToSend: VehicleFilterType = { ...currentFilters, page: currentPage, limit: vehiclesPerPage }
                 const finalFilters = { ...filtersToSend }
 
+                // Prioriza os filtros de cidade e estado definidos manualmente em currentFilters
                 if (useLocationFilter && userLocation) {
-                    finalFilters.city = userLocation.city
-                    finalFilters.state = userLocation.state
-                } else {
-                    delete finalFilters.city
-                    delete finalFilters.state
+                    finalFilters.city = userLocation.city;
+                    finalFilters.state = userLocation.state;
+                } else if ((finalFilters.city || finalFilters.state) && useLocationFilter) {
+                    // Se houver filtros de cidade/estado manuais e geolocalização ativa, desativa a geolocalização
+                    setUseLocationFilter(false);
+                    localStorage.setItem('useLocationFilter', 'false');
                 }
 
                 // Verifica se há filtros ATIVOS (incluindo ou excluindo a localização)
@@ -199,11 +201,11 @@ export default function Vehicles() {
 
             if (newLocation && 'status' in newLocation) {
                 if (newLocation.status === 'denied') {
-                    toast.error("A permissão de geolocalização foi negada. Por favor, habilite-a nas configurações do seu navegador para usar esta funcionalidade.");
+                    toast.warning("A permissão de geolocalização foi negada. Por favor, habilite-a nas configurações do seu navegador para usar esta funcionalidade.");
                 } else if (newLocation.status === 'not_supported') {
                     toast.error("Seu navegador não suporta geolocalização.");
                 } else {
-                    toast.error("Não foi possível obter sua localização.");
+                    console.error("Não foi possível obter sua localização.");
                 }
                 setUseLocationFilter(false);
                 localStorage.setItem('useLocationFilter', 'false');
