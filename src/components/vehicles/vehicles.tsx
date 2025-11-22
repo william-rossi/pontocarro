@@ -10,6 +10,8 @@ import VehicleCardSkeleton from './vehicle-card/vehicle-card-skeleton'
 import Button from '../button/button'
 import { locations } from '@/app/constants/locations'
 import { toast } from 'react-toastify'; // Importa a função toast
+import { useRouter, useSearchParams } from 'next/navigation'; // Importa useRouter e useSearchParams
+import Pagination from './pagination/pagination'; // Importa o componente Pagination
 
 export default function Vehicles() {
     const [vehicles, setVehicles] = useState<VehicleSummary[]>([])
@@ -20,10 +22,13 @@ export default function Vehicles() {
     const [totalVehicles, setTotalVehicles] = useState(0)
     const [currentFilters, setCurrentFilters] = useState<VehicleFilterType>({})
     const [showFilterOptions, setShowFilterOptions] = useState(false)
-    const vehiclesPerPage = 12
+    const vehiclesPerPage = 8
     const [userLocation, setUserLocation] = useState<{ city: string; state: string } | null>(null)
     const [useLocationFilter, setUseLocationFilter] = useState(false)
     const [isLocationChecked, setIsLocationChecked] = useState(false)
+
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
     // Função assíncrona para obter e geocodificar a localização (pura, sem lógica de state/filtro)
     const requestUserLocation = useCallback(async () => {
@@ -94,8 +99,14 @@ export default function Vehicles() {
             setIsLocationChecked(true)
         }
 
+        const pageParam = searchParams.get('page');
+        const initialPage = pageParam ? parseInt(pageParam) : 1;
+        if (!isNaN(initialPage) && initialPage >= 1) {
+            setCurrentPage(initialPage);
+        }
+
         initializeLocationAndFilters()
-    }, [requestUserLocation])
+    }, [requestUserLocation, searchParams])
 
     // Efeito para buscar veículos
     useEffect(() => {
@@ -268,6 +279,7 @@ export default function Vehicles() {
     const handleNextPage = () => {
         if (currentPage < totalPages) {
             const newPage = currentPage + 1
+            router.push(`?page=${newPage}`, { scroll: false });
             setCurrentPage(newPage)
         }
     }
@@ -275,6 +287,11 @@ export default function Vehicles() {
     const handlePrevPage = () => {
         if (currentPage > 1) {
             const newPage = currentPage - 1
+            if (newPage === 1) {
+                router.push('/', { scroll: false });
+            } else {
+                router.push(`?page=${newPage}`, { scroll: false });
+            }
             setCurrentPage(newPage)
         }
     }
@@ -327,13 +344,24 @@ export default function Vehicles() {
                     </div>
                 )}
             </div>
-            {totalVehicles > 0 && (
-                <div className={styles.pagination}>
-                    <button onClick={handlePrevPage} disabled={currentPage === 1}>Anterior</button>
-                    <span>Página {currentPage} de {totalPages}</span>
-                    <button onClick={handleNextPage} disabled={currentPage === totalPages}>Próxima</button>
-                </div>
-            )}
+            {
+                totalVehicles > 0 && (
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={(page) => {
+                            if (page === 1) {
+                                router.push('/', { scroll: false });
+                            } else {
+                                router.push(`?page=${page}`, { scroll: false });
+                            }
+                            setCurrentPage(page);
+                        }}
+                        onPrevPage={handlePrevPage}
+                        onNextPage={handleNextPage}
+                    />
+                )
+            }
         </section>
     )
 }

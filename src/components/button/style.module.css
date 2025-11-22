@@ -10,6 +10,11 @@
     border: 1.5px solid var(--border-color);
 }
 
+.container:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .invert {
     background-color: transparent !important;
     color: var(--text-color);

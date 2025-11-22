@@ -1,0 +1,32 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.pagination button.activePage {
+    background-color: var(--primary-color-o) !important;
+    border: 1px solid var(--primary-color) !important;
+    cursor: not-allowed;
+}
+
+.ellipsis {
+    padding: 8px 0;
+    width: 30px;
+    text-align: center;
+}
