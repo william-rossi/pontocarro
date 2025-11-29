@@ -27,7 +27,7 @@
 
 .price {
     font-size: calc(var(--font-xlg) + 5px);
-    color: #16a34a;
+    color: var(--price-color);
     font-weight: bold;
 }
 

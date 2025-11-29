@@ -22,8 +22,8 @@ export default function Input({
     iconSize = 20,
     type,
     togglePasswordIcons = {
-        show: "/icons/eye.svg",
-        hide: "/icons/eye-off.svg"
+        show: "/assets/svg/eye.svg",
+        hide: "/assets/svg/eye-closed.svg"
     },
     onEndIconClick,
     ...props

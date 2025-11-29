@@ -4,11 +4,11 @@ import React from 'react'
 import styles from './styles.module.css'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Vehicle } from '@/types/vehicles'
+import { VehicleSummary } from '@/types/vehicles'
 import { formatPrice, formatMileage } from '@/services/utils'
 
 interface VehicleCardProps {
-    vehicle: Vehicle
+    vehicle: VehicleSummary
 }
 
 export default function VehicleCard({ vehicle }: VehicleCardProps) {
@@ -18,7 +18,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
         <Link href={`/veiculo/${vehicle._id}`} className={styles.container}>
             <div className={styles.imageArea}>
                 <img src={imageUrl} alt={vehicle.title} />
-                <label>{formatPrice(vehicle.price)}</label>
+                <span>{formatPrice(vehicle.price)}</span>
             </div>
             <div className={styles.descriptionArea}>
                 <div className={styles.vehicleName}>

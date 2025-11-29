@@ -142,7 +142,7 @@ export default function Anunciar() {
 
     return (
         <section className={styles.container}>
-            <BackButtonAnnounce />
+            <BackButtonAnnounce text='Voltar aos anúncios' />
             <h1>Anunciar seu veículo</h1>
             <form onSubmit={handleSubmit(onSubmit)} className={styles.content}>
                 <div className={styles.group}>

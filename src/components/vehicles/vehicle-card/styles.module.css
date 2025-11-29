@@ -63,7 +63,7 @@
     padding: 6px 12px;
     font-weight: bold;
     border-radius: 20px;
-    background-color: #16a34a;
+    background-color: var(--price-color);
     color: white;
     font-size: var(--font-sm);
 

@@ -121,7 +121,7 @@ export default function Header() {
 
                             {mounted && user && showDropdown && (
                                 <div className={styles.dropdownMenu} ref={dropdownRef}>
-                                    <Link href="/veiculos" className={styles.dropdownItem} onClick={handleDropdownClose}>
+                                    <Link href="/meus-veiculos" className={styles.dropdownItem} onClick={handleDropdownClose}>
                                         <Image src={'/assets/svg/settings.svg'} width={17} height={17} alt='settings' />
                                         <span>Meus Veículos</span>
                                     </Link>

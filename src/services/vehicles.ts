@@ -22,14 +22,15 @@ export interface VehicleFilter {
     limit?: number
 }
 
-type SortBy = 'createdAt' | 'price' | 'year' | 'mileage'
+export type SortBy = 'createdAt' | 'price' | 'year' | 'mileage'
+export type SortOrder = 'asc' | 'desc'
 
 // Vehicles API
 export const getVehicles = async (
     page: number = 1,
     limit: number = 10,
     sortBy: SortBy = 'createdAt',
-    sortOrder: 'asc' | 'desc' = 'desc'
+    sortOrder: SortOrder = 'desc'
 ): Promise<VehiclesList> => {
     const response = await fetch(`${API_BASE_URL}/vehicles?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`)
 
@@ -102,20 +103,24 @@ export const uploadVehicleImages = async (vehicleId: string, images: FormData, t
     return response.json()
 }
 
-// export const getMyVehicles = async (page: number = 1,
-//     limit: number = 10,
-//     sortBy: SortBy = 'createdAt',
-//     sortOrder: 'asc' | 'desc' = 'desc', token: string, refreshAccessToken: () => Promise<void>): Promise<VehiclesList> => {
-//     const response = await fetchWithAuth(`${API_BASE_URL}/vehicles`, {
-//         method: 'GET',
-//         body: JSON.stringify(vehicleData),
-//     }, token, refreshAccessToken)
+export const getMyVehicles = async (
+    userId: string,
+    token: string,
+    page: number = 1,
+    limit: number = 10,
+    sortBy: SortBy = 'createdAt',
+    sortOrder: SortOrder = 'desc',
+    refreshAccessToken: () => Promise<void> // Adiciona refreshAccessToken como parâmetro
+): Promise<VehiclesList> => {
+    const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${userId}/my-vehicles?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
+        method: 'GET',
+    }, token, refreshAccessToken); // Passa refreshAccessToken para fetchWithAuth
 
-//     if (!response.ok)
-//         throw new Error(await getErrorMessage(response))
+    if (!response.ok)
+        throw new Error(await getErrorMessage(response));
 
-//     return response.json()
-// }
+    return response.json();
+};
 
 export const getVehicleImages = async (vehicleId: string): Promise<Image[]> => {
     const response = await fetch(`${API_BASE_URL}/images/${vehicleId}`)
