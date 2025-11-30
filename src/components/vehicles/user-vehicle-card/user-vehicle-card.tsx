@@ -9,11 +9,10 @@ import { formatMileage } from '@/services/utils';
 
 interface UserVehicleCardProps {
     vehicle: VehicleSummary;
-    onEdit: (vehicleId: string) => void;
     onDelete: (vehicleId: string) => void;
 }
 
-const UserVehicleCard: React.FC<UserVehicleCardProps> = ({ vehicle, onEdit, onDelete }) => {
+const UserVehicleCard: React.FC<UserVehicleCardProps> = ({ vehicle, onDelete }) => {
     return (
         <div className={styles.card}>
             <div className={styles.imageArea}>
@@ -67,11 +66,10 @@ const UserVehicleCard: React.FC<UserVehicleCardProps> = ({ vehicle, onEdit, onDe
                             iconSize={18}
                         />
                     </Link>
-                    <Link href={`/veiculo/${vehicle._id}`} passHref>
+                    <Link href={`/editar/${vehicle._id}`} passHref>
                         <Button
                             className={styles.edit} text="Editar"
                             svg="/assets/svg/edit.svg"
-                            onClick={() => onEdit(vehicle._id)}
                             iconSize={18}
                         />
                     </Link>

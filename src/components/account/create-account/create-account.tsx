@@ -15,6 +15,7 @@ import { useAuth } from '@/context/AuthContext';
 import Message from "@/components/message/message"
 import { Overlay } from "@/components/overlays/overlay"
 import LocationSelect from "@/components/location-select/location-select"
+import { cleanPhoneNumber } from "@/utils/phone-helpers"
 
 const createAccountSchema = z
     .object({
@@ -39,8 +40,25 @@ const createAccountSchema = z
         phone: z
             .string()
             .min(1, "Campo obrigatório")
-            .min(14, "Telefone inválido (mínimo 14 caracteres)")
-            .max(15, "Telefone inválido (máximo 15 caracteres)"),
+            .superRefine((val, ctx) => {
+                const _val = val.replace(/\D/g, '')
+                if (_val.length < 10) {
+                    ctx.addIssue({
+                        code: "too_big",
+                        maximum: 3,
+                        origin: "number",
+                        message: "Telefone do anunciante inválido (mínimo 14 dígitos)",
+                    });
+                }
+                if (_val.length > 11) {
+                    ctx.addIssue({
+                        code: "too_big",
+                        maximum: 3,
+                        origin: "number",
+                        message: "Telefone do anunciante inválido (máximo 15 dígitos)",
+                    });
+                }
+            }),
         state: z.string().min(1, "Campo obrigatório"),
         city: z.string().min(1, "Campo obrigatório"),
     })
@@ -90,7 +108,7 @@ export default function CreateAccount({ moveTo }: Props) {
                 username: data.name,
                 email: data.email,
                 password: data.password,
-                phone: data.phone,
+                phone: cleanPhoneNumber(data.phone),
                 city: data.city,
                 state: data.state
             }
@@ -166,14 +184,11 @@ export default function CreateAccount({ moveTo }: Props) {
                 name="phone"
                 control={control}
                 render={({ field }) => {
-                    const digits = (field.value || "").replace(/\D/g, "")
-                    const isMobile = digits.length > 10
-
                     return (
                         <PatternFormat
                             value={field.value ?? ""}
                             onValueChange={(vals) => field.onChange(vals.formattedValue)}
-                            format={isMobile ? "(##) #####-####" : "(##) ####-####"}
+                            format={"(##) #####-####"}
                             customInput={Input}
                             mask={'_'}
                             label="Telefone"

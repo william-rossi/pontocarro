@@ -142,15 +142,6 @@ export const getVehicleImageFirst = async (vehicleId: string): Promise<Image> =>
     return { ...image, imageUrl: `${process.env.NEXT_PUBLIC_API_URL}${image.imageUrl}` }
 }
 
-export const deleteVehicleImage = async (vehicleId: string, imageName: string, token: string, refreshAccessToken: () => Promise<void>): Promise<void> => {
-    const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${vehicleId}/images/${imageName}`, {
-        method: 'DELETE',
-    }, token, refreshAccessToken);
-
-    if (!response.ok)
-        throw new Error(await getErrorMessage(response));
-}
-
 export const updateVehicle = async (id: string, vehicleData: Partial<Omit<Vehicle, '_id' | 'created_at'>>, token: string, refreshAccessToken: () => Promise<void>): Promise<Vehicle> => {
     const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${id}`, {
         method: 'PUT',
@@ -165,6 +156,17 @@ export const updateVehicle = async (id: string, vehicleData: Partial<Omit<Vehicl
 
 export const deleteVehicle = async (id: string, token: string, refreshAccessToken: () => Promise<void>): Promise<number> => {
     const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${id}`, {
+        method: 'DELETE',
+    }, token, refreshAccessToken)
+
+    if (!response.ok)
+        throw new Error(await getErrorMessage(response))
+
+    return response.status
+}
+
+export const deleteVehicleImage = async (vehicleId: string, imageId: string, token: string, refreshAccessToken: () => Promise<void>): Promise<number> => {
+    const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${vehicleId}/images/${imageId}`, {
         method: 'DELETE',
     }, token, refreshAccessToken)
 

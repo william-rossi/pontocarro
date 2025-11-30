@@ -130,6 +130,13 @@ export default function VehicleFilter({
                             value={filters.brand || ""}
                             onChange={(e) => handleInputChange('brand', e.target.value)}
                         />
+                        {/* Adicionar Input para Modelo */}
+                        <Input
+                            label="Modelo"
+                            placeholder="Ex: Onix"
+                            value={filters.vehicleModel || ""}
+                            onChange={(e) => handleInputChange('vehicleModel', e.target.value)}
+                        />
                         {/* Substitui o Select de Motorização por Input */}
                         <Input
                             label="Motorização"

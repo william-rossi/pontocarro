@@ -1,23 +1,34 @@
 "use client"
 
 import React from 'react'
-import { UseFormSetValue, UseFormWatch, FieldErrors, Path, Control, Controller } from 'react-hook-form'
+import { UseFormSetValue, UseFormWatch, FieldErrors, Path, Control, Controller, UseFormTrigger } from 'react-hook-form'
 import Button from '@/components/button/button'
 import Message from '@/components/message/message'
 import Image from 'next/image'
 import styles from './style.module.css'
-import { AnnounceVehicleFormData } from '@/app/anunciar/page'
+import { VehicleFormData } from '@/components/vehicles/vehicle-form/vehicle-form'
+
+interface ExistingImage {
+    id: string;
+    url: string;
+}
 
 interface ImageUploadProps {
-    setValue: UseFormSetValue<AnnounceVehicleFormData>;
-    watch: UseFormWatch<AnnounceVehicleFormData>;
-    errors: FieldErrors<AnnounceVehicleFormData>;
-    control: Control<AnnounceVehicleFormData>;
+    setValue: UseFormSetValue<VehicleFormData>;
+    watch: UseFormWatch<VehicleFormData>;
+    errors: FieldErrors<VehicleFormData>;
+    control: Control<VehicleFormData>;
+    existingImageUrls?: ExistingImage[]; // Alterado para array de objetos
+    onRemoveExistingImage?: (id: string) => void; // Recebe o id
+    trigger: UseFormTrigger<VehicleFormData>; // Adicionar trigger
 }
 
 export default function ImageUpload({
     errors,
     control,
+    existingImageUrls = [],
+    onRemoveExistingImage,
+    trigger // Receber trigger
 }: ImageUploadProps) {
     const maxImages = 10
 
@@ -38,12 +49,21 @@ export default function ImageUpload({
                         const filesToUpload = filesArray.slice(0, availableSlots);
 
                         field.onChange([...images, ...filesToUpload]);
+                        trigger('images'); // Disparar validação
                     }
                 }
 
                 const handleRemoveImage = (indexToRemove: number) => {
-                    field.onChange(images.filter((_, index) => index !== indexToRemove))
+                    field.onChange(images.filter((_, index) => index !== indexToRemove));
+                    trigger('images'); // Disparar validação
                 }
+
+                const handleRemoveExistingImageClick = (idToRemove: string) => {
+                    if (onRemoveExistingImage) {
+                        onRemoveExistingImage(idToRemove);
+                        trigger('existingImageUrls'); // Disparar validação para existingImageUrls
+                    }
+                };
 
                 return (
                     <>
@@ -58,7 +78,7 @@ export default function ImageUpload({
                                 const target = e.target as HTMLInputElement;
                                 target.value = '';
                             }} // Permite o upload da mesma imagem novamente
-                            disabled={images.length >= maxImages}
+                            disabled={images.length + existingImageUrls.length >= maxImages}
                         />
                         <Button
                             text="Adicionar fotos"
@@ -70,10 +90,24 @@ export default function ImageUpload({
                                 e.preventDefault();
                                 document.getElementById('image-upload')?.click();
                             }}
-                            disabled={images.length >= maxImages}
+                            disabled={images.length + existingImageUrls.length >= maxImages}
                         />
                         {errors.images && <Message message={errors.images.message as string || "Erro nas fotos"} type={'error'} />}
                         <div className={styles.imagePreviewsContainer}>
+                            {existingImageUrls.map((image, index) => (
+                                <div key={image.id} className={styles.imagePreviewWrapper}>
+                                    <img src={image.url} alt={`Foto existente ${index + 1}`} width={100} height={100} className={styles.imagePreview} />
+                                    {onRemoveExistingImage && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveExistingImageClick(image.id)} // Usar a nova função aqui
+                                            className={styles.removeImageButton}
+                                        >
+                                            ✕
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
                             {images.map((file, index) => {
                                 const imageUrl = URL.createObjectURL(file);
                                 return (

@@ -90,3 +90,41 @@
 .errorState {
     color: var(--error-color);
 }
+
+.errorState img {
+    filter: invert(39%) sepia(68%) saturate(718%) hue-rotate(334deg) brightness(97%) contrast(92%);
+}
+
+.noVehiclesFound img {
+    filter: invert(57%) sepia(21%) saturate(271%) hue-rotate(185deg) brightness(96%) contrast(87%);
+}
+
+.modalContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    text-align: center;
+    gap: 20px;
+}
+
+.modalContent h2 {
+    font-size: 1.8em;
+    color: var(--text-color);
+}
+
+.modalContent p {
+    font-size: 1.1em;
+    color: var(--text-color-secondary);
+}
+
+.modalIcon {
+    filter: invert(39%) sepia(68%) saturate(718%) hue-rotate(334deg) brightness(97%) contrast(92%);
+}
+
+.modalActions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
