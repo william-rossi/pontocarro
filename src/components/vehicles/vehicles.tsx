@@ -2,8 +2,9 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 import styles from './styles.module.css'
-import VehicleFilter from './vehicle-filter/vehicle-filter'
-import { getVehicles, searchVehicles, VehicleFilter as VehicleFilterType } from '@/services/vehicles'
+import VehicleFilterComponent from './vehicle-filter/vehicle-filter'
+import { getVehicles, searchVehicles } from '@/services/vehicles'
+import { VehicleFilter } from '@/types/vehicle-filters'
 import { VehicleSummary } from '@/types/vehicles'
 import VehicleCard from './vehicle-card/vehicle-card'
 import VehicleCardSkeleton from './vehicle-card/vehicle-card-skeleton'
@@ -20,7 +21,7 @@ export default function Vehicles() {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const [totalVehicles, setTotalVehicles] = useState(0)
-    const [currentFilters, setCurrentFilters] = useState<VehicleFilterType>({})
+    const [currentFilters, setCurrentFilters] = useState<VehicleFilter>({})
     const [showFilterOptions, setShowFilterOptions] = useState(false)
     const vehiclesPerPage = 8
     const [userLocation, setUserLocation] = useState<{ city: string; state: string } | null>(null)
@@ -71,27 +72,23 @@ export default function Vehicles() {
         })
     }, [])
 
-    // Efeito para checar o localStorage e obter a localização inicial
+    // Efeito para checar o localStorage e obter a localização inicial e inicializar filtros da URL
     useEffect(() => {
         const initializeLocationAndFilters = async () => {
-            setLoading(true)
+            // O loading será controlado pelo useEffect de fetchVehicles.
+            // setLoading(true)
             const storedLocation = localStorage.getItem('userLocation')
             const storedUseLocationFilter = localStorage.getItem('useLocationFilter')
             const initialUseLocationFilter = storedUseLocationFilter === 'true'
 
             if (storedLocation && initialUseLocationFilter) {
-                // Caso 1: Localização salva e filtro ATIVO. Carrega e usa.
                 const parsedLocation = JSON.parse(storedLocation)
                 setUserLocation(parsedLocation)
-                // Não modifica currentFilters aqui para não disparar a busca desnecessariamente, 
-                // o useEffect de busca fará isso baseado em useLocationFilter e userLocation
                 setUseLocationFilter(true)
             } else if (storedUseLocationFilter === 'false') {
-                // Caso 2: Filtro DESATIVADO explicitamente. Respeita.
                 setUseLocationFilter(false)
-                setUserLocation(storedLocation ? JSON.parse(storedLocation) : null); // Mantém a localização salva, mas não a usa
+                setUserLocation(storedLocation ? JSON.parse(storedLocation) : null);
             } else {
-                // Caso 3: Primeira visita ou estado desconhecido/limpo. Não tenta geolocalização automaticamente.
                 setUseLocationFilter(false);
                 localStorage.setItem('useLocationFilter', 'false');
             }
@@ -99,16 +96,10 @@ export default function Vehicles() {
             setIsLocationChecked(true)
         }
 
-        const pageParam = searchParams.get('page');
-        const initialPage = pageParam ? parseInt(pageParam) : 1;
-        if (!isNaN(initialPage) && initialPage >= 1) {
-            setCurrentPage(initialPage);
-        }
-
         initializeLocationAndFilters()
-    }, [requestUserLocation, searchParams])
+    }, [requestUserLocation]) // Dependência apenas em requestUserLocation
 
-    // Efeito para buscar veículos
+    // Efeito para buscar veículos baseado nos parâmetros da URL e estado de localização
     useEffect(() => {
         if (!isLocationChecked) {
             return
@@ -120,10 +111,33 @@ export default function Vehicles() {
             try {
                 let responseData: { vehicles: VehicleSummary[], currentPage: number, totalPages: number, totalVehicles: number }
 
-                const filtersToSend: VehicleFilterType = { ...currentFilters, page: currentPage, limit: vehiclesPerPage }
-                const finalFilters = { ...filtersToSend }
+                const filtersFromUrl: VehicleFilter = {};
+                let pageFromUrl = 1;
 
-                // Prioriza os filtros de cidade e estado definidos manualmente em currentFilters
+                for (const [key, value] of searchParams.entries()) {
+                    if (key === 'page') {
+                        const parsedPage = parseInt(value);
+                        if (!isNaN(parsedPage) && parsedPage >= 1) {
+                            pageFromUrl = parsedPage;
+                        }
+                    } else if (key !== 'limit') { // 'limit' não é um filtro a ser aplicado pela UI
+                        if (key === 'minPrice' || key === 'maxPrice' || key === 'minYear' || key === 'maxYear' || key === 'mileage' || key === 'maxMileage') {
+                            const parsedValue = parseFloat(value);
+                            if (!isNaN(parsedValue)) {
+                                (filtersFromUrl as Record<string, any>)[key] = parsedValue;
+                            }
+                        } else {
+                            (filtersFromUrl as Record<string, any>)[key] = value;
+                        }
+                    }
+                }
+
+                // Atualiza o currentPage e currentFilters baseando-se na URL
+                setCurrentPage(pageFromUrl);
+                setCurrentFilters(filtersFromUrl);
+
+                const finalFilters = { ...filtersFromUrl, page: pageFromUrl, limit: vehiclesPerPage }
+
                 if (useLocationFilter && userLocation) {
                     finalFilters.city = userLocation.city;
                     finalFilters.state = userLocation.state;
@@ -133,7 +147,6 @@ export default function Vehicles() {
                     localStorage.setItem('useLocationFilter', 'false');
                 }
 
-                // Verifica se há filtros ATIVOS (incluindo ou excluindo a localização)
                 const hasActiveFilters = Object.keys(finalFilters).some(key =>
                     (key !== 'page' && key !== 'limit' && (finalFilters as Record<string, any>)[key] !== undefined && (finalFilters as Record<string, any>)[key] !== '')
                 )
@@ -141,11 +154,10 @@ export default function Vehicles() {
                 if (hasActiveFilters) {
                     responseData = await searchVehicles(finalFilters)
                 } else {
-                    responseData = await getVehicles(currentPage, vehiclesPerPage)
+                    responseData = await getVehicles(pageFromUrl, vehiclesPerPage) // Usa pageFromUrl aqui
                 }
 
                 setVehicles(responseData.vehicles)
-                setCurrentPage(responseData.currentPage)
                 setTotalPages(responseData.totalPages)
                 setTotalVehicles(responseData.totalVehicles)
             } catch (err: any) {
@@ -154,36 +166,33 @@ export default function Vehicles() {
                 setLoading(false)
             }
         }
-
         fetchVehicles()
-    }, [currentPage, currentFilters, vehiclesPerPage, useLocationFilter, userLocation, isLocationChecked])
+    }, [searchParams, vehiclesPerPage, useLocationFilter, userLocation, isLocationChecked])
 
-    const handleApplyFilters = (filters: VehicleFilterType) => {
-        setCurrentFilters(prevFilters => {
-            const newFilters = { ...filters };
+    const handleApplyFilters = (filters: VehicleFilter) => {
+        const params = new URLSearchParams(searchParams.toString());
 
-            // Se o usuário selecionou manualmente cidade ou estado, desativa a geolocalização
-            if (newFilters.city || newFilters.state) {
-                setUseLocationFilter(false);
-                localStorage.setItem('useLocationFilter', 'false');
-            } else if (useLocationFilter && userLocation) {
-                // Caso contrário, se a geolocalização estiver ativa e houver userLocation, aplica-a
-                newFilters.city = userLocation.city;
-                newFilters.state = userLocation.state;
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== '') {
+                params.set(key, String(value));
+            } else {
+                params.delete(key);
             }
-
-            return newFilters;
         });
-        setCurrentPage(1);
+
+        // Sempre reseta para a primeira página ao aplicar novos filtros
+        params.delete('page');
+
+        router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
         setShowFilterOptions(false);
     }
 
     const handleClearFilters = () => {
-        setCurrentFilters({})
-        setCurrentPage(1)
+        router.push(window.location.pathname, { scroll: false });
         setShowFilterOptions(false)
         setUseLocationFilter(false)
         localStorage.setItem('useLocationFilter', 'false')
+        localStorage.removeItem('userLocation')
     }
 
     const toggleFilterOptions = () => {
@@ -191,24 +200,22 @@ export default function Vehicles() {
     }
 
     const handleViewAllCars = () => {
-        setCurrentFilters(prevFilters => {
-            const newFilters = { ...prevFilters }
-            delete newFilters.city
-            delete newFilters.state
-            return newFilters
-        })
-        setUseLocationFilter(false)
-        localStorage.setItem('useLocationFilter', 'false')
-        localStorage.removeItem('userLocation') // Garante que a localização salva seja removida
-        setCurrentPage(1)
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('city');
+        params.delete('state');
+        params.delete('page'); // Reset page when viewing all cars
+
+        router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+        setUseLocationFilter(false);
+        localStorage.setItem('useLocationFilter', 'false');
+        localStorage.removeItem('userLocation');
     }
 
-    // Função corrigida para tentar obter a localização ao ser clicada
     const handleGetMyCityCars = async () => {
         if (!userLocation) {
             setLoading(true);
             const newLocation = await requestUserLocation();
-            setLoading(false);
+            // setLoading(false); // setLoading será tratado pelo useEffect de fetchVehicles
 
             if (newLocation && 'status' in newLocation) {
                 if (newLocation.status === 'denied') {
@@ -220,85 +227,58 @@ export default function Vehicles() {
                 }
                 setUseLocationFilter(false);
                 localStorage.setItem('useLocationFilter', 'false');
+                setLoading(false); // Garante que o loading é desativado em caso de erro/negação
                 return;
             } else if (newLocation && !('status' in newLocation)) {
-                // Localização obtida com sucesso no clique
                 setUserLocation(newLocation);
                 localStorage.setItem('userLocation', JSON.stringify(newLocation));
                 localStorage.setItem('useLocationFilter', 'true');
                 setUseLocationFilter(true);
-                setCurrentPage(1);
-                setCurrentFilters(prevFilters => ({
-                    ...prevFilters,
-                    city: (newLocation as { city: string; state: string }).city,
-                    state: (newLocation as { city: string; state: string }).state,
-                }));
-            } else {
-                toast.error("Não foi possível obter sua localização.");
-                setUseLocationFilter(false);
-                localStorage.setItem('useLocationFilter', 'false');
-                return;
+
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete('page'); // Resetar para a primeira página
+
+                router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+                // setLoading(false); // setLoading será tratado pelo useEffect de fetchVehicles
             }
         } else {
-            // Localização já existe, apenas ativa o filtro
             setUseLocationFilter(true);
             localStorage.setItem('useLocationFilter', 'true');
-            setCurrentPage(1);
-            setCurrentFilters(prevFilters => ({
-                ...prevFilters,
-                city: userLocation.city,
-                state: userLocation.state,
-            }));
+
+            const params = new URLSearchParams(searchParams.toString());
+            params.delete('page'); // Resetar para a primeira página
+
+            router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
         }
     }
 
-    if (loading) {
-        // Tela de carregamento enquanto a geolocalização é verificada/obtida
-        return (
-            <section className={styles.container}>
-                <VehicleFilter
-                    onApplyFilters={handleApplyFilters}
-                    onClearFilters={handleClearFilters}
-                    showFilterOptions={showFilterOptions}
-                    toggleFilterOptions={toggleFilterOptions}
-                    currentAppliedFilters={currentFilters}
-                />
-                <div className={styles.vehiclesList}>
-                    {Array.from({ length: vehiclesPerPage }).map((_, index) => (
-                        <VehicleCardSkeleton key={index} />
-                    ))}
-                </div>
-            </section>
-        )
-    }
-
-    if (error) {
-        return <section className={styles.container}><p className={styles.error}>Erro ao carregar veículos: {error}</p></section>
-    }
+    // Removido o useEffect para atualizar a URL, pois agora os handlers fazem isso diretamente.
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
-            const newPage = currentPage + 1
-            router.push(`?page=${newPage}`, { scroll: false });
-            setCurrentPage(newPage)
+            const newPage = currentPage + 1;
+            const params = new URLSearchParams(searchParams.toString());
+            params.set('page', newPage.toString());
+            router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
         }
     }
 
     const handlePrevPage = () => {
         if (currentPage > 1) {
-            const newPage = currentPage - 1
+            const newPage = currentPage - 1;
+            const params = new URLSearchParams(searchParams.toString());
             if (newPage === 1) {
-                router.push('/', { scroll: false });
+                params.delete('page'); // Remove page param for page 1
             } else {
-                router.push(`?page=${newPage}`, { scroll: false });
+                params.set('page', newPage.toString());
             }
-            setCurrentPage(newPage)
+            router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
         }
     }
 
     return (
         <section className={styles.container}>
-            <VehicleFilter
+            <VehicleFilterComponent
                 onApplyFilters={handleApplyFilters}
                 onClearFilters={handleClearFilters}
                 showFilterOptions={showFilterOptions}
@@ -327,13 +307,16 @@ export default function Vehicles() {
                             onClick={handleGetMyCityCars}
                             invert
                             svg='/assets/svg/location.svg'
-                            // Desabilita apenas se estiver no estado de carregamento e userLocation for null
-                            disabled={loading && !userLocation}
+                            disabled={loading} // Only disable if actively loading, not just waiting for locationCheck
                         />
                 }
             </div>
             <div className={styles.vehiclesList}>
-                {vehicles.length > 0 ? (
+                {loading && !error ? (
+                    Array.from({ length: vehiclesPerPage }).map((_, index) => (
+                        <VehicleCardSkeleton key={index} />
+                    ))
+                ) : vehicles.length > 0 ? (
                     vehicles.map(vehicle => (
                         <VehicleCard key={vehicle._id} vehicle={vehicle} />
                     ))
@@ -341,6 +324,7 @@ export default function Vehicles() {
                     <div className={styles.noVehiclesFound}>
                         <h3>Nenhum veículo encontrado</h3>
                         <p>Tente ajustar seus filtros ou limpar a pesquisa para ver mais veículos.</p>
+                        <Button text="Limpar Filtros" onClick={handleClearFilters} />
                     </div>
                 )}
             </div>
@@ -350,12 +334,13 @@ export default function Vehicles() {
                         currentPage={currentPage}
                         totalPages={totalPages}
                         onPageChange={(page) => {
+                            const params = new URLSearchParams(searchParams.toString());
                             if (page === 1) {
-                                router.push('/', { scroll: false });
+                                params.delete('page');
                             } else {
-                                router.push(`?page=${page}`, { scroll: false });
+                                params.set('page', page.toString());
                             }
-                            setCurrentPage(page);
+                            router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
                         }}
                         onPrevPage={handlePrevPage}
                         onNextPage={handleNextPage}

@@ -22,7 +22,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
             </div>
             <div className={styles.descriptionArea}>
                 <div className={styles.vehicleName}>
-                    <h3>{`${vehicle.brand} ${vehicle.vehicleModel}`}</h3>
+                    <h3>{`${vehicle.brand} ${vehicle.vehicleModel} ${vehicle.engine}`}</h3>
                     <span className={styles.year}>{vehicle.year}</span>
                 </div>
                 <div className={styles.resources}>

@@ -41,7 +41,7 @@ export default function MeusVeiculos() {
     const [sortOrder, setSortOrder] = useState<SortOrder>(DEFAULT_SORT_ORDER);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [vehicleToDeleteId, setVehicleToDeleteId] = useState<string | null>(null);
+    const [vehicleToDelete, setVehicleToDelete] = useState<VehicleSummary | null>(null);
 
     // 1. Função de busca que depende dos estados
     const fetchMyVehicles = useCallback(async (page: number, by: SortBy, order: SortOrder) => {
@@ -169,19 +169,19 @@ export default function MeusVeiculos() {
         }
     };
 
-    const handleDeleteClick = (vehicleId: string) => {
-        setVehicleToDeleteId(vehicleId);
+    const handleDeleteClick = (vehicleItem: VehicleSummary) => {
+        setVehicleToDelete(vehicleItem);
         setShowDeleteModal(true);
     };
 
     const handleConfirmDelete = async () => {
-        if (!vehicleToDeleteId || !accessToken || !user?._id) {
+        if (!vehicleToDelete || !accessToken || !user?._id) {
             toast.error("Não foi possível excluir o veículo. Dados incompletos.");
             return;
         }
 
         try {
-            await deleteVehicle(vehicleToDeleteId, accessToken, refreshAccessToken);
+            await deleteVehicle(vehicleToDelete._id, accessToken, refreshAccessToken);
             toast.success("Veículo excluído com sucesso!");
 
             // Recarregar a lista de veículos, mantendo a página atual se não for a última página
@@ -205,13 +205,13 @@ export default function MeusVeiculos() {
             toast.error(`Erro ao excluir veículo: ${err.message}`);
         } finally {
             setShowDeleteModal(false);
-            setVehicleToDeleteId(null);
+            setVehicleToDelete(null);
         }
     };
 
     const handleCancelDelete = () => {
         setShowDeleteModal(false);
-        setVehicleToDeleteId(null);
+        setVehicleToDelete(null);
     };
 
     const sortByOptions = [
@@ -279,7 +279,7 @@ export default function MeusVeiculos() {
                         <UserVehicleCard
                             key={vehicle._id}
                             vehicle={vehicle}
-                            onDelete={handleDeleteClick}
+                            onDelete={() => handleDeleteClick(vehicle)}
                         />
                     ))}
                 </div>
@@ -306,8 +306,7 @@ export default function MeusVeiculos() {
                     canClickOnOverlayToClose: true
                 }}>
                     <div className={styles.modalContent}>
-                        <Image src={'/assets/svg/close.svg'} alt="Excluir" width={80} height={80} className={styles.modalIcon} />
-                        <h2>Tem certeza que deseja excluir este veículo?</h2>
+                        <span>Tem certeza que deseja excluir <b>{vehicleToDelete?.year} {vehicleToDelete?.brand} {vehicleToDelete?.vehicleModel} {vehicleToDelete?.engine}</b>?</span>
                         <p>Esta ação não poderá ser desfeita.</p>
                         <div className={styles.modalActions}>
                             <Button text="Confirmar" onClick={handleConfirmDelete} />

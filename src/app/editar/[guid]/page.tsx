@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 import { Vehicle } from '@/types/vehicles'
 import BackButtonAnnounce from '@/components/back-button-announce/back-button-announce'
 import styles from './styles.module.css'
+import EditVehicleSkeleton from './edit-vehicle-skeleton'
 import Image from 'next/image'
 import { cleanPhoneNumber } from '@/utils/phone-helpers'
 import { updateVehicle, deleteVehicleImage, uploadVehicleImages } from '@/services/user-vehicles'
@@ -182,11 +183,7 @@ export default function Editar() {
 
     if (loading) {
         return (
-            <section className={styles.container}>
-                <BackButtonAnnounce text='Voltar aos meus veículos' />
-                <h1>Carregando veículo...</h1>
-                <p>Por favor, aguarde enquanto carregamos os dados do veículo.</p>
-            </section>
+            <EditVehicleSkeleton />
         );
     }
 

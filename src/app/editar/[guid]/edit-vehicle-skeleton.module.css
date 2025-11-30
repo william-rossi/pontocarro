@@ -1,0 +1,94 @@
+
+.container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+.backButtonSkeleton {
+    width: 150px;
+    height: 30px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.headerSkeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.titleSkeleton {
+    width: 250px;
+    height: 36px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.imageUploadSkeleton {
+    width: 100%;
+    height: 150px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+}
+
+.formSectionSkeleton {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.inputGroupSkeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.inputLabelSkeleton {
+    width: 80px;
+    height: 18px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+
+.inputFieldSkeleton {
+    width: 100%;
+    height: 40px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+}
+
+.buttonGroupSkeleton {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.buttonSkeleton {
+    width: 120px;
+    height: 45px;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .formSectionSkeleton {
+        grid-template-columns: 1fr 1fr;
+    }
+}

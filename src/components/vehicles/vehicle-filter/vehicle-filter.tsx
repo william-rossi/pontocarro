@@ -5,41 +5,41 @@ import React from 'react'
 import styles from './styles.module.css'
 import Select from '@/components/select/select'
 import { useEffect, useState } from 'react'
-import { VehicleFilter as VehicleFilterType } from '@/services/vehicles'
+import { VehicleFilter } from '@/types/vehicle-filters' // Corrected import
 import Button from '@/components/button/button'
 import { BODY_TYPE, TRANSMISSION, FUEL } from '@/constants/select-box-items'
 import LocationSelect from '@/components/location-select/location-select' // Importa LocationSelect
 
 interface VehicleFilterProps {
-    onApplyFilters: (filters: VehicleFilterType) => void
+    onApplyFilters: (filters: VehicleFilter) => void
     onClearFilters: () => void
     showFilterOptions: boolean
     toggleFilterOptions: () => void
-    currentAppliedFilters: VehicleFilterType // Adicionei a nova prop
+    currentAppliedFilters: VehicleFilter // Adicionei a nova prop
 }
 
-export default function VehicleFilter({
+export default function VehicleFilterComponent({
     onApplyFilters,
     onClearFilters,
     showFilterOptions,
     toggleFilterOptions,
     currentAppliedFilters // Recebo a nova prop
 }: VehicleFilterProps) {
-    const [filters, setFilters] = useState<VehicleFilterType>(currentAppliedFilters) // Inicializo com a prop
+    const [filters, setFilters] = useState<VehicleFilter>(currentAppliedFilters) // Inicializo com a prop
 
     useEffect(() => {
         // Atualiza o estado interno de filters quando currentAppliedFilters do pai muda
         setFilters(currentAppliedFilters)
     }, [currentAppliedFilters])
 
-    const handleInputChange = (key: keyof VehicleFilterType, value: string | number | undefined) => {
+    const handleInputChange = (key: keyof VehicleFilter, value: string | number | undefined) => {
         let processedValue: string | number | undefined = value
         if (typeof value === 'string' && (key === 'minPrice' || key === 'maxPrice' || key === 'minYear' || key === 'maxYear' || key === 'mileage')) {
             const parsedValue = parseFloat(value)
             processedValue = isNaN(parsedValue) ? undefined : parsedValue
         }
 
-        setFilters(prevFilters => ({
+        setFilters((prevFilters: VehicleFilter) => ({
             ...prevFilters,
             [key]: processedValue === "" ? undefined : processedValue
         }))
@@ -87,7 +87,7 @@ export default function VehicleFilter({
     // Removido os arrays brands e engineTypes, pois serão substituídos por Inputs de texto.
 
     const handleClearSearch = () => {
-        setFilters(prevFilters => ({ ...prevFilters, name: '' }))
+        setFilters((prevFilters: VehicleFilter) => ({ ...prevFilters, name: '' }))
         // Trigger a new search with cleared name filter
         onApplyFilters({ ...currentAppliedFilters, name: '' })
     }

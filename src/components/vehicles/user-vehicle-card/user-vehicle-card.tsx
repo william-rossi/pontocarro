@@ -23,7 +23,7 @@ const UserVehicleCard: React.FC<UserVehicleCardProps> = ({ vehicle, onDelete }) 
             </div>
             <div className={styles.infoArea}>
                 <div className={styles.titleArea}>
-                    <h3 className={styles.title}>{vehicle.year} {vehicle.brand} {vehicle.vehicleModel}</h3>
+                    <h3 className={styles.title}>{vehicle.year} {vehicle.brand} {vehicle.vehicleModel} {vehicle.engine}</h3>
                     <span className={styles.price}>R$ {vehicle.price.toLocaleString('pt-BR')}</span>
                 </div>
                 <div className={styles.subInfo}>
