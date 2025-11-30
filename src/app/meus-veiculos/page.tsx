@@ -8,7 +8,6 @@ import Select from '@/components/select/select'
 import Link from 'next/link'
 import { useEffect, useState, useCallback } from 'react'
 import { VehicleSummary } from '@/types/vehicles'
-import { getMyVehicles, SortBy, SortOrder, deleteVehicle } from '@/services/vehicles'
 import { useAuth } from '@/context/AuthContext'
 import UserVehicleCard from '@/components/vehicles/user-vehicle-card/user-vehicle-card'
 import UserVehicleCardSkeleton from '@/components/vehicles/user-vehicle-card-skeleton/user-vehicle-card-skeleton'
@@ -17,6 +16,8 @@ import Pagination from '@/components/vehicles/pagination/pagination'
 import Modal from '@/components/overlays/modal/modal'
 import Image from 'next/image'
 import { toast } from 'react-toastify'
+import { getMyVehicles, deleteVehicle } from '@/services/user-vehicles'
+import { SortBy, SortOrder } from '@/types/vehicle-filters'
 
 // Definições de tipos e constantes
 const VEHICLES_PER_PAGE = 5;

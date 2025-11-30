@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import VehicleForm, { VehicleFormData } from '@/components/vehicles/vehicle-form/vehicle-form'
-import { getVehicleById, getVehicleImages, updateVehicle, uploadVehicleImages, deleteVehicleImage } from '@/services/vehicles'
+import { getVehicleById, getVehicleImages } from '@/services/vehicles'
 import { useAuth } from '@/context/AuthContext'
 import { toast } from 'react-toastify'
 import { Vehicle } from '@/types/vehicles'
@@ -11,6 +11,7 @@ import BackButtonAnnounce from '@/components/back-button-announce/back-button-an
 import styles from './styles.module.css'
 import Image from 'next/image'
 import { cleanPhoneNumber } from '@/utils/phone-helpers'
+import { updateVehicle, deleteVehicleImage, uploadVehicleImages } from '@/services/user-vehicles'
 
 interface ExistingImage {
     id: string;

@@ -1,31 +1,8 @@
 import { API_BASE_URL } from '@/constants/secrets'
 import { Image, Vehicle, VehiclesList } from "../types/vehicles"
-import { getErrorMessage, fetchWithAuth } from './utils'
+import { getErrorMessage } from './utils'
+import { SortBy, SortOrder, VehicleFilter } from '@/types/vehicle-filters'
 
-export interface VehicleFilter {
-    brand?: string
-    vehicleModel?: string
-    name?: string // New filter for vehicle name
-    minYear?: number
-    maxYear?: number
-    minPrice?: number
-    maxPrice?: number
-    state?: string
-    city?: string
-    engine?: string
-    fuel?: string
-    transmission?: string
-    bodyType?: string
-    mileage?: number
-    maxMileage?: number
-    page?: number
-    limit?: number
-}
-
-export type SortBy = 'createdAt' | 'price' | 'year' | 'mileage'
-export type SortOrder = 'asc' | 'desc'
-
-// Vehicles API
 export const getVehicles = async (
     page: number = 1,
     limit: number = 10,
@@ -79,49 +56,6 @@ export const getVehicleById = async (id: string): Promise<Vehicle> => {
     return response.json()
 }
 
-export const createVehicle = async (vehicleData: Omit<Vehicle, '_id' | 'created_at'>, token: string, refreshAccessToken: () => Promise<void>): Promise<Vehicle> => {
-    const response = await fetchWithAuth(`${API_BASE_URL}/vehicles`, {
-        method: 'POST',
-        body: JSON.stringify(vehicleData),
-    }, token, refreshAccessToken)
-
-    if (!response.ok)
-        throw new Error(await getErrorMessage(response))
-
-    return response.json()
-}
-
-export const uploadVehicleImages = async (vehicleId: string, images: FormData, token: string, refreshAccessToken: () => Promise<void>): Promise<Vehicle> => {
-    const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${vehicleId}/images`, {
-        method: 'POST',
-        body: images,
-    }, token, refreshAccessToken, 1, false)
-
-    if (!response.ok)
-        throw new Error(await getErrorMessage(response))
-
-    return response.json()
-}
-
-export const getMyVehicles = async (
-    userId: string,
-    token: string,
-    page: number = 1,
-    limit: number = 10,
-    sortBy: SortBy = 'createdAt',
-    sortOrder: SortOrder = 'desc',
-    refreshAccessToken: () => Promise<void> // Adiciona refreshAccessToken como parâmetro
-): Promise<VehiclesList> => {
-    const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${userId}/my-vehicles?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
-        method: 'GET',
-    }, token, refreshAccessToken); // Passa refreshAccessToken para fetchWithAuth
-
-    if (!response.ok)
-        throw new Error(await getErrorMessage(response));
-
-    return response.json();
-};
-
 export const getVehicleImages = async (vehicleId: string): Promise<Image[]> => {
     const response = await fetch(`${API_BASE_URL}/images/${vehicleId}`)
 
@@ -140,38 +74,4 @@ export const getVehicleImageFirst = async (vehicleId: string): Promise<Image> =>
 
     const image: Image = await response.json()
     return { ...image, imageUrl: `${process.env.NEXT_PUBLIC_API_URL}${image.imageUrl}` }
-}
-
-export const updateVehicle = async (id: string, vehicleData: Partial<Omit<Vehicle, '_id' | 'created_at'>>, token: string, refreshAccessToken: () => Promise<void>): Promise<Vehicle> => {
-    const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(vehicleData),
-    }, token, refreshAccessToken)
-
-    if (!response.ok)
-        throw new Error(await getErrorMessage(response))
-
-    return response.json()
-}
-
-export const deleteVehicle = async (id: string, token: string, refreshAccessToken: () => Promise<void>): Promise<number> => {
-    const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${id}`, {
-        method: 'DELETE',
-    }, token, refreshAccessToken)
-
-    if (!response.ok)
-        throw new Error(await getErrorMessage(response))
-
-    return response.status
-}
-
-export const deleteVehicleImage = async (vehicleId: string, imageId: string, token: string, refreshAccessToken: () => Promise<void>): Promise<number> => {
-    const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${vehicleId}/images/${imageId}`, {
-        method: 'DELETE',
-    }, token, refreshAccessToken)
-
-    if (!response.ok)
-        throw new Error(await getErrorMessage(response))
-
-    return response.status
 }
