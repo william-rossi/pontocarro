@@ -53,8 +53,9 @@ export default function MeusVeiculos() {
         } finally {
             setLoading(false);
         }
-    }, [user, accessToken, currentPage, vehiclesPerPage, sortBy, sortOrder]);
+    }, [user, accessToken, currentPage, vehiclesPerPage, sortBy, sortOrder, refreshAccessToken]);
 
+    // Efeito para ler os parâmetros da URL e inicializar os estados
     useEffect(() => {
         const pageParam = searchParams.get('page');
         const sortByParam = searchParams.get('sortBy');
@@ -64,29 +65,45 @@ export default function MeusVeiculos() {
         const initialSortBy = sortByParam || 'createdAt';
         const initialSortOrder = sortOrderParam || 'desc';
 
-        if (!isNaN(initialPage) && initialPage >= 1) {
+        if (!isNaN(initialPage) && initialPage >= 1 && initialPage !== currentPage) {
             setCurrentPage(initialPage);
         }
 
         const finalSortBy: SortBy = validSortBy.includes(initialSortBy as SortBy) ? (initialSortBy as SortBy) : 'createdAt';
         const finalSortOrder: SortOrder = validSortOrder.includes(initialSortOrder as SortOrder) ? (initialSortOrder as SortOrder) : 'desc';
 
-        setSortBy(finalSortBy);
-        setSortOrder(finalSortOrder);
+        if (finalSortBy !== sortBy) {
+            setSortBy(finalSortBy);
+        }
+        if (finalSortOrder !== sortOrder) {
+            setSortOrder(finalSortOrder);
+        }
 
+    }, [searchParams, setCurrentPage, setSortBy, setSortOrder, validSortBy, validSortOrder, currentPage, sortBy, sortOrder]);
+
+    // Efeito para buscar veículos quando os parâmetros de paginação/ordenação ou autenticação mudam
+    useEffect(() => {
         fetchMyVehicles();
-    }, [fetchMyVehicles, searchParams]);
+    }, [fetchMyVehicles]);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
-        router.push(`?page=${page}&sortBy=${sortBy}&sortOrder=${sortOrder}`, { scroll: false });
+        if (page === 1) {
+            router.push('/', { scroll: false });
+        } else {
+            router.push(`?page=${page}&sortBy=${sortBy}&sortOrder=${sortOrder}`, { scroll: false });
+        }
     };
 
     const handlePrevPage = () => {
         if (currentPage > 1) {
             const newPage = currentPage - 1;
             setCurrentPage(newPage);
-            router.push(`?page=${newPage}&sortBy=${sortBy}&sortOrder=${sortOrder}`, { scroll: false });
+            if (newPage === 1) {
+                router.push('/', { scroll: false });
+            } else {
+                router.push(`?page=${newPage}&sortBy=${sortBy}&sortOrder=${sortOrder}`, { scroll: false });
+            }
         }
     };
 
