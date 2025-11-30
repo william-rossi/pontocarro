@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Button from '../button/button'
 import Modal from '../overlays/modal/modal'
 import { Overlay } from '../overlays/overlay'
-import AccountProcess from '../account/account-process'
+import AccountProcess, { AccountProcessType } from '../account/account-process'
 import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { getFirstName } from '@/utils/user-helpers'
@@ -15,6 +15,8 @@ import Logo from '../logo/logo'
 
 export default function Header() {
     const [isModal, setIsModal] = useState(false)
+    const [accountProccessType, setAccountProccessType] = useState<AccountProcessType | undefined>()
+    const [modalHeaderLabel, setModalHeaderLabel] = useState('')
     const [showDropdown, setShowDropdown] = useState(false) // Novo estado
     const [mounted, setMounted] = useState(false); // Novo estado para controlar montagem do cliente
     const { user, logout } = useAuth(); // Adicionado logout
@@ -86,8 +88,16 @@ export default function Header() {
     return (
         <>
             {isModal && (
-                <Modal onClose={() => setIsModal(false)} isOpen={isModal} isInterceptRouting={false} options={{ animation: 'fade', headProps: { headTitle: 'Entrar na sua conta' } }}>
-                    <AccountProcess />
+                <Modal
+                    onClose={() => setIsModal(false)}
+                    isOpen={isModal}
+                    isInterceptRouting={false}
+                    options={{ animation: 'fade', headProps: { headTitle: modalHeaderLabel } }}
+                >
+                    <AccountProcess
+                        accountProccessType={accountProccessType}
+                        setHeaderLabel={e => setModalHeaderLabel(e)}
+                    />
                 </Modal>
             )}
             <header className={styles.container}>
@@ -125,10 +135,10 @@ export default function Header() {
                                         <Image src={'/assets/svg/car.svg'} width={17} height={17} alt='settings' />
                                         <span>Meus Veículos</span>
                                     </Link>
-                                    <Link href="/editar-perfil" className={styles.dropdownItem} onClick={handleDropdownClose}>
+                                    <div className={styles.dropdownItem} onClick={() => { setIsModal(true); setAccountProccessType('updateAccount') }}>
                                         <Image src={'/assets/svg/settings.svg'} width={17} height={17} alt='settings' />
                                         <span>Editar Perfil</span>
-                                    </Link>
+                                    </div>
                                     <button onClick={handleLogout} className={styles.dropdownItem}>
                                         <Image src={'/assets/svg/arrow-left.svg'} width={17} height={17} alt='logout' />
                                         <span>Sair</span>
