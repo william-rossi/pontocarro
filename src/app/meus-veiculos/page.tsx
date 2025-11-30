@@ -10,7 +10,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { VehicleSummary } from '@/types/vehicles'
 import { useAuth } from '@/context/AuthContext'
 import UserVehicleCard from '@/components/vehicles/user-vehicle-card/user-vehicle-card'
-import UserVehicleCardSkeleton from '@/components/vehicles/user-vehicle-card-skeleton/user-vehicle-card-skeleton'
+import MeusVeiculosSkeleton from './meus-veiculos-skeleton'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Pagination from '@/components/vehicles/pagination/pagination'
 import Modal from '@/components/overlays/modal/modal'
@@ -256,11 +256,7 @@ export default function MeusVeiculos() {
             </div>
 
             {loading && (
-                <div className={styles.vehiclesList}>
-                    {Array.from({ length: VEHICLES_PER_PAGE }).map((_, index) => (
-                        <UserVehicleCardSkeleton key={index} />
-                    ))}
-                </div>
+                <MeusVeiculosSkeleton />
             )}
 
             {error && (

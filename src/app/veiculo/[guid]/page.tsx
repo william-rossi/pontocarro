@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ guid: str
         if (!vehicle) return { title: 'Veículo não encontrado | .carro' }
 
         return {
-            title: `${vehicle.brand} ${vehicle.vehicleModel} ${vehicle.year} | .carro`,
+            title: `${vehicle.brand} ${vehicle.vehicleModel} ${vehicle.year} ${vehicle.engine} ${vehicle.transmission} | .carro`,
             description: vehicle.description?.slice(0, 150) || 'Anúncio de veículo no .carro',
         }
     } catch {

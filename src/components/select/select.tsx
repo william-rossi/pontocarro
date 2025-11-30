@@ -6,6 +6,7 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
     label?: string
     error?: string
     options: { value: string; label: string }[]
+    defaultOptionLabel?: string // Nova prop para o rótulo da opção padrão
 }
 
 export default function Select({
@@ -13,6 +14,7 @@ export default function Select({
     error,
     options,
     className,
+    defaultOptionLabel, // Desestruturar a nova prop
     ...props
 }: SelectProps) {
     return (
@@ -22,6 +24,11 @@ export default function Select({
                 className={`${styles.selectWrapper} ${error ? styles.errorBorder : ""}`}
             >
                 <select className={`${styles.select} ${className || ""}`} {...props}>
+                    {defaultOptionLabel && (
+                        <option value="" disabled selected hidden>
+                            {defaultOptionLabel}
+                        </option>
+                    )}
                     {options.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.label}

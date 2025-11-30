@@ -110,7 +110,7 @@ export default function Header() {
                                 className={styles.user}
                                 ref={userButtonRef}
                             >
-                                <Image src={'/assets/svg/user.svg'} width={19} height={19} alt='user' />
+                                <Image src={'/assets/svg/user.svg'} width={21} height={21} alt='user' />
                                 {mounted ? ( // Renderiza o nome do usuário/Entrar apenas no cliente
                                     <span>{user ? getFirstName(user.username) : 'Entrar'}</span>
                                 ) : (
@@ -122,7 +122,7 @@ export default function Header() {
                             {mounted && user && showDropdown && (
                                 <div className={styles.dropdownMenu} ref={dropdownRef}>
                                     <Link href="/meus-veiculos" className={styles.dropdownItem} onClick={handleDropdownClose}>
-                                        <Image src={'/assets/svg/settings.svg'} width={17} height={17} alt='settings' />
+                                        <Image src={'/assets/svg/car.svg'} width={17} height={17} alt='settings' />
                                         <span>Meus Veículos</span>
                                     </Link>
                                     <Link href="/editar-perfil" className={styles.dropdownItem} onClick={handleDropdownClose}>

@@ -13,7 +13,7 @@ export default function VehicleBasic({ vehicle }: VehicleBasicProps) {
     return (
         <div className={styles.container}>
             <div className={styles.name}>
-                <h1>{`${vehicle.year} ${vehicle.title} ${vehicle.engine}`}</h1>
+                <h1>{`${vehicle.year} ${vehicle.title}`}</h1>
                 <div className={styles.city}>
                     <Image src={'/assets/svg/location.svg'} width={18} height={18} alt='' />
                     <span>{`${vehicle.city}, ${vehicle.state}`}</span>
@@ -40,7 +40,7 @@ export default function VehicleBasic({ vehicle }: VehicleBasicProps) {
                         <Image src={'/assets/svg/paint.svg'} width={18} height={18} alt='' />
                         <span>Câmbio</span>
                     </div>
-                    <b>{vehicle.transmission}</b>
+                    <b>{vehicle.engine} {vehicle.transmission}</b>
                 </div>
                 <div className={styles.resource}>
                     <div className={styles.resourceTitle}>

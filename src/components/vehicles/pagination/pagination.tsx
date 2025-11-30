@@ -13,10 +13,13 @@ interface PaginationProps {
 const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange, onPrevPage, onNextPage }) => {
     return (
         <div className={styles.container}>
-            <div className={styles.buttons}>
-                <Button text='Anterior' onClick={onPrevPage} disabled={currentPage === 1} />
-                <Button text='Próxima' onClick={onNextPage} disabled={currentPage === totalPages} />
-            </div>
+            {
+                totalPages > 1 &&
+                <div className={styles.buttons}>
+                    <Button text='Anterior' onClick={onPrevPage} disabled={currentPage === 1} />
+                    <Button text='Próxima' onClick={onNextPage} disabled={currentPage === totalPages} />
+                </div>
+            }
             <div className={styles.pagination}>
                 {
                     (() => {

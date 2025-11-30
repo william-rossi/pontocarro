@@ -2,7 +2,7 @@ import { parseCookies } from 'nookies';
 
 export const getErrorMessage = async (response: Response) => {
     const data = await response.json()
-    return data.message || 'Houve uma falha ao executar a operação.'
+    return data?.error || data?.message || 'Houve uma falha ao executar a operação.'
 }
 
 export const fetchWithAuth = async (url: string, options: RequestInit = {}, accessToken: string | null, refreshAccessToken: () => Promise<void>, maxRetries = 1, json = true): Promise<Response> => {

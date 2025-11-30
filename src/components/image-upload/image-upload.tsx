@@ -7,6 +7,7 @@ import Message from '@/components/message/message'
 import Image from 'next/image'
 import styles from './style.module.css'
 import { VehicleFormData } from '@/components/vehicles/vehicle-form/vehicle-form'
+import { toast } from 'react-toastify'
 
 interface ExistingImage {
     id: string;
@@ -31,6 +32,7 @@ export default function ImageUpload({
     trigger // Receber trigger
 }: ImageUploadProps) {
     const maxImages = 10
+    const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024 // 10MB
 
     return (
 
@@ -43,13 +45,29 @@ export default function ImageUpload({
                 const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
                     if (e.target.files) {
                         const filesArray = Array.from(e.target.files);
-                        const newImages: File[] = [];
+                        const newValidImages: File[] = [];
 
                         const availableSlots = maxImages - images.length;
-                        const filesToUpload = filesArray.slice(0, availableSlots);
+                        let filesProcessed = 0;
 
-                        field.onChange([...images, ...filesToUpload]);
-                        trigger('images'); // Disparar validação
+                        for (const file of filesArray) {
+                            if (filesProcessed >= availableSlots) {
+                                toast.warn(`Limite máximo de ${maxImages} fotos atingido.`);
+                                break;
+                            }
+
+                            if (file.size > MAX_IMAGE_SIZE_BYTES) {
+                                toast.error(`A imagem '${file.name}' excede o tamanho máximo de 10MB.`);
+                                continue;
+                            }
+                            newValidImages.push(file);
+                            filesProcessed++;
+                        }
+
+                        if (newValidImages.length > 0) {
+                            field.onChange([...images, ...newValidImages]);
+                            trigger('images'); // Disparar validação
+                        }
                     }
                 }
 
