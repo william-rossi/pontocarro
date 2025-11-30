@@ -44,18 +44,18 @@ const createAccountSchema = z
                 const _val = val.replace(/\D/g, '')
                 if (_val.length < 10) {
                     ctx.addIssue({
-                        code: "too_big",
-                        maximum: 3,
+                        code: "too_small",
+                        minimum: 10,
                         origin: "number",
-                        message: "Telefone do anunciante inválido (mínimo 14 dígitos)",
+                        message: "Telefone do anunciante inválido (mínimo 10 dígitos)",
                     });
                 }
                 if (_val.length > 11) {
                     ctx.addIssue({
                         code: "too_big",
-                        maximum: 3,
+                        maximum: 11,
                         origin: "number",
-                        message: "Telefone do anunciante inválido (máximo 15 dígitos)",
+                        message: "Telefone do anunciante inválido (máximo 11 dígitos)",
                     });
                 }
             }),
