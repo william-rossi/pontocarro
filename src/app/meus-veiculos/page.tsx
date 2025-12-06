@@ -230,7 +230,7 @@ export default function MeusVeiculos() {
     // --- Renderização ---
     return (
         <section className={styles.container}>
-            <BackButtonAnnounce text='Voltar ao marketplace' />
+            <BackButtonAnnounce destination='/' />
             <div className={styles.header}>
                 <div className={styles.titleArea}>
                     <h1>Meus Veículos</h1>

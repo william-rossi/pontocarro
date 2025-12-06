@@ -190,7 +190,7 @@ export default function Editar() {
     if (notFound) {
         return (
             <section className={styles.container}>
-                <BackButtonAnnounce text='Voltar aos meus veículos' />
+                <BackButtonAnnounce destination='/meus-veiculos' />
                 <div className={styles.errorState}>
                     <Image src={'/assets/svg/close.svg'} alt="Não encontrado" width={80} height={80} />
                     <h3>Veículo não encontrado</h3>
@@ -203,7 +203,7 @@ export default function Editar() {
     if (error) {
         return (
             <section className={styles.container}>
-                <BackButtonAnnounce text='Voltar aos meus veículos' />
+                <BackButtonAnnounce destination='/meus-veiculos' />
                 <div className={styles.errorState}>
                     <Image src={'/assets/svg/close.svg'} alt="Erro" width={80} height={80} />
                     <h3>Ocorreu um erro</h3>
@@ -217,7 +217,7 @@ export default function Editar() {
 
     return (
         <section className={styles.container}>
-            <BackButtonAnnounce text='Voltar aos meus veículos' />
+            <BackButtonAnnounce destination='/meus-veiculos' />
             <VehicleForm
                 vehicleId={vehicleGuid || undefined}
                 initialData={vehicleData}

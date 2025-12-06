@@ -131,13 +131,15 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                     />
                     )}
                 <Zoom>
-                    <img
-                        className={styles.mainImage}
-                        src={images[currentIndex]}
-                        alt="Vehicle"
-                        width={600}
-                        height={400}
-                    />
+                    {images[currentIndex] && (
+                        <img
+                            className={styles.mainImage}
+                            src={images[currentIndex]}
+                            alt="Vehicle"
+                            width={600}
+                            height={400}
+                        />
+                    )}
                 </Zoom>
                 {images.length > 1 &&
                     (<Image

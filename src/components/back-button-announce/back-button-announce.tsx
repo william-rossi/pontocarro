@@ -3,16 +3,23 @@
 import React from 'react'
 import styles from './styles.module.css'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 interface Props {
-    text: string
+    text?: string
+    destination?: string
 }
 
-export default function BackButtonAnnounce({ text }: Props) {
+export default function BackButtonAnnounce({ text, destination }: Props) {
     const router = useRouter()
+    const pathname = usePathname()
 
     const handleBack = () => {
+        if (destination) {
+            router.push(destination)
+            return
+        }
+
         if (typeof window !== 'undefined') {
             const referrer = document.referrer
             const currentDomain = window.location.origin
@@ -27,10 +34,12 @@ export default function BackButtonAnnounce({ text }: Props) {
         }
     }
 
+    const displayTitle = text || 'Voltar'
+
     return (
         <div className={styles.container}>
             <Image src={'/assets/svg/arrow-left.svg'} alt='arrow' width={18} height={18} />
-            <span onClick={handleBack}>{text}</span>
+            <span onClick={handleBack}>{displayTitle}</span>
         </div>
     )
 }

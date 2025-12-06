@@ -78,7 +78,7 @@ export default function Anunciar() {
 
     return (
         <section className={styles.container}>
-            <BackButtonAnnounce text='Voltar aos anúncios' />
+            <BackButtonAnnounce destination='/' />
             <h1>Anunciar seu veículo</h1>
             {/* O VehicleForm usará o esquema Zod que exige 1 foto */}
             <VehicleForm onSubmit={handleCreateVehicle} />

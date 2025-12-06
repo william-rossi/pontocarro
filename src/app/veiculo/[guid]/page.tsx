@@ -40,7 +40,7 @@ export default async function Veiculo({ params }: { params: Promise<{ guid: stri
 
         return (
             <section className={styles.container}>
-                <BackButtonAnnounce text='Voltar aos anúncios' />
+                <BackButtonAnnounce destination='/' />
                 <div className={styles.content}>
                     <div className={styles.division}>
                         <div className={styles.carousel}>
