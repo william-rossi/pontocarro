@@ -88,7 +88,6 @@ export default function Login({ moveTo }: Props) {
             <Button
                 text={isSubmitting ? "Entrando..." : "Entrar"}
                 type="submit"
-                onClick={() => null}
                 className={styles.btn}
             />
 

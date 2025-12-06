@@ -3,6 +3,7 @@ import styles from './styles.module.css'
 import Login from './login/login'
 import CreateAccount from './create-account/create-account'
 import UpdateAccount from './update-account/update-account'
+import { useAuth } from '@/context/AuthContext'
 
 export type AccountProcessType = 'login' | 'createAccount' | 'updateAccount' | 'forgotPassword'
 
@@ -12,7 +13,8 @@ interface Props {
 }
 
 export default function AccountProcess(props: Props) {
-    const [moveTo, setMoveTo] = useState<AccountProcessType>(props.accountProccessType ?? 'login')
+    const { user } = useAuth();
+    const [moveTo, setMoveTo] = useState<AccountProcessType>(!user ? 'login' : props.accountProccessType ?? 'login')
 
     const renderUI = () => {
         if (moveTo === 'login')

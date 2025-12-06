@@ -7,9 +7,12 @@
 .passwordGroup,
 .locationGroup {
     display: flex;
-    flex-direction: row-reverse;
     align-items: center;
     gap: 7px;
+}
+
+.locationGroup {
+    flex-direction: row-reverse;
 }
 
 .passwordGroup input {

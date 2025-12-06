@@ -8,6 +8,7 @@ import { refreshToken as callRefreshAccessToken } from '@/services/auth'
 
 interface AuthContextType {
   user: User | null
+  setUser: (user: User) => void
   accessToken: string | null
   refreshToken: string | null
   login: (userData: User, accessToken: string, refreshToken: string) => void
@@ -18,7 +19,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setAuthStateUser] = useState<User | null>(null)
   const [accessToken, setAccessToken] = useState<string | null>(null)
   const [refreshToken, setRefreshToken] = useState<string | null>(null)
 
@@ -42,7 +43,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [])
 
   const logout = () => {
-    setUser(null)
+    setAuthStateUser(null)
     setAccessToken(null)
     setRefreshToken(null)
     destroyCookie(null, 'user', { path: '/' })
@@ -86,7 +87,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         refreshAccessToken()
       }
       else {
-        setUser(storedUser)
+        setAuthStateUser(storedUser)
         setAccessToken(storedAccessToken)
         setRefreshToken(storedRefreshToken)
       }
@@ -99,7 +100,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, [isTokenExpired, refreshAccessToken, logout])
 
   const login = (userData: User, newAccessToken: string, newRefreshToken: string) => {
-    setUser(userData)
+    setAuthStateUser(userData)
     setAccessToken(newAccessToken)
     setRefreshToken(newRefreshToken)
 
@@ -122,8 +123,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => clearInterval(interval)
   }, [accessToken, isTokenExpired, refreshAccessToken])
 
+  const setUser = (userData: User) => {
+    setAuthStateUser(userData)
+    setCookie(null, 'user', JSON.stringify(userData), { maxAge: maxAge, path: '/' })
+  }
+
   return (
-    <AuthContext.Provider value={{ user, accessToken, refreshToken, login, logout, refreshAccessToken }}>
+    <AuthContext.Provider value={{ user, setUser, accessToken, refreshToken, login, logout, refreshAccessToken }}>
       {children}
     </AuthContext.Provider>
   )
