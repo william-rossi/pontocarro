@@ -13,18 +13,18 @@
 .container,
 .dummyContainer {
     background-color: var(--background-color);
-    height: 100%;
-    width: 100%;
+    width: 470px;
+    min-height: 200px;
+    height: auto;
+    max-height: 95%;
+    border-radius: 15px;
     animation-fill-mode: forwards;
     overflow-y: auto;
     overflow-x: hidden;
 
-    @media screen and (min-width: 1024px) {
-        width: 450px;
-        min-height: 200px;
-        height: auto;
-        max-height: 95%;
-        border-radius: 15px;
+    @media screen and (max-width: 1023px) {
+        width: 95%;
+        top: 100px;
     }
 }
 

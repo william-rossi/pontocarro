@@ -241,7 +241,7 @@ export default function AccountForm({ moveTo, mode, initialData, onSuccess }: Pr
             <Input
                 label="Nome completo"
                 placeholder="Seu nome completo"
-                startIcon="/assets/svg/magnifying-glass.svg"
+                startIcon="/assets/svg/user.svg"
                 max={100}
                 error={errors.name?.message}
                 {...register("name")}
@@ -252,7 +252,7 @@ export default function AccountForm({ moveTo, mode, initialData, onSuccess }: Pr
                 placeholder="seu@email.com"
                 type="email"
                 maxLength={150}
-                startIcon="/assets/svg/magnifying-glass.svg"
+                startIcon="/assets/svg/email.svg"
                 error={errors.email?.message}
                 {...register("email")}
             />
@@ -262,7 +262,7 @@ export default function AccountForm({ moveTo, mode, initialData, onSuccess }: Pr
                     label={mode === 'update' ? "Senha (opcional)" : "Senha"}
                     placeholder="Mínimo 8 caracteres"
                     type="password"
-                    startIcon="/assets/svg/magnifying-glass.svg"
+                    startIcon="/assets/svg/padlock.svg"
                     error={errors.password?.message}
                     maxLength={50}
                     autoComplete={mode === 'update' ? 'new-password' : 'current-password'}
@@ -273,7 +273,7 @@ export default function AccountForm({ moveTo, mode, initialData, onSuccess }: Pr
                     placeholder="Confirme a senha"
                     type="password"
                     maxLength={50}
-                    startIcon="/assets/svg/magnifying-glass.svg"
+                    startIcon="/assets/svg/padlock.svg"
                     error={errors.confirmPassword?.message}
                     autoComplete={mode === 'update' ? 'new-password' : 'current-password'}
                     {...register("confirmPassword")}
@@ -294,7 +294,7 @@ export default function AccountForm({ moveTo, mode, initialData, onSuccess }: Pr
                             label="Telefone"
                             placeholder="(11) 99999-9999"
                             type="tel"
-                            startIcon="/assets/svg/magnifying-glass.svg"
+                            startIcon="/assets/svg/phone.svg"
                             error={errors.phone?.message}
                         />
                     )

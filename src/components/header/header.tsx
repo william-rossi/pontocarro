@@ -92,7 +92,11 @@ export default function Header() {
                     onClose={() => setIsModal(false)}
                     isOpen={isModal}
                     isInterceptRouting={false}
-                    options={{ animation: 'fade', headProps: { headTitle: modalHeaderLabel }, canClickOnOverlayToClose: false }}
+                    options={{
+                        animation: 'fade',
+                        headProps: { headTitle: modalHeaderLabel },
+                        canClickOnOverlayToClose: window.innerHeight > window.innerWidth
+                    }}
                 >
                     <AccountProcess
                         accountProccessType={accountProccessType}

@@ -2,6 +2,9 @@ import { parseCookies } from 'nookies';
 
 export const getErrorMessage = async (response: Response) => {
     const data = await response.json()
+    if (data.errors && Array.isArray(data.errors) && data.errors.length > 0) {
+        return data.errors[0].message;
+    }
     return data?.error || data?.message || 'Houve uma falha ao executar a operação.'
 }
 

@@ -68,7 +68,7 @@ export default function Login({ moveTo }: Props) {
                 placeholder="seu@email.com"
                 type="email"
                 maxLength={150}
-                startIcon="/assets/svg/magnifying-glass.svg"
+                startIcon="/assets/svg/user.svg"
                 error={errors.email?.message}
                 {...register("email")}
             />
@@ -78,7 +78,7 @@ export default function Login({ moveTo }: Props) {
                 placeholder="Sua senha"
                 type="password"
                 maxLength={50}
-                startIcon="/assets/svg/magnifying-glass.svg"
+                startIcon="/assets/svg/padlock.svg"
                 error={errors.password?.message}
                 {...register("password")}
             />

@@ -3,6 +3,7 @@
     --primary-color-o: #1d4fd812;
     --primary-color-o-2: #1d4fd81a;
     --primary-color-o-3: #1d4fd8ca;
+    --background-color-darker: #f3f3f3;
     --background-color: #f9fafb;
     --background-color-o: rgba(240, 244, 248, 0.5);
     --text-color: #1a202c;
@@ -21,6 +22,7 @@
     --primary-color-o: #5280ff12;
     --primary-color-o-2: #5280ff1a;
     --primary-color-o-3: #5280ffca;
+    --background-color-darker: #222938;
     --background-color: #1a202c;
     --background-color-o: rgba(26, 32, 44, 0.5);
     --text-color: #f0f4f8;

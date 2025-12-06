@@ -50,7 +50,9 @@ export default function VehicleBasic({ vehicle }: VehicleBasicProps) {
                     <b>{vehicle.bodyType}</b>
                 </div>
             </div>
-            <ContactButton />
+            <ContactButton
+                vehicle={vehicle}
+            />
         </div>
     )
 }

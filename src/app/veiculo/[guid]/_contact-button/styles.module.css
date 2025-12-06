@@ -1,4 +1,61 @@
+.contactArea {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.contactArea h3 {
+    font-weight: 400;
+    font-size: var(--font-default);
+    margin-top: 7px;
+}
+
+.infoArea {
+    padding: 10px;
+    background-color: var(--background-color-darker);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.infoArea h5 {
+    font-weight: 500;
+    font-size: var(--font-sm);
+}
+
+.resource {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: var(--font-sm);
+    min-width: 0;
+    min-height: 25px;
+    flex: none;
+}
+
+.contactBtns {
+    display: flex;
+    gap: 8px;
+}
+
+.contactBtns button {
+    width: 100%;
+    min-height: 50px;
+}
+
+.whatsAppBtn {
+    background-color: #2b4848 !important;
+}
+
 .btn {
     font-weight: bold;
     height: 60px;
+}
+
+@media screen and (max-width: 1023px) {
+    .infoArea {
+        min-width: auto;
+    }
 }
