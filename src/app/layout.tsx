@@ -7,6 +7,7 @@ import Header from "@/components/header/header";
 import { AuthProvider } from '@/context/AuthContext';
 import Footer from "@/components/footer/footer";
 import { ToastContainer } from 'react-toastify'; // Importa o ToastContainer
+import AuthErrorToastHandler from '@/components/auth-error-toast-handler';
 import { cookies } from "next/headers";
 
 const geistSans = Inter({
@@ -35,7 +36,8 @@ export default async function RootLayout({
             {children}
           </main>
           <Footer />
-          <ToastContainer /> {/* Adiciona o ToastContainer aqui */}
+          <ToastContainer />
+          <AuthErrorToastHandler />
         </AuthProvider>
       </body>
     </html>

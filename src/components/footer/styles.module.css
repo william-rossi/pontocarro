@@ -65,14 +65,17 @@
 
 .linksSection li {
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
-.linksSection a {
+.linksSection a,
+.linksSection span {
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-.linksSection a:hover {
+.linksSection a:hover,
+.linksSection span:hover {
     color: var(--primary-color);
 }
 

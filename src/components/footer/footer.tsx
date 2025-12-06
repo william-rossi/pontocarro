@@ -6,11 +6,19 @@ import Link from 'next/link'
 import Logo from '../logo/logo'
 import Image from 'next/image'
 import { setCookie, parseCookies } from 'nookies'
+import { useAuth } from '@/context/AuthContext'
+import Modal from '@/components/overlays/modal/modal'
+import Login from '@/components/account/login/login'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 type Theme = 'light' | 'dark'
 
 export default function Footer() {
     const [theme, setTheme] = useState<Theme>('light')
+    const { user } = useAuth()
+    const [showLoginModal, setShowLoginModal] = useState(false)
+    const router = useRouter()
 
     const themeHandler = () => {
         const cookies = parseCookies()
@@ -35,6 +43,12 @@ export default function Footer() {
         }
     }
 
+    const handleNavigation = (path: string) => {
+        if (!user)
+            return toast.info('É necessário realizar login para acessar.')
+        router.push(path)
+    }
+
     useEffect(() => {
         const cookies = parseCookies()
         const themeCookie = cookies.theme
@@ -55,8 +69,8 @@ export default function Footer() {
                         <h4>Navegação</h4>
                         <ul>
                             <li><Link href="/">Início</Link></li>
-                            <li><Link href="/anunciar">Anunciar</Link></li>
-                            <li><Link href="/meus-veiculos">Meus Veículos</Link></li>
+                            <li><span onClick={() => handleNavigation('/anunciar')} className={styles.link}>Anunciar</span></li>
+                            <li><span onClick={() => handleNavigation('/meus-veiculos')} className={styles.link}>Meus Veículos</span></li>
                         </ul>
                     </div>
                     <div className={styles.contactSection}>
@@ -76,6 +90,19 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
+            <Modal
+                isOpen={showLoginModal}
+                onClose={() => setShowLoginModal(false)}
+                isInterceptRouting={false}
+                options={{
+                    animation: 'pop',
+                    headProps: { headTitle: 'Login' },
+                    enableCloseButton: true,
+                    closeButtonTheme: 'inverted',
+                }}
+            >
+                <Login moveTo={() => { /* Implement if needed */ }} />
+            </Modal>
         </footer>
     )
 }

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 import { Vehicle } from '@/types/vehicles'
 import VehicleForm, { VehicleFormData } from '@/components/vehicles/vehicle-form/vehicle-form'
-import { toast } from 'react-toastify' // Importar toast
+import { toast } from 'react-toastify'
 import { cleanPhoneNumber } from '@/utils/phone-helpers'
 import { createVehicle, uploadVehicleImages } from '@/services/user-vehicles'
 
