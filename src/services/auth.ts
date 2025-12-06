@@ -1,8 +1,8 @@
 import { API_BASE_URL } from '@/constants/secrets'
-import { User, LoginResponse, RegisterUserResponse, RefreshTokenResponse } from '../types/auth'
+import { User, LoginResponse, RegisterUserResponse, RefreshTokenResponse, RegisterUserRequest } from '../types/auth'
 import { getErrorMessage } from './utils'
 
-export const registerUser = async (newUser: Omit<User, '_id' | 'created_at'>): Promise<RegisterUserResponse> => {
+export const registerUser = async (newUser: RegisterUserRequest): Promise<RegisterUserResponse> => {
     const response = await fetch('/api/register-user', {
         method: 'POST',
         headers: {

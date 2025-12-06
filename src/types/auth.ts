@@ -10,6 +10,8 @@ export interface User {
     refreshToken?: string
 }
 
+export interface RegisterUserRequest extends Omit<User, '_id' | 'created_at'> { }
+
 export interface RegisterUserResponse {
     message: string
     accessToken: string

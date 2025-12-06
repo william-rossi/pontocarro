@@ -1,8 +1,9 @@
 import { API_BASE_URL, JWT_SECRET } from "@/constants/secrets"
-import { RegisterUserRequest, User } from "@/types/auth"
+import { User } from "@/types/auth"
+import { UpdateUserRequest } from "@/types/user"
 import { handleApiResponse, validateBody, handleInternalError } from "@/utils/api-routes"
 
-export async function POST(req: Request) {
+export async function PUT(req: Request) {
     try {
         const body = await req.json()
 
@@ -11,10 +12,10 @@ export async function POST(req: Request) {
             return bodyValidation
         }
 
-        const user = body as RegisterUserRequest
+        const user = body as UpdateUserRequest
 
-        const response = await fetch(`${API_BASE_URL}/auth/register`, {
-            method: "POST",
+        const response = await fetch(`${API_BASE_URL}/users/${user._id!}/update`, {
+            method: "PUT",
             headers: {
                 "Content-Type": "application/json",
                 accept: "application/json",
