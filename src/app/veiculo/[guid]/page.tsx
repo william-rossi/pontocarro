@@ -20,14 +20,14 @@ export async function generateMetadata({ params }: { params: Promise<{ guid: str
 
     try {
         const vehicle = await getVehicleCached(guid)
-        if (!vehicle) return { title: 'Veículo não encontrado | .carro' }
+        if (!vehicle) return { title: 'Veículo não encontrado | .CARRO' }
 
         return {
-            title: `${vehicle.brand} ${vehicle.vehicleModel} ${vehicle.year} ${vehicle.engine} ${vehicle.transmission} | .carro`,
-            description: vehicle.description?.slice(0, 150) || 'Anúncio de veículo no .carro',
+            title: `${vehicle.brand} ${vehicle.vehicleModel} ${vehicle.year} ${vehicle.engine} ${vehicle.transmission} | .CARRO`,
+            description: vehicle.description?.slice(0, 150) || 'Anúncio de veículo no .CARRO',
         }
     } catch {
-        return { title: 'Erro ao carregar veículo | .carro' }
+        return { title: 'Erro ao carregar veículo | .CARRO' }
     }
 }
 
