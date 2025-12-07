@@ -58,7 +58,8 @@ export const forgotPassword = async (email: string): Promise<{ message: string }
         body: JSON.stringify({ email }),
     })
     if (!response.ok) {
-        throw new Error('Falha ao enviar e-mail de redefinição de senha')
+        const error = await response.json() as { message: string }
+        throw new Error(error.message || 'Falha ao enviar e-mail de redefinição de senha')
     }
     return response.json()
 }
@@ -72,7 +73,8 @@ export const resetPassword = async (password: string, confirmPassword: string, r
         body: JSON.stringify({ password, confirmPassword }),
     })
     if (!response.ok) {
-        throw new Error('Falha ao enviar e-mail de redefinição de senha')
+        const error = await response.json() as { message: string }
+        throw new Error(error.message || 'Falha ao redefinir senha de senha')
     }
     return response.json()
 }
