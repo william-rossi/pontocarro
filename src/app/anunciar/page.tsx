@@ -25,11 +25,9 @@ export default function Anunciar() {
     const handleCreateVehicle = async (data: VehicleFormData) => {
         if (!user || !accessToken) {
             setErrorMessage("Usuário não autenticado. Faça login para anunciar um veículo.")
-            toast.error("Usuário não autenticado. Faça login para anunciar um veículo.");
-            throw new Error("Usuário não autenticado.")
+            toast.error("Usuário não autenticado.");
+            return
         }
-
-        // A validação de 1 foto será feita pelo Zod no VehicleForm
 
         const vehicle: Omit<Vehicle, '_id' | 'created_at'> = {
             owner_id: user._id,
@@ -56,23 +54,30 @@ export default function Anunciar() {
         try {
             const vehicleCreated = await createVehicle(vehicle, accessToken, refreshAccessToken)
 
-            // Upload de imagens
-            if (data.images && data.images.length > 0) {
-                const formData = new FormData();
-                for (let i = 0; i < data.images.length; i++) {
-                    formData.append('images', data.images[i]);
+            try {
+                // Upload de imagens
+                if (data.images && data.images.length > 0) {
+                    const formData = new FormData();
+                    for (let i = 0; i < data.images.length; i++) {
+                        formData.append('images', data.images[i]);
+                    }
+                    await uploadVehicleImages(vehicleCreated._id, formData, accessToken, refreshAccessToken);
                 }
-                await uploadVehicleImages(vehicleCreated._id, formData, accessToken, refreshAccessToken);
+            }
+            catch (e: any) {
+                console.error(e)
+                toast.error("Não foi possível publicar as imagens, tente novamente.")
+                router.push(`/editar/${vehicleCreated._id}`)
+                return
             }
 
             toast.success("Veículo anunciado com sucesso!")
             router.push('/meus-veiculos')
-
-        } catch (e: any) {
-            console.error("Erro ao anunciar veículo:", e);
-            setErrorMessage(e.message || "Erro ao anunciar veículo. Tente novamente.");
-            toast.error(e.message || "Erro ao anunciar veículo.");
-            throw e;
+        }
+        catch (e: any) {
+            console.error(e);
+            setErrorMessage(e.message);
+            toast.error("Não foi possível anunciar o veículo.");
         }
     }
 
@@ -80,7 +85,6 @@ export default function Anunciar() {
         <section className={styles.container}>
             <BackButtonAnnounce destination='/' />
             <h1>Anunciar seu veículo</h1>
-            {/* O VehicleForm usará o esquema Zod que exige 1 foto */}
             <VehicleForm onSubmit={handleCreateVehicle} />
             {errorMessage && <p className={styles.error}>{errorMessage}</p>}
         </section>
