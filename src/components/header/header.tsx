@@ -137,11 +137,11 @@ export default function Header() {
                                 <div className={styles.dropdownMenu} ref={dropdownRef}>
                                     <Link href="/meus-veiculos" className={styles.dropdownItem} onClick={handleDropdownClose}>
                                         <Image src={'/assets/svg/car.svg'} width={17} height={17} alt='settings' />
-                                        <span>Meus Veículos</span>
+                                        <span>Meus veículos</span>
                                     </Link>
                                     <div className={styles.dropdownItem} onClick={() => { setIsModal(true); setAccountProccessType('updateAccount') }}>
                                         <Image src={'/assets/svg/settings.svg'} width={17} height={17} alt='settings' />
-                                        <span>Editar Perfil</span>
+                                        <span>Editar perfil</span>
                                     </div>
                                     <button onClick={handleLogout} className={styles.dropdownItem}>
                                         <Image src={'/assets/svg/arrow-left.svg'} width={17} height={17} alt='logout' />
