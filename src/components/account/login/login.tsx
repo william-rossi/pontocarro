@@ -83,7 +83,12 @@ export default function Login({ moveTo }: Props) {
                 {...register("password")}
             />
 
-            <label className={styles.forgotPassword}>Esqueceu sua senha?</label>
+            <label
+                onClick={() => moveTo('forgotPassword')}
+                className={styles.forgotPassword}
+            >
+                Esqueceu sua senha?
+            </label>
 
             <Button
                 text={isSubmitting ? "Entrando..." : "Entrar"}

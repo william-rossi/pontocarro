@@ -4,6 +4,7 @@ import Login from './login/login'
 import CreateAccount from './create-account/create-account'
 import UpdateAccount from './update-account/update-account'
 import { useAuth } from '@/context/AuthContext'
+import ForgotPassword from './forgot-password/forgot-password'
 
 export type AccountProcessType = 'login' | 'createAccount' | 'updateAccount' | 'forgotPassword'
 
@@ -25,6 +26,9 @@ export default function AccountProcess(props: Props) {
 
         if (moveTo === 'updateAccount')
             return <UpdateAccount />
+
+        if (moveTo === 'forgotPassword')
+            return <ForgotPassword moveTo={setMoveTo} />
 
         return <></>
     }

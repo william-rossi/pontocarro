@@ -49,7 +49,7 @@ export const refreshToken = async (refreshToken: string): Promise<RefreshTokenRe
     return response.json()
 }
 
-export const forgotPassword = async (email: string): Promise<void> => {
+export const forgotPassword = async (email: string): Promise<{ message: string }> => {
     const response = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
         method: 'POST',
         headers: {
@@ -60,4 +60,19 @@ export const forgotPassword = async (email: string): Promise<void> => {
     if (!response.ok) {
         throw new Error('Falha ao enviar e-mail de redefinição de senha')
     }
+    return response.json()
+}
+
+export const resetPassword = async (password: string, confirmPassword: string, resetToken: string): Promise<{ message: string }> => {
+    const response = await fetch(`${API_BASE_URL}/auth/reset-password/${resetToken}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password, confirmPassword }),
+    })
+    if (!response.ok) {
+        throw new Error('Falha ao enviar e-mail de redefinição de senha')
+    }
+    return response.json()
 }
