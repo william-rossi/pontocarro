@@ -27,6 +27,7 @@ export default function Vehicles() {
     const [userLocation, setUserLocation] = useState<{ city: string; state: string } | null>(null)
     const [useLocationFilter, setUseLocationFilter] = useState(false)
     const [isLocationChecked, setIsLocationChecked] = useState(false)
+    const [hasActiveFilters, setHasActiveFilters] = useState(false) // Novo estado para controlar a visibilidade do botão Limpar Filtros
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -147,11 +148,12 @@ export default function Vehicles() {
                     localStorage.setItem('useLocationFilter', 'false');
                 }
 
-                const hasActiveFilters = Object.keys(finalFilters).some(key =>
+                const hasFilters = Object.keys(finalFilters).some(key =>
                     (key !== 'page' && key !== 'limit' && (finalFilters as Record<string, any>)[key] !== undefined && (finalFilters as Record<string, any>)[key] !== '')
                 )
+                setHasActiveFilters(hasFilters || useLocationFilter); // Atualiza o estado
 
-                if (hasActiveFilters) {
+                if (hasFilters) {
                     responseData = await searchVehicles(finalFilters)
                 } else {
                     responseData = await getVehicles(pageFromUrl, vehiclesPerPage) // Usa pageFromUrl aqui
@@ -184,7 +186,6 @@ export default function Vehicles() {
         params.delete('page');
 
         router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
-        setShowFilterOptions(false);
     }
 
     const handleClearFilters = () => {
@@ -324,7 +325,10 @@ export default function Vehicles() {
                     <div className={styles.noVehiclesFound}>
                         <h3>Nenhum veículo encontrado</h3>
                         <p>Tente ajustar seus filtros ou limpar a pesquisa para ver mais veículos.</p>
-                        <Button text="Limpar Filtros" onClick={handleClearFilters} />
+                        {
+                            hasActiveFilters &&
+                            <Button text="Limpar Filtros" onClick={handleClearFilters} />
+                        }
                     </div>
                 )}
             </div>

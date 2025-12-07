@@ -16,8 +16,8 @@ export default function ContactButton({ vehicle }: Props) {
     const [isModal, setIsModal] = useState(false)
 
     const generateMessageText = (contactType: 'whatsapp' | 'email') => {
-        const vehicleInfo = `${vehicle.year} ${vehicle.brand} ${vehicle.vehicleModel}`
-        let message = `Olá, ${vehicle.announcerName}! Encontrei o anúncio do seu veículo ${vehicleInfo} no .CARRO e gostaria de obter mais informações sobre a disponibilidade e as condições de venda.`
+        const vehicleInfo = `${vehicle.year} ${vehicle.brand} ${vehicle.vehicleModel} ${vehicle.transmission} ${vehicle.engine}`
+        let message = `Olá, ${vehicle.announcerName}! Encontrei o anúncio do seu veículo ${vehicleInfo} no site .CARRO e gostaria de obter mais informações sobre a disponibilidade e as condições de venda.`
         if (contactType === 'email') {
             message += `\n\nPor favor, entre em contato.`;
         }
@@ -34,7 +34,7 @@ export default function ContactButton({ vehicle }: Props) {
     // 2. Função para Abrir o E-mail (mailto)
     const handleEmailClick = () => {
         const email = vehicle.announcerEmail;
-        const subject = encodeURIComponent(`Interesse no veículo: ${vehicle.brand} ${vehicle.vehicleModel} - ${vehicle.year}`);
+        const subject = encodeURIComponent(`Interesse no veículo: ${vehicle.brand} ${vehicle.vehicleModel} ${vehicle.transmission} ${vehicle.engine} - ${vehicle.year}`);
         const body = encodeURIComponent(generateMessageText('email'));
         const mailtoUrl = `mailto:${email}?subject=${subject}&body=${body}`;
         window.location.href = mailtoUrl;
@@ -51,7 +51,7 @@ export default function ContactButton({ vehicle }: Props) {
                     options={{ animation: 'fade', headProps: { headTitle: 'Entrar em contato' } }}
                 >
                     <div className={styles.contactArea}>
-                        <h3>Envie uma mensagem para o vendedor do(a) <b>{vehicle.year} {vehicle.brand} {vehicle.vehicleModel}</b> e feche negócio!</h3>
+                        <h3>Envie uma mensagem para o vendedor do(a) <b>{vehicle.year} {vehicle.brand} {vehicle.vehicleModel} {vehicle.transmission} {vehicle.engine}</b> e feche negócio!</h3>
                         <div className={styles.infoArea}>
                             <h5>Informações do vendedor</h5>
                             <div className={styles.resource}>

@@ -40,7 +40,7 @@ const vehicleFormSchema = z.object({
     bodyType: z.string().min(1, "Tipo de carroceria é obrigatório"),
     color: z.string().min(1, "Cor é obrigatória").max(50, "Cor muito longa"),
     description: z.string().min(1, "Descrição é obrigatória").max(1000, "Descrição muito longa"),
-    features: z.array(z.string()).optional(),
+    features: z.array(z.string()).max(20, "Máximo de 10 características").optional(),
     images: z.array(z.instanceof(File)).optional(), // Novos arquivos, opcional aqui
 }).extend({
     announcerName: z

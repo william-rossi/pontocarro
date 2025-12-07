@@ -223,7 +223,9 @@ export default function VehicleFilterComponent({
                     />
                     <div className={styles.filterActions}>
                         <Button text="Aplicar Filtros" onClick={applyFilters} />
-                        <Button text="Limpar Filtros" onClick={clearFilters} invert />
+                        {Object.keys(currentAppliedFilters).length > 0 && (
+                            <Button text="Limpar Filtros" onClick={clearFilters} invert />
+                        )}
                     </div>
                 </>
             )}
