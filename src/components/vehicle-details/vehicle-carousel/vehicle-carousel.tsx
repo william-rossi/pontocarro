@@ -132,14 +132,10 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                     )}
                 <Zoom>
                     {images[currentIndex] && (
-                        <Image
+                        <img
                             className={styles.mainImage}
                             src={images[currentIndex]}
                             alt={`Thumbnail ${currentIndex + 1}`}
-                            width={600}
-                            height={400}
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            priority
                         />
                     )}
                 </Zoom>
@@ -172,14 +168,12 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                     innerRef={scrollRef}
                 >
                     {images.map((image, index) => (
-                        <Image
+                        <img
                             key={index}
                             src={image}
                             alt={`Thumbnail ${index + 1}`}
                             className={currentIndex === index ? styles.activeThumbnail : ''}
                             onClick={() => setCurrentIndex(index)}
-                            width={100}
-                            height={70}
                         />
                     ))}
                 </ScrollContainer>

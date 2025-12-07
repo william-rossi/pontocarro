@@ -114,7 +114,7 @@ export default function ImageUpload({
                         <div className={styles.imagePreviewsContainer}>
                             {existingImageUrls.map((image, index) => (
                                 <div key={image.id} className={styles.imagePreviewWrapper}>
-                                    <Image src={image.url} alt={`Foto existente ${index + 1}`} width={100} height={100} className={styles.imagePreview} />
+                                    <img src={image.url} alt={`Foto ${index + 1}`} width={100} height={100} className={styles.imagePreview} />
                                     {onRemoveExistingImage && (
                                         <button
                                             type="button"
@@ -130,7 +130,7 @@ export default function ImageUpload({
                                 const imageUrl = URL.createObjectURL(file);
                                 return (
                                     <div key={file.name + index} className={styles.imagePreviewWrapper}>
-                                        <Image src={imageUrl} alt={`Foto ${index + 1}`} width={100} height={100} className={styles.imagePreview} />
+                                        <img src={imageUrl} alt={`Foto ${index + 1}`} className={styles.imagePreview} />
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveImage(index)}
