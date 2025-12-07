@@ -1,7 +1,7 @@
 "use client"
 
 import React from 'react'
-import { UseFormSetValue, UseFormWatch, FieldErrors, Path, Control, Controller, UseFormTrigger } from 'react-hook-form'
+import { UseFormSetValue, UseFormWatch, FieldErrors, Control, Controller, UseFormTrigger } from 'react-hook-form'
 import Button from '@/components/button/button'
 import Message from '@/components/message/message'
 import Image from 'next/image'
@@ -114,7 +114,7 @@ export default function ImageUpload({
                         <div className={styles.imagePreviewsContainer}>
                             {existingImageUrls.map((image, index) => (
                                 <div key={image.id} className={styles.imagePreviewWrapper}>
-                                    <img src={image.url} alt={`Foto existente ${index + 1}`} width={100} height={100} className={styles.imagePreview} />
+                                    <Image src={image.url} alt={`Foto existente ${index + 1}`} width={100} height={100} className={styles.imagePreview} />
                                     {onRemoveExistingImage && (
                                         <button
                                             type="button"

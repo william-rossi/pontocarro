@@ -13,7 +13,7 @@ function isTokenExpired(token: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
-    let accessToken = request.cookies.get('accessToken')
+    const accessToken = request.cookies.get('accessToken')
     const { pathname } = request.nextUrl
 
     const privatePaths = ['/meus-veiculos', '/editar', '/anunciar']

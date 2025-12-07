@@ -51,7 +51,7 @@ export default function AccountProcess(props: Props) {
                 props.setHeaderLabel('')
                 break;
         }
-    }, [moveTo])
+    }, [moveTo, props])
 
     return (
         <div className={styles.container}>

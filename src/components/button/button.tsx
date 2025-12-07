@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, MouseEvent, HTMLAttributes } from 'react';
+import React, { ButtonHTMLAttributes, MouseEvent } from 'react';
 import styles from './style.module.css';
 import Image from 'next/image';
 

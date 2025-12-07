@@ -17,7 +17,7 @@ export default function VehicleCard({ vehicle }: VehicleCardProps) {
     return (
         <Link href={`/veiculo/${vehicle._id}`} className={styles.container}>
             <div className={styles.imageArea}>
-                <img src={imageUrl} alt={vehicle.title} />
+                <Image src={imageUrl} alt={vehicle.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                 <label>{formatPrice(vehicle.price)}</label>
             </div>
             <div className={styles.descriptionArea}>

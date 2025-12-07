@@ -1,9 +1,9 @@
 import React from 'react'
 import styles from './styles.module.css'
 import Image from 'next/image'
-import ContactButton from '../_contact-button/page'
 import { Vehicle } from '@/types/vehicles'
 import { formatMileage, formatPrice } from '@/services/utils'
+import ContactButton from '../contact-button/contact-button'
 
 interface VehicleBasicProps {
     vehicle: Vehicle

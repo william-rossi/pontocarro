@@ -64,7 +64,7 @@ export default function Anunciar() {
                     await uploadVehicleImages(vehicleCreated._id, formData, accessToken, refreshAccessToken);
                 }
             }
-            catch (e: any) {
+            catch (e: unknown) {
                 console.error(e)
                 toast.error("Não foi possível publicar as imagens, tente novamente.")
                 router.push(`/editar/${vehicleCreated._id}`)
@@ -74,9 +74,9 @@ export default function Anunciar() {
             toast.success("Veículo anunciado com sucesso!")
             router.push('/meus-veiculos')
         }
-        catch (e: any) {
+        catch (e: unknown) {
             console.error(e);
-            setErrorMessage(e.message);
+            setErrorMessage(e instanceof Error ? e.message : "An unexpected error occurred.");
             toast.error("Não foi possível anunciar o veículo.");
         }
     }

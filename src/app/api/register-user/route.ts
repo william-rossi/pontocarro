@@ -1,5 +1,5 @@
 import { API_BASE_URL, JWT_SECRET } from "@/constants/secrets"
-import { RegisterUserRequest, User } from "@/types/auth"
+import { RegisterUserRequest } from "@/types/auth"
 import { handleApiResponse, validateBody, handleInternalError } from "@/utils/api-routes"
 
 export async function POST(req: Request) {

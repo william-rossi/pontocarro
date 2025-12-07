@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import Select from "@/components/select/select"
-import { locations, StateProps } from "@/constants/locations"
+import { locations } from "@/constants/locations"
 import styles from "./style.module.css"
 
 interface LocationSelectProps {

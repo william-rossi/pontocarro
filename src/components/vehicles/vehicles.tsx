@@ -125,10 +125,10 @@ export default function Vehicles() {
                         if (key === 'minPrice' || key === 'maxPrice' || key === 'minYear' || key === 'maxYear' || key === 'mileage' || key === 'maxMileage') {
                             const parsedValue = parseFloat(value);
                             if (!isNaN(parsedValue)) {
-                                (filtersFromUrl as Record<string, any>)[key] = parsedValue;
+                                (filtersFromUrl as Record<string, unknown>)[key] = parsedValue;
                             }
                         } else {
-                            (filtersFromUrl as Record<string, any>)[key] = value;
+                            (filtersFromUrl as Record<string, unknown>)[key] = value;
                         }
                     }
                 }
@@ -149,7 +149,7 @@ export default function Vehicles() {
                 }
 
                 const hasFilters = Object.keys(finalFilters).some(key =>
-                    (key !== 'page' && key !== 'limit' && (finalFilters as Record<string, any>)[key] !== undefined && (finalFilters as Record<string, any>)[key] !== '')
+                    (key !== 'page' && key !== 'limit' && (finalFilters as Record<string, unknown>)[key] !== undefined && (finalFilters as Record<string, unknown>)[key] !== '')
                 )
                 setHasActiveFilters(hasFilters || useLocationFilter); // Atualiza o estado `hasActiveFilters`
 
@@ -162,8 +162,8 @@ export default function Vehicles() {
                 setVehicles(responseData.vehicles)
                 setTotalPages(responseData.totalPages)
                 setTotalVehicles(responseData.totalVehicles)
-            } catch (err: any) {
-                setError(err.message)
+            } catch (err: unknown) {
+                setError((err instanceof Error) ? err.message : "An unexpected error occurred.")
             } finally {
                 setLoading(false)
             }

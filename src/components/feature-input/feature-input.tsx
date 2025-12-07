@@ -6,13 +6,13 @@ import Input from '@/components/input/input'
 import Button from '@/components/button/button'
 import Message from '@/components/message/message'
 import styles from './style.module.css'
-import { AnnounceVehicleFormData } from '@/app/anunciar/page'
+import { VehicleFormData } from '../vehicles/vehicle-form/vehicle-form'
 
 interface FeatureInputProps {
-    setValue: UseFormSetValue<AnnounceVehicleFormData>;
-    watch: UseFormWatch<AnnounceVehicleFormData>;
-    errors: FieldErrors<AnnounceVehicleFormData>;
-    control: Control<AnnounceVehicleFormData>;
+    setValue: UseFormSetValue<VehicleFormData>;
+    watch: UseFormWatch<VehicleFormData>;
+    errors: FieldErrors<VehicleFormData>;
+    control: Control<VehicleFormData>;
 }
 
 export default function FeatureInput({
@@ -25,7 +25,7 @@ export default function FeatureInput({
 
     return (
         <Controller
-            name={"features" as Path<AnnounceVehicleFormData>}
+            name={"features" as Path<VehicleFormData>}
             control={control}
             render={({ field }) => {
                 const features = (field.value || []) as string[]

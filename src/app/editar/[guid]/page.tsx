@@ -99,9 +99,9 @@ export default function Editar() {
                 setCurrentExistingImageUrls(formattedImages); // Define as imagens iniciais que serão exibidas no formulário
                 setIsFetched(true);
 
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error("Erro ao carregar veículo para edição:", err);
-                setError(err.message || "Erro ao carregar os dados do veículo.");
+                setError((err instanceof Error) ? err.message : "Erro ao carregar os dados do veículo.");
             } finally {
                 setLoading(false);
             }
@@ -174,9 +174,9 @@ export default function Editar() {
             toast.success("Veículo atualizado com sucesso!");
             router.push('/meus-veiculos');
 
-        } catch (e: any) {
+        } catch (e: unknown) {
             console.error("Erro ao atualizar veículo:", e);
-            toast.error(`Erro ao atualizar veículo: ${e.message}`);
+            toast.error(`Erro ao atualizar veículo: ${(e instanceof Error) ? e.message : "An unexpected error occurred."}`);
             throw e;
         }
     };

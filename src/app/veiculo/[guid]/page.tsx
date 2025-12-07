@@ -2,14 +2,12 @@ import { getVehicleById } from '@/services/vehicles'
 import { cache } from 'react'
 import { Metadata } from 'next'
 import styles from './styles.module.css'
-import ErrorPage from './_error-page/page'
-import VehicleBasic from './_vehicle-basic/page'
-import Description from './_description/page'
-import Specifications from './_specifications/page'
-import VehicleCarousel from './_vehicle-carousel/page'
 import BackButtonAnnounce from '@/components/back-button-announce/back-button-announce'
-import { Vehicle } from '@/types/vehicles'
-
+import Description from '@/components/vehicle-details/description/description'
+import ErrorPage from '@/components/vehicle-details/error-page/error-page'
+import Specifications from '@/components/vehicle-details/specifications/specifications'
+import VehicleBasic from '@/components/vehicle-details/vehicle-basic/vehicle-basic'
+import VehicleCarousel from '@/components/vehicle-details/vehicle-carousel/vehicle-carousel'
 // Cria uma função memoizada: o mesmo request é reutilizado dentro da mesma renderização
 const getVehicleCached = cache(async (guid: string) => {
     return await getVehicleById(guid)
@@ -66,7 +64,7 @@ export default async function Veiculo({ params }: { params: Promise<{ guid: stri
                 </div>
             </section>
         )
-    } catch (error: any) {
-        return <ErrorPage message={error.message} />
+    } catch (error: unknown) {
+        return <ErrorPage message={(error instanceof Error) ? error.message : "An unexpected error occurred."} />
     }
 }

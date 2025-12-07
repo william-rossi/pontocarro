@@ -1,9 +1,9 @@
 'use client'
 
 import { User } from '@/types/auth'
-import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback, useRef } from 'react' // Import useRef
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback, useRef } from 'react'
 import { setCookie, parseCookies, destroyCookie } from 'nookies'
-import { jwtDecode } from 'jwt-decode'
+import { jwtDecode, JwtPayload } from 'jwt-decode'
 import { refreshToken as callRefreshAccessToken } from '@/services/auth'
 
 interface AuthContextType {
@@ -29,7 +29,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const isTokenExpired = useCallback((token: string) => {
     try {
-      const decoded: any = jwtDecode(token)
+      const decoded = jwtDecode<JwtPayload>(token)
       if (!decoded.exp) {
         return false
       }
@@ -42,14 +42,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, [])
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setAuthStateUser(null)
     setAccessToken(null)
     setRefreshToken(null)
     destroyCookie(null, 'user', { path: '/' })
     destroyCookie(null, 'accessToken', { path: '/' })
     destroyCookie(null, 'refreshToken', { path: '/' })
-  }
+  }, [])
 
   const refreshAccessToken = useCallback(async () => {
     if (!refreshToken) {
@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.error("Falha ao renovar o token de acesso:", error)
       logout()
     }
-  }, [refreshToken, logout])
+  }, [refreshToken, maxAge, logout])
 
   // Efeito para carregamento e inicialização dos dados de autenticação
   useEffect(() => {
@@ -97,7 +97,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     initialized.current = true
-  }, [isTokenExpired, refreshAccessToken, logout])
+  }, [isTokenExpired, refreshAccessToken, logout, maxAge]) // 'logout' agora é estável
 
   const login = (userData: User, newAccessToken: string, newRefreshToken: string) => {
     setAuthStateUser(userData)
@@ -109,7 +109,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCookie(null, 'refreshToken', newRefreshToken, { maxAge: maxAge, path: '/', })
   }
 
-  // Verifica periodicamente a expiração do token de acesso (opcional, mas recomendado para sessões de longa duração)
+  // Verifica periodicamente a expiração do token de acesso
   useEffect(() => {
     const minutes = 1 * 60 * 1000 // Verifica a cada 1 minuto
 

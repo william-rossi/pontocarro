@@ -14,7 +14,6 @@ import MeusVeiculosSkeleton from './meus-veiculos-skeleton'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Pagination from '@/components/vehicles/pagination/pagination'
 import Modal from '@/components/overlays/modal/modal'
-import Image from 'next/image'
 import { toast } from 'react-toastify'
 import { getMyVehicles, deleteVehicle } from '@/services/user-vehicles'
 import { SortBy, SortOrder } from '@/types/vehicle-filters'
@@ -62,8 +61,12 @@ export default function MeusVeiculos() {
             setVehicles(response.vehicles);
             setTotalPages(response.totalPages);
             setTotalVehicles(response.totalVehicles);
-        } catch (err: any) {
-            setError(err.message);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError('Ocorreu um erro desconhecido');
+            }
         } finally {
             setLoading(false);
         }
@@ -201,8 +204,12 @@ export default function MeusVeiculos() {
                 fetchMyVehicles(currentPage, sortBy, sortOrder);
             }
 
-        } catch (err: any) {
-            toast.error(`Erro ao excluir veículo: ${err.message}`);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                toast.error(`Erro ao excluir veículo: ${err.message}`);
+            } else {
+                toast.error('Ocorreu um erro desconhecido');
+            }
         } finally {
             setShowDeleteModal(false);
             setVehicleToDelete(null);
@@ -267,7 +274,7 @@ export default function MeusVeiculos() {
             {!loading && !error && vehicles.length === 0 && (
                 <div className={styles.noVehiclesFound}>
                     <h3>Nenhum veículo anunciado</h3>
-                    <p>Você ainda não possui veículos anunciados. Clique em "Novo Anúncio" para começar.</p>
+                    <p>Você ainda não possui veículos anunciados. Clique em &quotNovo Anúncio&quot para começar.</p>
                 </div>
             )}
 

@@ -44,11 +44,11 @@ export default function ResetPasswordPage() {
             toast.success(response.message || 'Senha redefinida com sucesso!')
             router.push('/')
         }
-        catch (error: any) {
-            if (error.message === "As senhas não coincidem.") {
+        catch (error: unknown) {
+            if ((error instanceof Error) && error.message === "As senhas não coincidem.") {
                 setError("confirmPassword", { type: "manual", message: error.message })
             } else {
-                setMessage({ type: 'error', text: error.message || 'Ocorreu um erro inesperado.' })
+                setMessage({ type: 'error', text: (error instanceof Error) ? error.message : 'Ocorreu um erro inesperado.' })
             }
         }
     }

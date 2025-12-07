@@ -3,7 +3,7 @@
 import React from 'react'
 import styles from './styles.module.css'
 import Image from 'next/image'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 interface Props {
     text?: string
@@ -12,8 +12,6 @@ interface Props {
 
 export default function BackButtonAnnounce({ text, destination }: Props) {
     const router = useRouter()
-    const pathname = usePathname()
-
     const handleBack = () => {
         if (destination) {
             router.push(destination)

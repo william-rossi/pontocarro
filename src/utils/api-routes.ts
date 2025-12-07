@@ -33,7 +33,7 @@ export const handleApiResponse = async (response: Response) => {
     }
 }
 
-export const validateBody = (body: any) => {
+export const validateBody = (body: unknown) => {
     if (!body) {
         return NextResponse.json(
             { error: "Body vazio" },
@@ -43,7 +43,7 @@ export const validateBody = (body: any) => {
     return null;
 }
 
-export const handleInternalError = (error: any) => {
+export const handleInternalError = (error: unknown) => {
     console.error("Erro interno:", error)
     return NextResponse.json(
         { error: "Erro interno do servidor" },

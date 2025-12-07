@@ -41,8 +41,8 @@ export default function ForgotPassword({ moveTo }: Props) {
             setCooldownActive(true)
             setRemainingTime(300) // 5 minutes in seconds
             localStorage.setItem('forgotPasswordCooldownEnd', (Date.now() + 300 * 1000).toString())
-        } catch (error: any) {
-            setMessage({ type: 'error', message: error.message || 'Ocorreu um erro inesperado.' })
+        } catch (error: unknown) {
+            setMessage({ type: 'error', message: (error instanceof Error) ? error.message : 'Ocorreu um erro inesperado.' })
         }
     }
 
