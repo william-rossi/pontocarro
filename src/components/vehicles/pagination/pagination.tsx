@@ -23,16 +23,16 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
             <div className={styles.pagination}>
                 {
                     (() => {
-                        if (totalPages <= 1) return null; // Não renderiza paginação se houver apenas 1 página ou menos
+                        if (totalPages <= 1) return null; // Não renderiza a paginação se houver apenas uma página ou menos
 
                         const pagesToShow = [];
                         const startPage = Math.max(2, currentPage - 2);
                         const endPage = Math.min(totalPages - 1, currentPage + 2);
 
-                        pagesToShow.push(1); // Sempre inclui a primeira página
+                        pagesToShow.push(1); // Sempre inclui o número da primeira página
 
                         if (startPage > 2) {
-                            pagesToShow.push('ellipsis-before'); // Chave única para as reticências
+                            pagesToShow.push('ellipsis-before'); // Chave única para as reticências antes das páginas.
                         }
 
                         for (let i = startPage; i <= endPage; i++) {
@@ -40,11 +40,11 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
                         }
 
                         if (endPage < totalPages - 1) {
-                            pagesToShow.push('ellipsis-after'); // Chave única para as reticências
+                            pagesToShow.push('ellipsis-after'); // Chave única para as reticências depois das páginas.
                         }
 
                         if (totalPages > 1) {
-                            pagesToShow.push(totalPages); // Sempre inclui a última página se houver mais de 1 página
+                            pagesToShow.push(totalPages); // Sempre inclui o número da última página, se houver mais de uma página
                         }
 
                         return pagesToShow.map((page, index) => {

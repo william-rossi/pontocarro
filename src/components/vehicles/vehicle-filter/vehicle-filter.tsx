@@ -5,17 +5,17 @@ import React from 'react'
 import styles from './styles.module.css'
 import Select from '@/components/select/select'
 import { useEffect, useState } from 'react'
-import { VehicleFilter } from '@/types/vehicle-filters' // Corrected import
+import { VehicleFilter } from '@/types/vehicle-filters'
 import Button from '@/components/button/button'
 import { BODY_TYPE, TRANSMISSION, FUEL } from '@/constants/select-box-items'
-import LocationSelect from '@/components/location-select/location-select' // Importa LocationSelect
+import LocationSelect from '@/components/location-select/location-select' // Importa o componente `LocationSelect`
 
 interface VehicleFilterProps {
     onApplyFilters: (filters: VehicleFilter) => void
     onClearFilters: () => void
     showFilterOptions: boolean
     toggleFilterOptions: () => void
-    currentAppliedFilters: VehicleFilter // Adicionei a nova prop
+    currentAppliedFilters: VehicleFilter
 }
 
 export default function VehicleFilterComponent({
@@ -25,10 +25,10 @@ export default function VehicleFilterComponent({
     toggleFilterOptions,
     currentAppliedFilters // Recebo a nova prop
 }: VehicleFilterProps) {
-    const [filters, setFilters] = useState<VehicleFilter>(currentAppliedFilters) // Inicializo com a prop
+    const [filters, setFilters] = useState<VehicleFilter>(currentAppliedFilters) // Inicializa o estado com as propriedades fornecidas
 
     useEffect(() => {
-        // Atualiza o estado interno de filters quando currentAppliedFilters do pai muda
+        // Atualiza o estado interno dos filtros quando `currentAppliedFilters` do componente pai muda
         setFilters(currentAppliedFilters)
     }, [currentAppliedFilters])
 
@@ -84,11 +84,9 @@ export default function VehicleFilterComponent({
         onClearFilters()
     }
 
-    // Removido os arrays brands e engineTypes, pois serão substituídos por Inputs de texto.
-
     const handleClearSearch = () => {
         setFilters((prevFilters: VehicleFilter) => ({ ...prevFilters, name: '' }))
-        // Trigger a new search with cleared name filter
+        // Aciona uma nova busca com o filtro de nome limpo
         onApplyFilters({ ...currentAppliedFilters, name: '' })
     }
 
@@ -123,21 +121,21 @@ export default function VehicleFilterComponent({
             {showFilterOptions && (
                 <>
                     <div className={styles.filterOptions}>
-                        {/* Substitui o Select de Marca por Input */}
+                        {/* Substitui o `Select` de Marca por um `Input` */}
                         <Input
                             label="Marca"
                             placeholder="Ex: Chevrolet"
                             value={filters.brand || ""}
                             onChange={(e) => handleInputChange('brand', e.target.value)}
                         />
-                        {/* Adicionar Input para Modelo */}
+                        {/* Adiciona um `Input` para o Modelo */}
                         <Input
                             label="Modelo"
                             placeholder="Ex: Onix"
                             value={filters.vehicleModel || ""}
                             onChange={(e) => handleInputChange('vehicleModel', e.target.value)}
                         />
-                        {/* Substitui o Select de Motorização por Input */}
+                        {/* Substitui o `Select` de Motorização por um `Input` */}
                         <Input
                             label="Motorização"
                             placeholder="Ex: 1.0, 2.0 Turbo"
@@ -203,7 +201,7 @@ export default function VehicleFilterComponent({
                         />
                     </div>
                     <div className={styles.filterOptions}>
-                        {/* Removido o Input para Quilometragem mínima */}
+                        {/* Remove o `Input` para Quilometragem mínima */}
                         <Input
                             label="Quilometragem máxima"
                             type="number"
@@ -213,7 +211,7 @@ export default function VehicleFilterComponent({
                             min="0"
                         />
                     </div>
-                    {/* Substitui os Selects de Estado e Cidade por LocationSelect */}
+                    {/* Substitui os `Selects` de Estado e Cidade pelo componente `LocationSelect` */}
                     <LocationSelect
                         className={styles.filterOptions}
                         selectedStateValue={filters.state || ""}

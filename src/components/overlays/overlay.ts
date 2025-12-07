@@ -1,6 +1,8 @@
 /** Classe para manipulação dos modais _Bottom sheet_, _Drawer_ e modal padrão. */
 export class Overlay {
-    /** Observa se há modais _generic-modal_ presentes no HTML para manipular o scroll da página. */
+    /**
+ * Observa a presença de modais `generic-modal` no HTML para manipular o scroll da página e o padding direito (para compensar a barra de rolagem).
+ */
     static startWatch() {
         const styleElement = document.createElement('style')
         styleElement.textContent = `
@@ -62,7 +64,7 @@ export class Overlay {
         }
     }
 
-    /** Fecha o último modal aberto no HTML. */
+    /** Fecha o modal mais recente que está aberto no HTML, buscando por `generic-modal[data-dismiss="false"]`. */
     static dismiss() {
         const modals = document.querySelectorAll('.generic-modal[data-dismiss="false"]')
 
@@ -72,7 +74,7 @@ export class Overlay {
             this.dismissAll()
     }
 
-    /** Fecha todos os modais abertos no HTML. */
+    /** Fecha todos os modais atualmente abertos no HTML, marcando-os para descarte. */
     static dismissAll() {
         const modals = document.querySelectorAll('.generic-modal[data-dismiss="false"]')
         if (modals) {
@@ -82,7 +84,9 @@ export class Overlay {
         }
     }
 
-    /** Utilizado em conjunto com *openWithQs* para que ao clicar no botão de voltar do browser, feche o modal corretamente. */
+    /**
+ * Utilizado em conjunto com `openWithQs` (se implementado) para que, ao clicar no botão de voltar do navegador, o modal seja fechado corretamente.
+ */
     static startPopstateListener(close: () => void) {
         const handlePopState = (event: PopStateEvent) => {
             event.preventDefault()

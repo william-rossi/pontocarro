@@ -31,7 +31,7 @@ export default function ContactButton({ vehicle }: Props) {
         window.open(whatsappUrl, '_blank');
     }
 
-    // 2. Função para Abrir o E-mail (mailto)
+    // Função para abrir o cliente de e-mail (mailto)
     const handleEmailClick = () => {
         const email = vehicle.announcerEmail;
         const subject = encodeURIComponent(`Interesse no veículo: ${vehicle.brand} ${vehicle.vehicleModel} ${vehicle.transmission} ${vehicle.engine} - ${vehicle.year}`);

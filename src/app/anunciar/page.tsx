@@ -55,7 +55,7 @@ export default function Anunciar() {
             const vehicleCreated = await createVehicle(vehicle, accessToken, refreshAccessToken)
 
             try {
-                // Upload de imagens
+                // Faz o upload das imagens
                 if (data.images && data.images.length > 0) {
                     const formData = new FormData();
                     for (let i = 0; i < data.images.length; i++) {

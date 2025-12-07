@@ -19,9 +19,9 @@ import { cleanPhoneNumber } from "@/utils/phone-helpers"
 import { updateUser } from "@/services/user"
 import { UpdateUserRequest } from "@/types/user"
 
-// ESQUEMAS ZOD (Defina as validações que NUNCA mudam primeiro)
+// ESQUEMAS ZOD (Defina primeiro as validações que NUNCA mudam).
 
-// 1. Defina o esquema base (sem validação de senha obrigatória)
+// 1. Define o esquema base (sem validação de senha obrigatória).
 const baseAccountFormSchema = z
     .object({
         name: z
@@ -33,7 +33,7 @@ const baseAccountFormSchema = z
             .min(1, "E-mail é obrigatório")
             .max(150, "E-mail muito longo")
             .email("E-mail inválido"),
-        // No esquema base, password e confirmPassword são opcionais (usado para UPDATE)
+        // No esquema base, `password` e `confirmPassword` são opcionais (usado para atualização)
         password: z
             .string()
             .optional(),
@@ -64,7 +64,7 @@ const baseAccountFormSchema = z
         state: z.string().min(1, "Campo obrigatório"),
         city: z.string().min(1, "Campo obrigatório"),
     })
-    // Validação de senhas coincidentes (sempre deve existir, mesmo que os campos estejam vazios no update)
+    // Validação de senhas coincidentes (sempre deve existir, mesmo que os campos estejam vazios na atualização)
     .refine((data) => {
         if (data.password || data.confirmPassword) {
             return data.password === data.confirmPassword;
@@ -84,14 +84,14 @@ const baseAccountFormSchema = z
     });
 
 
-// 2. Função que gera o esquema final baseado no modo
+// 2. Função que gera o esquema final baseado no modo (criação ou atualização).
 const getAccountFormSchema = (mode: 'create' | 'update') => {
     if (mode === 'update') {
-        // No modo 'update', usamos o esquema base onde a senha é opcional.
+        // No modo 'update', usa-se o esquema base onde a senha é opcional.
         return baseAccountFormSchema;
     }
 
-    // No modo 'create', aplicamos as regras de obrigatoriedade e complexidade
+    // No modo 'create', aplicam-se as regras de obrigatoriedade e complexidade
     return baseAccountFormSchema.extend({
         password: z
             .string()
@@ -101,14 +101,14 @@ const getAccountFormSchema = (mode: 'create' | 'update') => {
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                 "A senha deve conter pelo menos uma letra maiúscula, uma letra minúscula, um número e um caractere especial"
             ),
-        // Confirmação de senha deve ser string obrigatória também no create
+        // A confirmação de senha deve ser string obrigatória também na criação
         confirmPassword: z
             .string()
             .min(1, "Confirmação de senha é obrigatória"),
     });
 };
 
-export type AccountFormData = z.infer<typeof baseAccountFormSchema> // Use o esquema base para o tipo
+export type AccountFormData = z.infer<typeof baseAccountFormSchema> // Usa o esquema base para o tipo da estrutura de dados
 
 interface Props {
     moveTo?(e: AccountProcessType): void
@@ -171,9 +171,9 @@ export default function AccountForm({ moveTo, mode, initialData, onSuccess }: Pr
                     created_at: new Date(),
                 }
 
-                login(user, registeredUser.accessToken, registeredUser.refreshToken); // Faz o login automático após o registro
+                login(user, registeredUser.accessToken, registeredUser.refreshToken); // Realiza o login automático após o registro
             }
-            else { // mode === 'update'
+            else {
                 if (!user?._id || !accessToken) {
                     throw new Error("Usuário não autenticado.")
                 }
@@ -216,12 +216,11 @@ export default function AccountForm({ moveTo, mode, initialData, onSuccess }: Pr
                     phone: cleanPhoneNumber(data.phone!),
                     city: data.city!,
                     state: data.state,
-                    // password: data.password, // Don't store password in context
+                    // password: data.password, // Não armazena a senha no contexto.
                     refreshToken: updatedUserResponse.refreshToken,
                 }
 
-                // setUser(updatedUserData);
-                // setCookie(null, 'user', JSON.stringify(updatedUserData), { maxAge: 30 * 24 * 60 * 60, path: '/' });
+                // Desativado: Lógica de atualização de usuário e cookie foi movida para o AuthContext.
                 if (onSuccess) {
                     onSuccess(updatedUserData);
                 }

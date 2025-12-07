@@ -10,16 +10,16 @@ export default function MeusVeiculosSkeleton() {
                 <div key={index} className={`${styles.skeletonCard} ${styles.loading}`}>
                     <div className={styles.skeletonImageArea}></div>
                     <div className={styles.skeletonDescriptionArea}>
-                        <div className={styles.skeletonLine}></div> {/* Title */}
-                        <div className={styles.skeletonLine}></div> {/* Price */}
-                        <div className={styles.skeletonLine}></div> {/* City, Date */}
-                        <div className={styles.skeletonLine}></div> {/* Mileage */}
-                        <div className={styles.skeletonLine}></div> {/* Fuel */}
-                        <div className={styles.skeletonLine}></div> {/* Transmission */}
-                        <div className={styles.skeletonLine}></div> {/* BodyType */}
-                        <div className={styles.skeletonLine}></div> {/* Visualizar */}
-                        <div className={styles.skeletonLine}></div> {/* Editar */}
-                        <div className={styles.skeletonLine}></div> {/* Excluir */}
+                        <div className={styles.skeletonLine}></div> {/* Título */}
+                        <div className={styles.skeletonLine}></div> {/* Preço */}
+                        <div className={styles.skeletonLine}></div> {/* Cidade, Data */}
+                        <div className={styles.skeletonLine}></div> {/* Quilometragem */}
+                        <div className={styles.skeletonLine}></div> {/* Combustível */}
+                        <div className={styles.skeletonLine}></div> {/* Câmbio */}
+                        <div className={styles.skeletonLine}></div> {/* Tipo de Carroceria */}
+                        <div className={styles.skeletonLine}></div> {/* Botão Visualizar */}
+                        <div className={styles.skeletonLine}></div> {/* Botão Editar */}
+                        <div className={styles.skeletonLine}></div> {/* Botão Excluir */}
                     </div>
                 </div>
             ))}

@@ -20,7 +20,7 @@ export async function middleware(request: NextRequest) {
 
     const isPrivatePath = privatePaths.some(path => {
         if (path.includes('[guid]')) {
-            const regex = new RegExp(`^${path.replace('[guid]', '[a-zA-Z0-9-]+')}(/.*)?$`) // Adiciona (/.*)? para rotas aninhadas
+            const regex = new RegExp(`^${path.replace('[guid]', '[a-zA-Z0-9-]+')}(/.*)?$`) // Adiciona `(/.*)?` para rotas aninhadas
             return regex.test(pathname)
         }
         return pathname === path || pathname.startsWith(`${path}/`)
@@ -32,10 +32,10 @@ export async function middleware(request: NextRequest) {
 
     if (isPrivatePath) {
         if (!accessToken || isTokenExpired(accessToken.value)) {
-            // Token ausente ou expirado, tentar usar refresh token ou limpar e redirecionar
+            // Token ausente ou expirado; limpa os cookies e redireciona
             response = NextResponse.redirect(redirectUrl)
 
-            // Limpa os cookies expirados
+            // Limpa os cookies de autenticação e usuário
             response.cookies.delete('accessToken')
             response.cookies.delete('refreshToken')
             response.cookies.delete('user')

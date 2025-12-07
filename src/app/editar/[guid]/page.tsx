@@ -29,19 +29,19 @@ export default function Editar() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [notFound, setNotFound] = useState(false);
-    // Este estado conterá a lista ATUALIZADA de imagens que AINDA EXISTEM no veículo.
+    // Este estado conterá a lista atualizada de imagens que ainda existem no veículo.
     const [currentExistingImageUrls, setCurrentExistingImageUrls] = useState<ExistingImage[]>([]);
-    // IDs das imagens a serem deletadas no backend (o que foi excluído virtualmente)
+    // IDs das imagens a serem excluídas no backend (as que foram removidas virtualmente)
     const [imageIdsToDelete, setImageIdsToDelete] = useState<string[]>([]);
     const [isFetched, setIsFetched] = useState(false);
 
     // Casting seguro para o GUID
     const vehicleGuid = Array.isArray(guid) ? guid[0] : (guid as string);
 
-    // Efeito para carregar o veículo e suas imagens
+    // Efeito para carregar o veículo e suas imagens para edição
     useEffect(() => {
         if (!user && !isFetched) {
-            // Se não autenticado e não carregou, redireciona.
+            // Se não autenticado e não carregou, o usuário é redirecionado.
             router.push('/');
             return;
         }
@@ -55,10 +55,10 @@ export default function Editar() {
             setLoading(true);
             setError(null);
             try {
-                // Necessário carregar o veículo
+                // Carrega os dados do veículo
                 const fetchedVehicle = await getVehicleById(vehicleGuid);
 
-                // Necessário carregar as imagens separadamente (baseado na sua estrutura)
+                // Carrega as imagens do veículo separadamente (baseado na estrutura existente)
                 const vehicleImages = await getVehicleImages(vehicleGuid);
 
                 if (!fetchedVehicle) {
@@ -66,13 +66,13 @@ export default function Editar() {
                     return;
                 }
 
-                // Formata as imagens para o estado de URLs existentes
+                // Formata as imagens para o estado de URLs de imagens existentes
                 const formattedImages: ExistingImage[] = vehicleImages.map(img => ({
                     id: img._id,
                     url: img.imageUrl,
                 }));
 
-                // Preenche os dados do formulário
+                // Preenche os dados iniciais do formulário com as informações do veículo
                 setVehicleData({
                     title: fetchedVehicle.title,
                     brand: fetchedVehicle.brand,
@@ -89,14 +89,14 @@ export default function Editar() {
                     color: fetchedVehicle.color,
                     description: fetchedVehicle.description,
                     features: fetchedVehicle.features,
-                    images: [], // Novas imagens (FileList)
-                    existingImageUrls: formattedImages, // Imagens existentes (URLs)
+                    images: [], // Novas imagens (objeto `FileList`)
+                    existingImageUrls: formattedImages, // Imagens existentes (lista de URLs)
                     announcerName: fetchedVehicle.announcerName,
                     announcerPhone: fetchedVehicle.announcerPhone,
                     announcerEmail: fetchedVehicle.announcerEmail,
                 });
 
-                setCurrentExistingImageUrls(formattedImages); // Define as imagens iniciais que serão exibidas
+                setCurrentExistingImageUrls(formattedImages); // Define as imagens iniciais que serão exibidas no formulário
                 setIsFetched(true);
 
             } catch (err: any) {
@@ -110,17 +110,17 @@ export default function Editar() {
         fetchVehicle();
     }, [vehicleGuid, user, router, isFetched, accessToken]); // Adicionado accessToken como dependência
 
-    // Função para remover a imagem VIRTUALMENTE
+    // Função para remover uma imagem virtualmente do formulário
     const handleRemoveExistingImage = (idToRemove: string) => {
-        // Remove do array que será exibido no formulário
+        // Remove a imagem do array que será exibido no formulário
         setCurrentExistingImageUrls(prevUrls => prevUrls.filter(img => img.id !== idToRemove));
 
-        // Adiciona o ID à lista de remoção para ser executada no onSubmit
+        // Adiciona o ID da imagem à lista de remoção para ser executada na submissão do formulário
         setImageIdsToDelete(prevIds => [...prevIds, idToRemove]);
     };
 
     const handleUpdateVehicle = async (data: VehicleFormData, id?: string) => {
-        // Antes de tentar atualizar, a validação de 1 foto deve ser feita pelo zod no form
+        // Antes de tentar atualizar, a validação de no mínimo uma foto deve ser feita pelo Zod no formulário
 
         if (!id || !accessToken || !user?._id) {
             toast.error("Não foi possível atualizar o veículo. Dados incompletos.");
@@ -128,7 +128,7 @@ export default function Editar() {
         }
 
         try {
-            // 1. ATUALIZAÇÃO DOS DADOS DO VEÍCULO (campos de texto/número)
+            // 1. ATUALIZAÇÃO DOS DADOS DO VEÍCULO (campos de texto e número)
             const updatedVehicle: Omit<Vehicle, 'created_at' | 'images'> = {
                 owner_id: user._id,
                 _id: id,
@@ -154,13 +154,13 @@ export default function Editar() {
 
             await updateVehicle(id, updatedVehicle, accessToken, refreshAccessToken);
 
-            // 2. DELEÇÃO DE IMAGENS MARCADAS
-            // Itera e deleta todas as imagens que foram removidas virtualmente
+            // 2. EXCLUSÃO DE IMAGENS MARCADAS
+            // Itera e exclui todas as imagens que foram removidas virtualmente
             for (const imageId of imageIdsToDelete) {
-                // Nota: O endpoint deleteVehicleImage deve receber o ID do veículo e o ID da imagem
+                // Nota: O endpoint `deleteVehicleImage` deve receber o ID do veículo e o ID da imagem
                 await deleteVehicleImage(id, imageId, accessToken, refreshAccessToken);
             }
-            setImageIdsToDelete([]); // Limpa a lista de IDs após a deleção
+            setImageIdsToDelete([]); // Limpa a lista de IDs após a exclusão
 
             // 3. UPLOAD DE NOVAS IMAGENS
             if (data.images && data.images.length > 0) {
@@ -223,8 +223,8 @@ export default function Editar() {
                 initialData={vehicleData}
                 onSubmit={handleUpdateVehicle}
                 isEditing
-                existingImageUrls={currentExistingImageUrls} // Passa o array ATUALIZADO
-                onRemoveExistingImage={handleRemoveExistingImage} // Passa a função de remoção virtual
+                existingImageUrls={currentExistingImageUrls} // Passa o array atualizado de URLs de imagens existentes
+                onRemoveExistingImage={handleRemoveExistingImage} // Passa a função de remoção virtual de imagens
             />
         </section>
     );

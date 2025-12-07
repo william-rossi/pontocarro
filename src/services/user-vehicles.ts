@@ -10,11 +10,11 @@ export const getMyVehicles = async (
     limit: number = 10,
     sortBy: SortBy = 'createdAt',
     sortOrder: SortOrder = 'desc',
-    refreshAccessToken: () => Promise<void> // Adiciona refreshAccessToken como parâmetro
+    refreshAccessToken: () => Promise<void> // Adiciona `refreshAccessToken` como parâmetro
 ): Promise<VehiclesList> => {
     const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${userId}/my-vehicles?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`, {
         method: 'GET',
-    }, token, refreshAccessToken); // Passa refreshAccessToken para fetchWithAuth
+    }, token, refreshAccessToken); // Passa `refreshAccessToken` para a função `fetchWithAuth`
 
     if (!response.ok)
         throw new Error(await getErrorMessage(response));

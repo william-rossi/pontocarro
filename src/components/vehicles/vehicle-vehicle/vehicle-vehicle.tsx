@@ -12,7 +12,7 @@ interface VehicleCardProps {
 }
 
 export default function VehicleCard({ vehicle }: VehicleCardProps) {
-    const imageUrl = vehicle.firstImageUrl || 'https://via.placeholder.com/150' // Use firstImageUrl from prop
+    const imageUrl = vehicle.firstImageUrl || 'https://via.placeholder.com/150' // Usa `firstImageUrl` da propriedade ou um placeholder
 
     return (
         <Link href={`/veiculo/${vehicle._id}`} className={styles.container}>

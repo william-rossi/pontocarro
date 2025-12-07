@@ -19,9 +19,9 @@ interface ImageUploadProps {
     watch: UseFormWatch<VehicleFormData>;
     errors: FieldErrors<VehicleFormData>;
     control: Control<VehicleFormData>;
-    existingImageUrls?: ExistingImage[]; // Alterado para array de objetos
-    onRemoveExistingImage?: (id: string) => void; // Recebe o id
-    trigger: UseFormTrigger<VehicleFormData>; // Adicionar trigger
+    existingImageUrls?: ExistingImage[]; // Alterado para um array de objetos `ExistingImage`
+    onRemoveExistingImage?: (id: string) => void; // Recebe o ID da imagem a ser removida.
+    trigger: UseFormTrigger<VehicleFormData>; // Adiciona a função `trigger` do `react-hook-form`
 }
 
 export default function ImageUpload({
@@ -29,7 +29,7 @@ export default function ImageUpload({
     control,
     existingImageUrls = [],
     onRemoveExistingImage,
-    trigger // Receber trigger
+    trigger // Recebe a função `trigger`
 }: ImageUploadProps) {
     const maxImages = 10
     const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024 // 10MB
@@ -66,20 +66,20 @@ export default function ImageUpload({
 
                         if (newValidImages.length > 0) {
                             field.onChange([...images, ...newValidImages]);
-                            trigger('images'); // Disparar validação
+                            trigger('images'); // Dispara a validação do campo `images`
                         }
                     }
                 }
 
                 const handleRemoveImage = (indexToRemove: number) => {
                     field.onChange(images.filter((_, index) => index !== indexToRemove));
-                    trigger('images'); // Disparar validação
+                    trigger('images'); // Dispara a validação do campo `images`
                 }
 
                 const handleRemoveExistingImageClick = (idToRemove: string) => {
                     if (onRemoveExistingImage) {
                         onRemoveExistingImage(idToRemove);
-                        trigger('existingImageUrls'); // Disparar validação para existingImageUrls
+                        trigger('existingImageUrls'); // Dispara a validação para o campo `existingImageUrls`
                     }
                 };
 
@@ -95,7 +95,7 @@ export default function ImageUpload({
                             onClick={(e) => {
                                 const target = e.target as HTMLInputElement;
                                 target.value = '';
-                            }} // Permite o upload da mesma imagem novamente
+                            }} // Limpa o valor do input para permitir o re-upload da mesma imagem.
                             disabled={images.length + existingImageUrls.length >= maxImages}
                         />
                         <Button
@@ -118,7 +118,7 @@ export default function ImageUpload({
                                     {onRemoveExistingImage && (
                                         <button
                                             type="button"
-                                            onClick={() => handleRemoveExistingImageClick(image.id)} // Usar a nova função aqui
+                                            onClick={() => handleRemoveExistingImageClick(image.id)} // Chama a função `handleRemoveExistingImageClick` para remover a imagem.
                                             className={styles.removeImageButton}
                                         >
                                             ✕

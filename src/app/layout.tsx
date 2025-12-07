@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "../styles/globals.css"
 import "../styles/themify.css"
-import 'react-toastify/dist/ReactToastify.css'; // Importa o CSS do React-Toastify
+import 'react-toastify/dist/ReactToastify.css'; // Importa o CSS do `React-Toastify`
 import Header from "@/components/header/header";
 import { AuthProvider } from '@/context/AuthContext';
 import Footer from "@/components/footer/footer";
-import { ToastContainer } from 'react-toastify'; // Importa o ToastContainer
+import { ToastContainer } from 'react-toastify'; // Importa o componente `ToastContainer`
 import AuthErrorToastHandler from '@/components/auth-error-toast-handler';
 import { cookies } from "next/headers";
 

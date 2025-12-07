@@ -19,7 +19,7 @@ import { toast } from 'react-toastify'
 import { getMyVehicles, deleteVehicle } from '@/services/user-vehicles'
 import { SortBy, SortOrder } from '@/types/vehicle-filters'
 
-// Definições de tipos e constantes
+// Definições de tipos e constantes para a página 'Meus Veículos'
 const VEHICLES_PER_PAGE = 5;
 const VALID_SORT_BY: SortBy[] = ['createdAt', 'price', 'year', 'mileage'];
 const VALID_SORT_ORDER: SortOrder[] = ['asc', 'desc'];
@@ -43,7 +43,7 @@ export default function MeusVeiculos() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [vehicleToDelete, setVehicleToDelete] = useState<VehicleSummary | null>(null);
 
-    // 1. Função de busca que depende dos estados
+    // 1. Função de busca para obter os veículos do usuário, dependendo dos estados de paginação e ordenação.
     const fetchMyVehicles = useCallback(async (page: number, by: SortBy, order: SortOrder) => {
         if (!user || !accessToken) return;
 
@@ -69,22 +69,22 @@ export default function MeusVeiculos() {
         }
     }, [user, accessToken, refreshAccessToken]);
 
-    // 2. Função centralizada para atualizar a URL (Query String)
+    // 2. Função centralizada para atualizar a URL com base nos filtros e paginação (Query String)
     const updateUrl = useCallback((page: number, by: SortBy, order: SortOrder) => {
-        // Cria um novo objeto URLSearchParams baseado nos parâmetros atuais
+        // Cria um novo objeto `URLSearchParams` com base nos parâmetros atuais da URL
         const params = new URLSearchParams();
 
-        // Adiciona/Atualiza a página se for diferente de 1 (default)
+        // Adiciona ou atualiza o parâmetro 'page' se for diferente de 1 (valor padrão)
         if (page > 1) {
             params.set('page', page.toString());
         }
 
-        // Adiciona/Atualiza sortBy se for diferente do padrão
+        // Adiciona ou atualiza o parâmetro 'sortBy' se for diferente do padrão
         if (by !== DEFAULT_SORT_BY) {
             params.set('sortBy', by);
         }
 
-        // Adiciona/Atualiza sortOrder se for diferente do padrão
+        // Adiciona ou atualiza o parâmetro 'sortOrder' se for diferente do padrão
         if (order !== DEFAULT_SORT_ORDER) {
             params.set('sortOrder', order);
         }
@@ -92,47 +92,47 @@ export default function MeusVeiculos() {
         const queryString = params.toString();
         const currentPath = `/meus-veiculos${queryString ? `?${queryString}` : ''}`;
 
-        // Verifica se a URL atual é diferente do path que estamos tentando empurrar
-        // Para evitar pushes desnecessários (browser history spam)
+        // Verifica se a URL atual é diferente do caminho que estamos tentando navegar
+        // Para evitar pushes desnecessários (spam no histórico do navegador)
         if (currentPath !== window.location.pathname + window.location.search) {
             router.push(currentPath, { scroll: false });
         }
     }, [router]);
 
 
-    // Efeito 1: Ler parâmetros da URL na montagem/mudança de searchParams
+    // Efeito 1: Lê os parâmetros da URL na montagem ou quando `searchParams` muda.
     useEffect(() => {
         const pageParam = searchParams.get('page');
         const sortByParam = searchParams.get('sortBy');
         const sortOrderParam = searchParams.get('sortOrder');
 
-        // Parse e Validação
+        // Análise e validação dos parâmetros da URL
         const initialPage = pageParam ? parseInt(pageParam) : 1;
         const finalPage = (!isNaN(initialPage) && initialPage >= 1) ? initialPage : 1;
 
         const finalSortBy: SortBy = VALID_SORT_BY.includes(sortByParam as SortBy) ? (sortByParam as SortBy) : DEFAULT_SORT_BY;
         const finalSortOrder: SortOrder = VALID_SORT_ORDER.includes(sortOrderParam as SortOrder) ? (sortOrderParam as SortOrder) : DEFAULT_SORT_ORDER;
 
-        // Aplica os estados lidos/validados, mas evita loop de dependências:
-        // A busca será acionada pelo Efeito 2.
+        // Aplica os estados lidos e validados, evitando loop de dependências:
+        // A busca dos veículos será acionada pelo Efeito 2.
         setCurrentPage(finalPage);
         setSortBy(finalSortBy);
         setSortOrder(finalSortOrder);
 
     }, [searchParams]); // Dependência apenas em searchParams
 
-    // Efeito 2: Acionar a busca e atualizar a URL quando o estado interno muda
+    // Efeito 2: Aciona a busca de veículos e atualiza a URL quando o estado interno (pagina, ordenação) muda.
     useEffect(() => {
         if (user && accessToken) {
-            // 1. Aciona a busca com os estados atuais
+            // 1. Aciona a busca de veículos com os estados atuais
             fetchMyVehicles(currentPage, sortBy, sortOrder);
 
-            // 2. Garante que a URL reflita os estados atuais
+            // 2. Garante que a URL reflita os estados atuais de paginação e ordenação
             updateUrl(currentPage, sortBy, sortOrder);
         }
     }, [user, accessToken, currentPage, sortBy, sortOrder, fetchMyVehicles, updateUrl]);
 
-    // --- Handlers de Interação do Usuário ---
+    // --- Manipuladores de Interação do Usuário ---
 
     const handlePageChange = (page: number) => {
         if (page !== currentPage) {
@@ -164,7 +164,7 @@ export default function MeusVeiculos() {
         if (finalNewSortBy !== sortBy || finalNewSortOrder !== sortOrder) {
             setSortBy(finalNewSortBy);
             setSortOrder(finalNewSortOrder);
-            setCurrentPage(1); // Resetar para a primeira página ao mudar a ordenação
+            setCurrentPage(1); // Redefine para a primeira página ao mudar a ordenação
             // updateUrl será chamado pelo useEffect
         }
     };
@@ -184,8 +184,8 @@ export default function MeusVeiculos() {
             await deleteVehicle(vehicleToDelete._id, accessToken, refreshAccessToken);
             toast.success("Veículo excluído com sucesso!");
 
-            // Recarregar a lista de veículos, mantendo a página atual se não for a última página
-            // Ou voltando uma página se for a última página e não houver mais veículos nela
+            // Recarrega a lista de veículos, mantendo a página atual se não for a última página
+            // Ou volta uma página se for a última e não houver mais veículos nela
             const currentTotal = totalVehicles - 1;
             const newTotalPages = Math.ceil(currentTotal / VEHICLES_PER_PAGE) || 1;
 
@@ -225,9 +225,7 @@ export default function MeusVeiculos() {
         { value: 'mileage_desc', label: 'Maior Km' },
     ];
 
-    // ... (O restante da renderização permanece o mesmo)
-
-    // --- Renderização ---
+    // --- Renderização do Componente ---
     return (
         <section className={styles.container}>
             <BackButtonAnnounce destination='/' />

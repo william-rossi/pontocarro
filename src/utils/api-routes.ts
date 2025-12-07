@@ -25,7 +25,7 @@ export const handleApiResponse = async (response: Response) => {
             { status: response.status }
         )
     } catch {
-        // If the response is OK but not JSON (e.g., a 204 No Content), return an empty success response
+        // Se a resposta for OK, mas não JSON (ex: um 204 No Content), retorna uma resposta de sucesso vazia
         return NextResponse.json(
             { success: true },
             { status: response.status }

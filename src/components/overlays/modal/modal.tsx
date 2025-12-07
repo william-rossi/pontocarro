@@ -12,33 +12,35 @@ type BackButtonTheme = 'primary' | 'inverted'
 type BackgroundHeadTheme = 'primary' | 'inverted'
 
 interface HeadProps {
-  /** ID do elemento que quando desaparecer da tela, ativa barra superior. */
+  /** ID do elemento que, ao desaparecer da tela, ativa a barra superior do modal. */
   elToObserveId?: string
-  /** Força o head para aparecer mesmo sem ID */
+  /** Força o cabeçalho a aparecer, mesmo sem um ID de elemento para observar. */
   forceEnableHead?: boolean
-  /** Título da barra superior se ativa. */
+  /** Título exibido na barra superior do modal, se ativada. */
   headTitle?: string
-  /** Cor do background da barra superior ativa no scroll */
+  /** Tema de cor de fundo da barra superior quando ativada pelo scroll. */
   backgroundHeadTheme?: BackgroundHeadTheme
 }
 
 interface Options {
-  /** Duração da animação do modal. Ex: .2s */
+  /** Duração da animação de abertura e fechamento do modal. Ex: '0.2s'. */
   animationDuration?: string
-  /** Tipo de animação a ser aplicada. */
+  /** Tipo de animação a ser aplicada ao modal (fade, pop, scale ou false para sem animação). */
   animation?: Animation
-  /** Habilita o botão de fechar no topo do modal. */
+  /** Habilita ou desabilita o botão de fechar no canto superior direito do modal. */
   enableCloseButton?: boolean
-  /** Tema do botão de fechar. */
+  /** Tema de cor para o botão de fechar. */
   closeButtonTheme?: BackButtonTheme
+  /** Permite fechar o modal clicando no overlay (fundo escurecido). */
   canClickOnOverlayToClose?: boolean
   headProps?: HeadProps
+  /** Indica se o conteúdo do modal já foi completamente carregado. */
   hasLoadedContent?: boolean
 }
 
 interface BaseProps {
   children: React.ReactNode
-  /** Se o modal tem uma rota para ser interceptada. */
+  /** Indica se o modal está interceptando uma rota do Next.js. */
   isInterceptRouting: boolean
   options?: Options
   className?: string
@@ -58,7 +60,7 @@ interface InterceptRoutingFalseProps extends BaseProps {
 
 type Props = InterceptRoutingTrueProps | InterceptRoutingFalseProps
 
-/** Modal centralizado na página. */
+/** Componente de modal centralizado na página, com opções de animação e cabeçalho. */
 export default function Modal(props: Props) {
   const [isVisible, setIsVisible] = useState(false)
   const [animationClass, setAnimationClass] = useState("")

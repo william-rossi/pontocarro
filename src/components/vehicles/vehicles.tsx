@@ -10,9 +10,9 @@ import VehicleCard from './vehicle-card/vehicle-card'
 import VehicleCardSkeleton from './vehicle-card/vehicle-card-skeleton'
 import Button from '../button/button'
 import { locations } from '@/constants/locations'
-import { toast } from 'react-toastify'; // Importa a função toast
-import { useRouter, useSearchParams } from 'next/navigation'; // Importa useRouter e useSearchParams
-import Pagination from './pagination/pagination'; // Importa o componente Pagination
+import { toast } from 'react-toastify'; // Importa a função `toast`
+import { useRouter, useSearchParams } from 'next/navigation'; // Importa `useRouter` e `useSearchParams`
+import Pagination from './pagination/pagination'; // Importa o componente `Pagination`
 
 export default function Vehicles() {
     const [vehicles, setVehicles] = useState<VehicleSummary[]>([])
@@ -27,12 +27,12 @@ export default function Vehicles() {
     const [userLocation, setUserLocation] = useState<{ city: string; state: string } | null>(null)
     const [useLocationFilter, setUseLocationFilter] = useState(false)
     const [isLocationChecked, setIsLocationChecked] = useState(false)
-    const [hasActiveFilters, setHasActiveFilters] = useState(false) // Novo estado para controlar a visibilidade do botão Limpar Filtros
+    const [hasActiveFilters, setHasActiveFilters] = useState(false) // Estado para controlar a visibilidade do botão 'Limpar Filtros'
 
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    // Função assíncrona para obter e geocodificar a localização (pura, sem lógica de state/filtro)
+    // Função assíncrona para obter e geocodificar a localização do usuário (lógica pura, sem gerenciar estados de filtro)
     const requestUserLocation = useCallback(async () => {
         return new Promise<{ city: string; state: string } | null | { status: 'denied' | 'not_supported' | 'error' }>((resolve) => {
             if (navigator.geolocation) {
@@ -64,7 +64,7 @@ export default function Vehicles() {
                             resolve({ status: 'error' })
                         }
                     },
-                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } // Adiciona opções para forçar precisão
+                    { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 } // Adiciona opções para forçar alta precisão e definir timeout
                 )
             } else {
                 console.log("Geolocalização não é suportada por este navegador.")
@@ -73,10 +73,10 @@ export default function Vehicles() {
         })
     }, [])
 
-    // Efeito para checar o localStorage e obter a localização inicial e inicializar filtros da URL
+    // Efeito para verificar o `localStorage`, obter a localização inicial e inicializar filtros da URL
     useEffect(() => {
         const initializeLocationAndFilters = async () => {
-            // O loading será controlado pelo useEffect de fetchVehicles.
+            // O estado de carregamento será controlado pelo `useEffect` de `fetchVehicles`.
             // setLoading(true)
             const storedLocation = localStorage.getItem('userLocation')
             const storedUseLocationFilter = localStorage.getItem('useLocationFilter')
@@ -98,9 +98,9 @@ export default function Vehicles() {
         }
 
         initializeLocationAndFilters()
-    }, [requestUserLocation]) // Dependência apenas em requestUserLocation
+    }, [requestUserLocation]) // Dependência apenas na função `requestUserLocation`
 
-    // Efeito para buscar veículos baseado nos parâmetros da URL e estado de localização
+    // Efeito para buscar veículos com base nos parâmetros da URL e no estado da localização.
     useEffect(() => {
         if (!isLocationChecked) {
             return
@@ -121,7 +121,7 @@ export default function Vehicles() {
                         if (!isNaN(parsedPage) && parsedPage >= 1) {
                             pageFromUrl = parsedPage;
                         }
-                    } else if (key !== 'limit') { // 'limit' não é um filtro a ser aplicado pela UI
+                    } else if (key !== 'limit') { // 'limit' não é um filtro a ser aplicado pela interface do usuário
                         if (key === 'minPrice' || key === 'maxPrice' || key === 'minYear' || key === 'maxYear' || key === 'mileage' || key === 'maxMileage') {
                             const parsedValue = parseFloat(value);
                             if (!isNaN(parsedValue)) {
@@ -133,7 +133,7 @@ export default function Vehicles() {
                     }
                 }
 
-                // Atualiza o currentPage e currentFilters baseando-se na URL
+                // Atualiza `currentPage` e `currentFilters` com base na URL
                 setCurrentPage(pageFromUrl);
                 setCurrentFilters(filtersFromUrl);
 
@@ -143,7 +143,7 @@ export default function Vehicles() {
                     finalFilters.city = userLocation.city;
                     finalFilters.state = userLocation.state;
                 } else if ((finalFilters.city || finalFilters.state) && useLocationFilter) {
-                    // Se houver filtros de cidade/estado manuais e geolocalização ativa, desativa a geolocalização
+                    // Se houver filtros manuais de cidade/estado e a geolocalização estiver ativa, desativa a geolocalização
                     setUseLocationFilter(false);
                     localStorage.setItem('useLocationFilter', 'false');
                 }
@@ -151,12 +151,12 @@ export default function Vehicles() {
                 const hasFilters = Object.keys(finalFilters).some(key =>
                     (key !== 'page' && key !== 'limit' && (finalFilters as Record<string, any>)[key] !== undefined && (finalFilters as Record<string, any>)[key] !== '')
                 )
-                setHasActiveFilters(hasFilters || useLocationFilter); // Atualiza o estado
+                setHasActiveFilters(hasFilters || useLocationFilter); // Atualiza o estado `hasActiveFilters`
 
                 if (hasFilters) {
                     responseData = await searchVehicles(finalFilters)
                 } else {
-                    responseData = await getVehicles(pageFromUrl, vehiclesPerPage) // Usa pageFromUrl aqui
+                    responseData = await getVehicles(pageFromUrl, vehiclesPerPage) // Usa `pageFromUrl` aqui para a paginação
                 }
 
                 setVehicles(responseData.vehicles)
@@ -182,7 +182,7 @@ export default function Vehicles() {
             }
         });
 
-        // Sempre reseta para a primeira página ao aplicar novos filtros
+        // Sempre redefine para a primeira página ao aplicar novos filtros
         params.delete('page');
 
         router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
@@ -204,7 +204,7 @@ export default function Vehicles() {
         const params = new URLSearchParams(searchParams.toString());
         params.delete('city');
         params.delete('state');
-        params.delete('page'); // Reset page when viewing all cars
+        params.delete('page'); // Redefine a página ao visualizar todos os veículos
 
         router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
         setUseLocationFilter(false);
@@ -216,7 +216,7 @@ export default function Vehicles() {
         if (!userLocation) {
             setLoading(true);
             const newLocation = await requestUserLocation();
-            // setLoading(false); // setLoading será tratado pelo useEffect de fetchVehicles
+            // `setLoading` será tratado pelo `useEffect` de `fetchVehicles`
 
             if (newLocation && 'status' in newLocation) {
                 if (newLocation.status === 'denied') {
@@ -228,7 +228,7 @@ export default function Vehicles() {
                 }
                 setUseLocationFilter(false);
                 localStorage.setItem('useLocationFilter', 'false');
-                setLoading(false); // Garante que o loading é desativado em caso de erro/negação
+                setLoading(false); // Garante que o carregamento seja desativado em caso de erro ou negação de permissão
                 return;
             } else if (newLocation && !('status' in newLocation)) {
                 setUserLocation(newLocation);
@@ -240,7 +240,7 @@ export default function Vehicles() {
                 params.delete('page'); // Resetar para a primeira página
 
                 router.push(`${window.location.pathname}?${params.toString()}`, { scroll: false });
-                // setLoading(false); // setLoading será tratado pelo useEffect de fetchVehicles
+                // `setLoading` será tratado pelo `useEffect` de `fetchVehicles`
             }
         } else {
             setUseLocationFilter(true);
@@ -253,7 +253,7 @@ export default function Vehicles() {
         }
     }
 
-    // Removido o useEffect para atualizar a URL, pois agora os handlers fazem isso diretamente.
+    // O `useEffect` para atualizar a URL foi removido, pois agora os manipuladores fazem isso diretamente.
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -269,7 +269,7 @@ export default function Vehicles() {
             const newPage = currentPage - 1;
             const params = new URLSearchParams(searchParams.toString());
             if (newPage === 1) {
-                params.delete('page'); // Remove page param for page 1
+                params.delete('page'); // Remove o parâmetro de página para a página 1
             } else {
                 params.set('page', newPage.toString());
             }

@@ -10,7 +10,7 @@ import VehicleCarousel from './_vehicle-carousel/page'
 import BackButtonAnnounce from '@/components/back-button-announce/back-button-announce'
 import { Vehicle } from '@/types/vehicles'
 
-// ✅ Cria uma função memoizada — o mesmo request é reutilizado dentro da mesma renderização
+// Cria uma função memoizada: o mesmo request é reutilizado dentro da mesma renderização
 const getVehicleCached = cache(async (guid: string) => {
     return await getVehicleById(guid)
 })

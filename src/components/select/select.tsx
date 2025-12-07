@@ -6,7 +6,7 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
     label?: string
     error?: string
     options: { value: string; label: string }[]
-    defaultOptionLabel?: string // Nova prop para o rótulo da opção padrão
+    defaultOptionLabel?: string // Nova propriedade para o rótulo da opção padrão
 }
 
 export default function Select({
@@ -14,7 +14,7 @@ export default function Select({
     error,
     options,
     className,
-    defaultOptionLabel, // Desestruturar a nova prop
+    defaultOptionLabel, // Desestrutura a nova propriedade
     ...props
 }: SelectProps) {
     return (

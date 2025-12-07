@@ -15,10 +15,10 @@ import TextArea from '@/components/textarea/textarea';
 import FeatureInput from '@/components/feature-input/feature-input';
 import ImageUpload from '@/components/image-upload/image-upload';
 import { useAuth } from '@/context/AuthContext';
-// Importações de constantes assumidas no seu projeto
+// Importações de constantes utilizadas no projeto
 import { BODY_TYPE, FUEL, TRANSMISSION } from '@/constants/select-box-items';
 
-// Interface para rastrear imagens existentes
+// Interface para rastrear as imagens existentes
 interface ExistingImage {
     id: string;
     url: string;
@@ -41,7 +41,7 @@ const vehicleFormSchema = z.object({
     color: z.string().min(1, "Cor é obrigatória").max(50, "Cor muito longa"),
     description: z.string().min(1, "Descrição é obrigatória").max(1000, "Descrição muito longa"),
     features: z.array(z.string()).max(20, "Máximo de 20 características").optional(),
-    images: z.array(z.instanceof(File)).optional(), // Novos arquivos, opcional aqui
+    images: z.array(z.instanceof(File)).optional(), // Novos arquivos de imagem, opcional aqui
 }).extend({
     announcerName: z
         .string()
@@ -74,14 +74,14 @@ const vehicleFormSchema = z.object({
         .min(1, "E-mail do anunciante é obrigatório")
         .max(150, "E-mail do anunciante muito longo")
         .email("E-mail do anunciante inválido"),
-    // Campo virtual para rastrear URLs existentes na edição
+    // Campo virtual para rastrear URLs de imagens existentes na edição
     existingImageUrls: z.array(z.object({
         id: z.string(),
         url: z.string(),
     })).optional(),
 });
 
-// 2. ESQUEMA ZOD COM VALIDAÇÃO DE IMAGEM (MIN 1)
+// 2. ESQUEMA ZOD COM VALIDAÇÃO DE IMAGEM (MÍNIMO 1)
 const getVehicleFormSchema = () => {
     return vehicleFormSchema.refine((data) => {
         // Valida se o total de imagens (novas + existentes) é maior ou igual a 1
@@ -142,7 +142,7 @@ const VehicleForm: React.FC<VehicleFormProps> = ({ vehicleId, initialData, onSub
             setValue("existingImageUrls", existingImageUrls || []);
 
             // Revalida o campo 'images' (onde o erro do refine está configurado)
-            // Isso força a re-avaliação da regra de 'totalImages >= 1' após uma exclusão.
+            // Isso força a reavaliação da regra de 'totalImages >= 1' após uma exclusão.
             trigger("images");
         }
     }, [existingImageUrls, setValue, trigger, isEditing]);

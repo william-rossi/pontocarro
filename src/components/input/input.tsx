@@ -65,7 +65,7 @@ export default function Input({
                             height={iconSize}
                         />
                     </button>
-                ) : ( // If not a password input
+                ) : ( // Se não for um input de senha
                     endIcon && (
                         <button
                             type="button"

@@ -17,7 +17,7 @@ const UserVehicleCard: React.FC<UserVehicleCardProps> = ({ vehicle, onDelete }) 
         <div className={styles.card}>
             <div className={styles.imageArea}>
                 <img
-                    src={`${API_BASE_URL}${vehicle.firstImageUrl}`} // Usar imagem real ou placeholder
+                    src={`${API_BASE_URL}${vehicle.firstImageUrl}`} // Usa a URL da imagem real ou um placeholder, se não houver imagem.
                     alt={`${vehicle.brand} ${vehicle.vehicleModel}`}
                 />
             </div>

@@ -45,12 +45,12 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}, acce
         const response = await fetch(url, { ...options, headers });
 
         if (response.status === 401 && retries < maxRetries) {
-            console.warn("Token de acesso expirado. Tentando atualizar...");
+            console.warn("Token de acesso expirado. Tentando renovar...");
             await refreshAccessToken();
-            const refreshedCookies = parseCookies(); // Re-analisa os cookies para obter o novo token
-            currentAccessToken = refreshedCookies.accessToken; // Atualiza o token atual
+            const refreshedCookies = parseCookies(); // Re-analisa os cookies para obter o novo `accessToken`
+            currentAccessToken = refreshedCookies.accessToken; // Atualiza o token de acesso para a próxima tentativa
             retries++;
-            continue; // Tenta novamente a requisição com o novo token
+            continue; // Tenta novamente a requisição com o token renovado
         } else {
             return response;
         }

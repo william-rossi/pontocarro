@@ -7,8 +7,6 @@ import Logo from '../logo/logo'
 import Image from 'next/image'
 import { setCookie, parseCookies } from 'nookies'
 import { useAuth } from '@/context/AuthContext'
-import Modal from '@/components/overlays/modal/modal'
-import Login from '@/components/account/login/login'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
@@ -17,7 +15,6 @@ type Theme = 'light' | 'dark'
 export default function Footer() {
     const [theme, setTheme] = useState<Theme>('light')
     const { user } = useAuth()
-    const [showLoginModal, setShowLoginModal] = useState(false)
     const router = useRouter()
 
     const themeHandler = () => {
@@ -90,19 +87,6 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
-            <Modal
-                isOpen={showLoginModal}
-                onClose={() => setShowLoginModal(false)}
-                isInterceptRouting={false}
-                options={{
-                    animation: 'pop',
-                    headProps: { headTitle: 'Login' },
-                    enableCloseButton: true,
-                    closeButtonTheme: 'inverted',
-                }}
-            >
-                <Login moveTo={() => { /* Implement if needed */ }} />
-            </Modal>
         </footer>
     )
 }

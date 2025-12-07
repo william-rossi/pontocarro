@@ -18,13 +18,13 @@ export default function Header() {
     const [isModal, setIsModal] = useState(false)
     const [accountProccessType, setAccountProccessType] = useState<AccountProcessType | undefined>()
     const [modalHeaderLabel, setModalHeaderLabel] = useState('')
-    const [showDropdown, setShowDropdown] = useState(false) // Novo estado
-    const [mounted, setMounted] = useState(false); // Novo estado para controlar montagem do cliente
-    const { user, logout } = useAuth(); // Adicionado logout
+    const [showDropdown, setShowDropdown] = useState(false)
+    const [mounted, setMounted] = useState(false); // Estado para controlar a montagem do componente no cliente
+    const { user, logout } = useAuth();
     const router = useRouter()
-    const dropdownRef = useRef<HTMLDivElement>(null); // Ref para o dropdown
-    const userButtonRef = useRef<HTMLDivElement>(null); // Ref para o botão do usuário
-    const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Ref para o timeout do hover
+    const dropdownRef = useRef<HTMLDivElement>(null); // Referência para o elemento dropdown
+    const userButtonRef = useRef<HTMLDivElement>(null); // Referência para o botão do usuário
+    const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Referência para o timeout do evento hover
 
     const handleUserClick = () => {
         if (!user) {
@@ -49,11 +49,11 @@ export default function Header() {
         if (user) {
             hoverTimeoutRef.current = setTimeout(() => {
                 setShowDropdown(false);
-            }, 150); // Pequeno atraso para permitir mover o mouse para o dropdown
+            }, 150); // Pequeno atraso para permitir que o mouse se mova para o dropdown
         }
     };
 
-    // Fechar dropdown ao clicar fora
+    // Fecha o dropdown ao clicar fora
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node) && userButtonRef.current && !userButtonRef.current.contains(event.target as Node)) {
@@ -132,10 +132,10 @@ export default function Header() {
                                 ref={userButtonRef}
                             >
                                 <Image src={'/assets/svg/user.svg'} width={21} height={21} alt='user' />
-                                {mounted ? ( // Renderiza o nome do usuário/Entrar apenas no cliente
+                                {mounted ? ( // Renderiza o nome do usuário/Entrar apenas no lado do cliente
                                     <span>{user ? getFirstName(user.username) : 'Entrar'}</span>
                                 ) : (
-                                    // Opcional: placeholder para evitar mudanças de layout se necessário
+                                    // Opcional: placeholder para evitar mudanças de layout, se necessário
                                     <span style={{ minWidth: '50px' }}></span>
                                 )}
                             </div>
