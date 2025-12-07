@@ -13,6 +13,8 @@ import { loginUser } from '@/services/auth';
 import { User } from '@/types/auth';
 import Message from "@/components/message/message"
 import { Overlay } from "@/components/overlays/overlay"
+import { destroyCookie, parseCookies } from "nookies"
+import { useRouter } from "next/navigation"
 
 const loginSchema = z.object({
     email: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),
@@ -27,7 +29,7 @@ interface Props {
 
 export default function Login({ moveTo }: Props) {
     const [errorMessage, setErrorMessage] = useState<string>()
-
+    const router = useRouter()
     const { login } = useAuth();
     const {
         register,
@@ -51,6 +53,14 @@ export default function Login({ moveTo }: Props) {
             };
 
             login(user, loginResponse.accessToken, loginResponse.refreshToken);
+
+            const parsedCookies = parseCookies()
+            const callback = parsedCookies.callback
+
+            if (callback) {
+                router.push(callback)
+                destroyCookie(null, 'callback')
+            }
 
             Overlay.dismiss()
         }

@@ -2,6 +2,7 @@ import { API_BASE_URL } from '@/constants/secrets'
 import { Image, Vehicle, VehiclesList } from "../types/vehicles"
 import { getErrorMessage } from './utils'
 import { SortBy, SortOrder, VehicleFilter } from '@/types/vehicle-filters'
+import { cachedFetch } from '@/utils/cached-fetch'
 
 export const getVehicles = async (
     page: number = 1,
@@ -9,7 +10,7 @@ export const getVehicles = async (
     sortBy: SortBy = 'createdAt',
     sortOrder: SortOrder = 'desc'
 ): Promise<VehiclesList> => {
-    const response = await fetch(`${API_BASE_URL}/vehicles?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`)
+    const response = await cachedFetch(`${API_BASE_URL}/vehicles?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`)
 
     if (!response.ok)
         throw new Error('Failed to fetch vehicles')
@@ -28,7 +29,7 @@ export const searchVehicles = async (filters: VehicleFilter): Promise<VehiclesLi
         }
     });
     const query = new URLSearchParams(validFilters).toString();
-    const response = await fetch(`${API_BASE_URL}/vehicles/search?${query}`)
+    const response = await cachedFetch(`${API_BASE_URL}/vehicles/search?${query}`)
 
     if (!response.ok)
         throw new Error(await getErrorMessage(response))
@@ -39,7 +40,7 @@ export const searchVehicles = async (filters: VehicleFilter): Promise<VehiclesLi
 }
 
 export const getVehiclesByLocation = async (state: string, city: string): Promise<Vehicle[]> => {
-    const response = await fetch(`${API_BASE_URL}/vehicles/by-city-state?state=${state}&city=${city}`)
+    const response = await cachedFetch(`${API_BASE_URL}/vehicles/by-city-state?state=${state}&city=${city}`)
 
     if (!response.ok)
         throw new Error(await getErrorMessage(response))
@@ -48,7 +49,7 @@ export const getVehiclesByLocation = async (state: string, city: string): Promis
 }
 
 export const getVehicleById = async (id: string): Promise<Vehicle> => {
-    const response = await fetch(`${API_BASE_URL}/vehicles/${id}`)
+    const response = await cachedFetch(`${API_BASE_URL}/vehicles/${id}`)
 
     if (!response.ok)
         throw new Error(await getErrorMessage(response))
@@ -57,7 +58,7 @@ export const getVehicleById = async (id: string): Promise<Vehicle> => {
 }
 
 export const getVehicleImages = async (vehicleId: string): Promise<Image[]> => {
-    const response = await fetch(`${API_BASE_URL}/images/${vehicleId}`)
+    const response = await cachedFetch(`${API_BASE_URL}/images/${vehicleId}`)
 
     if (!response.ok)
         throw new Error(await getErrorMessage(response))
@@ -67,7 +68,7 @@ export const getVehicleImages = async (vehicleId: string): Promise<Image[]> => {
 }
 
 export const getVehicleImageFirst = async (vehicleId: string): Promise<Image> => {
-    const response = await fetch(`${API_BASE_URL}/images/${vehicleId}/first`)
+    const response = await cachedFetch(`${API_BASE_URL}/images/${vehicleId}/first`)
 
     if (!response.ok)
         throw new Error(await getErrorMessage(response))

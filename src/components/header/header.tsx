@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { getFirstName } from '@/utils/user-helpers'
 import Logo from '../logo/logo'
+import { destroyCookie, parseCookies, setCookie } from 'nookies'
 
 export default function Header() {
     const [isModal, setIsModal] = useState(false)
@@ -77,6 +78,7 @@ export default function Header() {
             router.push('/anunciar');
         } else {
             setIsModal(true);
+            setCookie(null, 'callback', '/anunciar')
         }
     };
 
@@ -89,7 +91,12 @@ export default function Header() {
         <>
             {isModal && (
                 <Modal
-                    onClose={() => setIsModal(false)}
+                    onClose={() => {
+                        setIsModal(false);
+                        const parsedCookies = parseCookies()
+                        const callback = parsedCookies.callback
+                        if (callback) destroyCookie(null, 'callback')
+                    }}
                     isOpen={isModal}
                     isInterceptRouting={false}
                     options={{
