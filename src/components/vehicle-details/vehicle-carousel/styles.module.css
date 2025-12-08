@@ -48,10 +48,6 @@
     height: 350px;
     border-radius: 8px;
     object-fit: cover;
-
-    @media screen and (max-width: 1023px) {
-        height: 250px;
-    }
 }
 
 .thumbnailContent {
@@ -82,4 +78,10 @@
 .thumbnailContainer img.activeThumbnail {
     border-color: var(--primary-color);
     border-radius: 10x;
+}
+
+@media screen and (max-width: 1023px) {
+    .mainImage {
+        height: 250px;
+    }
 }
