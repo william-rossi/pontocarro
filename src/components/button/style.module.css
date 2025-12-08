@@ -1,11 +1,10 @@
-.container {
-    background-color: var(--primary-color);
+.container,
+.invert {
     padding: 10px 20px;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
     transition: .2s;
     border: 1.5px solid var(--border-color);
 }
@@ -15,8 +14,13 @@
     cursor: not-allowed;
 }
 
+.container {
+    background-color: var(--primary-color);
+    color: white;
+}
+
 .invert {
-    background-color: transparent !important;
+    background-color: transparent;
     color: var(--text-color);
 }
 

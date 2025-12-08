@@ -9,6 +9,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     startIcon?: string
     endIcon?: string
     iconSize?: number
+    classNameInputWrapper?: string
     togglePasswordIcons?: { show: string; hide: string }
     onEndIconClick?: () => void
 }
@@ -19,6 +20,7 @@ export default function Input({
     startIcon,
     endIcon,
     className,
+    classNameInputWrapper: inputWrapperClass,
     iconSize = 20,
     type,
     togglePasswordIcons = {
@@ -37,7 +39,7 @@ export default function Input({
         <div className={styles.wrapper}>
             {label && <label className={styles.label}>{label}</label>}
             <div
-                className={`${styles.inputWrapper} ${error ? styles.errorBorder : ""}`}
+                className={`${styles.inputWrapper} ${inputWrapperClass ?? ''} ${error ? styles.errorBorder : ""}`}
             >
                 {startIcon && (
                     <div className={styles.icon}>

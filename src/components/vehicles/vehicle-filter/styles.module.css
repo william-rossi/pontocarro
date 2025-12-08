@@ -86,8 +86,12 @@
     font-size: var(--font-lg);
 }
 
+.inputWrapper {
+    background-color: var(--contrast-color) !important;
+}
+
 .filterBtn {
-    height: -webkit-fill-available !important;
+    height: 56.6px !important;
 }
 
 .filterBtn:hover {
@@ -99,6 +103,10 @@
     font-weight: 600;
 }
 
+.filterImg {
+    display: none;
+}
+
 @media screen and (max-width: 1023px) {
     .inputArea {
         gap: 6px;
@@ -106,5 +114,15 @@
 
     .input {
         font-size: var(--font-default);
+    }
+
+    .filterBtn {
+        display: none;
+    }
+
+    .filterImg {
+        display: block;
+        width: 27px;
+        height: 27px;
     }
 }

@@ -15,6 +15,7 @@
     --border-track-thumb-hover: #a0a0a0;
     --footer-color: #111827;
     --price-color: #16a34a;
+    --contrast-color: #fff;
 }
 
 .dark {
@@ -34,4 +35,5 @@
     --border-track-thumb-hover: #606a7e;
     --footer-color: #1d2437;
     --price-color: #16a34a;
+    --contrast-color: #0e1218;
 }

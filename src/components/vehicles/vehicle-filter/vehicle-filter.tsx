@@ -9,6 +9,7 @@ import { VehicleFilter } from '@/types/vehicle-filters'
 import Button from '@/components/button/button'
 import { BODY_TYPE, TRANSMISSION, FUEL } from '@/constants/select-box-items'
 import LocationSelect from '@/components/location-select/location-select' // Importa o componente `LocationSelect`
+import Image from 'next/image'
 
 interface VehicleFilterProps {
     onApplyFilters: (filters: VehicleFilter) => void
@@ -94,11 +95,12 @@ export default function VehicleFilterComponent({
         <div className={styles.container}>
             <div className={styles.inputArea}>
                 <Input
-                    placeholder="Busca por marca, modelo, cor, localização..."
+                    placeholder="Busca por marca, modelo, cor..."
                     startIcon="/assets/svg/magnifying-glass.svg"
                     endIcon={filters.name ? "/assets/svg/close.svg" : undefined}
                     onEndIconClick={filters.name ? handleClearSearch : undefined}
                     className={styles.input}
+                    classNameInputWrapper={styles.inputWrapper}
                     iconSize={23}
                     value={filters.name || ""}
                     onChange={(e) => handleInputChange('name', e.target.value)}
@@ -116,6 +118,15 @@ export default function VehicleFilterComponent({
                     iconSize={21}
                     className={styles.filterBtn}
                 />
+                <div className={styles.filterImg}>
+                    <Image
+                        src={'/assets/svg/filter-blue.svg'}
+                        width={27}
+                        height={27}
+                        alt='Filter'
+                        onClick={toggleFilterOptions}
+                    />
+                </div>
             </div>
 
             {showFilterOptions && (
