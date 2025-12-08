@@ -66,3 +66,9 @@
         left: 100%;
     }
 }
+
+@media screen and (max-width: 1023px) {
+    .mainImageSkeleton {
+        height: 250px;
+    }
+}
