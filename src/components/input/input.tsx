@@ -40,9 +40,9 @@ export default function Input({
                 className={`${styles.inputWrapper} ${error ? styles.errorBorder : ""}`}
             >
                 {startIcon && (
-                    <span className={styles.icon}>
+                    <div className={styles.icon}>
                         <Image src={startIcon} alt="icon" width={iconSize} height={iconSize} />
-                    </span>
+                    </div>
                 )}
 
                 <input

@@ -79,7 +79,7 @@ export default function ContactButton({ vehicle }: Props) {
                                 className={styles.whatsAppBtn}
                                 svg='/assets/svg/whatsapp-white.svg'
                                 iconSize={20}
-                                text='Enviar WhatsApp'
+                                text='WhatsApp'
                                 onClick={handleWhatsAppClick}
                             />
                         </div>

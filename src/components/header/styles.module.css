@@ -23,7 +23,7 @@
 
 .actionGroup {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
 }
 
@@ -121,6 +121,15 @@
         right: 0;
         width: 100%;
         box-shadow: none;
+    }
+
+    .announceBtn button {
+        padding: 5px 9px;
+        font-size: var(--font-sm);
+    }
+
+    .actionGroup {
+        gap: 5px;
     }
 }
 

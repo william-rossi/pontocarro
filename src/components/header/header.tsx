@@ -115,12 +115,14 @@ export default function Header() {
                 <div className={styles.subContainer}>
                     <Logo />
                     <div className={styles.actionGroup}>
-                        <Button
-                            text='Anunciar'
-                            onClick={handleAnnounceClick}
-                            alt='plus'
-                            svg='/assets/svg/plus.svg'
-                        />
+                        <div className={styles.announceBtn}>
+                            <Button
+                                text='Anunciar'
+                                onClick={handleAnnounceClick}
+                                alt='plus'
+                                svg='/assets/svg/plus.svg'
+                            />
+                        </div>
                         <div
                             className={styles.userWrapper}
                             onMouseEnter={handleMouseEnter}

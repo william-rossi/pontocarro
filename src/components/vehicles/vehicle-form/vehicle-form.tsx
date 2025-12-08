@@ -42,7 +42,7 @@ const vehicleFormSchema = z.object({
     description: z.string().min(1, "Descrição é obrigatória").max(1000, "Descrição muito longa"),
     features: z.array(z.string()).max(20, "Máximo de 20 características").optional(),
     images: z.array(z.instanceof(File)).optional(), // Novos arquivos de imagem, opcional aqui
-}).extend({
+}).safeExtend({
     announcerName: z
         .string()
         .min(3, "Nome do anunciante deve ter no mínimo 3 caracteres")

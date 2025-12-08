@@ -7,10 +7,6 @@
     display: flex;
     align-items: center;
     gap: 10px;
-
-    @media screen and (max-width: 1023px) {
-        gap: 8px;
-    }
 }
 
 .filterOptions {
@@ -101,4 +97,10 @@
 
 .filterBtn span {
     font-weight: 600;
+}
+
+@media screen and (max-width: 1023px) {
+    .inputArea {
+        gap: 6px;
+    }
 }

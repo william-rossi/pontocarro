@@ -290,9 +290,13 @@ export default function Vehicles() {
                 {
                     totalVehicles > 1
                         ?
-                        <span className={styles.foundVehicles}>{totalVehicles} veículos encontrados</span>
+                        hasActiveFilters
+                            ?
+                            <span className={styles.foundVehicles}>{totalVehicles} encontrados</span>
+                            :
+                            <span className={styles.foundVehicles}>{totalVehicles} veículos</span>
                         :
-                        totalVehicles <= 0 ? <div /> : <span className={styles.foundVehicles}>{totalVehicles} veículo encontrado</span>
+                        totalVehicles <= 0 ? <div /> : <span className={styles.foundVehicles}>{totalVehicles} encontrado</span>
                 }
                 {
                     userLocation && useLocationFilter ? (
@@ -308,7 +312,8 @@ export default function Vehicles() {
                             onClick={handleGetMyCityCars}
                             invert
                             svg='/assets/svg/location.svg'
-                            disabled={loading} // Only disable if actively loading, not just waiting for locationCheck
+                            disabled={loading}
+                            className={styles.nearbyBtn}
                         />
                 }
             </div>

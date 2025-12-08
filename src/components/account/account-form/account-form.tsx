@@ -92,7 +92,7 @@ const getAccountFormSchema = (mode: 'create' | 'update') => {
     }
 
     // No modo 'create', aplicam-se as regras de obrigatoriedade e complexidade
-    return baseAccountFormSchema.extend({
+    return baseAccountFormSchema.safeExtend({
         password: z
             .string()
             .min(8, "A senha deve ter pelo menos 8 caracteres")
