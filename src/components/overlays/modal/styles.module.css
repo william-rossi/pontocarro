@@ -42,7 +42,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
-    height: 90px;
+    height: 75px;
     padding: 0 25px;
     animation: showHead 0.1s linear forwards;
     border-bottom: 0.5px solid var(--border-color);

@@ -1,8 +1,8 @@
 :root {
   --max-width: 1400px;
   --padding: 30px;
-  --font-xxlg: 38px;
-  --font-xlg: 28px;
+  --font-xxlg: 36px;
+  --font-xlg: 26px;
   --font-lg: 20px;
   --font-default: 17px;
   --font-sm: 15px;
@@ -10,12 +10,12 @@
   --scrollbar-width: 7px;
 
   @media screen and (max-width: 1023px) {
-    --font-xxlg: 32px;
-    --font-xlg: 24px;
+    --font-xxlg: 29px;
+    --font-xlg: 22px;
     --font-lg: 16px;
     --font-default: 14px;
     --font-sm: 12px;
-    --font-xsm: 10px;
+    --font-xsm: 11px;
 
     --padding: 15px;
   }

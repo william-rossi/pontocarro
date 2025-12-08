@@ -4,6 +4,7 @@
     gap: 7px;
     cursor: pointer;
     width: fit-content;
+    user-select: none;
 }
 
 .container span {

@@ -103,4 +103,8 @@
     .inputArea {
         gap: 6px;
     }
+
+    .input {
+        font-size: var(--font-default);
+    }
 }
