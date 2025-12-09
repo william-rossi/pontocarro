@@ -1,29 +1,41 @@
 'use client'
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './styles.module.css'
 import Image from 'next/image'
-import Zoom from 'react-medium-image-zoom'
-import 'react-medium-image-zoom/dist/styles.css'
-import ScrollContainer from 'react-indiana-drag-scroll'
 import { getVehicleImages } from '@/services/vehicles'
 import VehicleCarouselSkeleton from './vehicle-carousel-skeleton'
+
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react'
+import { FreeMode, Navigation, Thumbs, Zoom } from 'swiper/modules'
+
+// Import Swiper styles
+import 'swiper/css'
+import 'swiper/css/free-mode'
+import 'swiper/css/navigation'
+import 'swiper/css/thumbs'
+import 'swiper/css/zoom'
+
 
 interface VehicleCarouselProps {
     vehicleId: string
 }
 
 const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
+    const [thumbsSwiper, setThumbsSwiper] = useState<any>(null)
+    const [mainSwiper, setMainSwiper] = useState<any>(null)
     const [currentIndex, setCurrentIndex] = useState(0)
-    const scrollRef = useRef<HTMLDivElement>(null)
 
-    const [showLeftArrow, setShowLeftArrow] = useState(false)
-    const [showRightArrow, setShowRightArrow] = useState(false)
+    // Estados para controlar a visibilidade das setas das miniaturas
+    const [showThumbnailLeftArrow, setShowThumbnailLeftArrow] = useState(false)
+    const [showThumbnailRightArrow, setShowThumbnailRightArrow] = useState(false)
 
     const [images, setImages] = useState<string[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
+    // Efeitos de carregamento de imagens (MANTIDO)
     useEffect(() => {
         const fetchImages = async () => {
             try {
@@ -43,67 +55,21 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
         }
     }, [vehicleId])
 
-    const nextImage = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length)
-    }
-
-    const prevImage = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length)
-    }
-
-    const scrollLeft = () => {
-        scrollRef.current?.scrollBy({ left: -200, behavior: 'smooth' })
-    }
-
-    const scrollRight = () => {
-        scrollRef.current?.scrollBy({ left: 200, behavior: 'smooth' })
-    }
-
-    const checkScrollPosition = () => {
-        const el = scrollRef.current
-        if (!el) return
-
-        const atStart = el.scrollLeft <= 0
-        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 1
-
-        setShowLeftArrow(!atStart)
-        setShowRightArrow(!atEnd)
-    }
-
+    // Efeito para sincronizar o scroll das miniaturas com a imagem principal
     useEffect(() => {
-        const el = scrollRef.current
-        if (!el) return
-
-        const thumbnail = el.children[currentIndex] as HTMLElement
-        if (!thumbnail) return
-
-        const thumbnailLeft = thumbnail.offsetLeft
-        const thumbnailRight = thumbnailLeft + thumbnail.offsetWidth
-
-        const visibleStart = el.scrollLeft
-        const visibleEnd = visibleStart + el.clientWidth
-
-        if (thumbnailLeft < visibleStart) {
-            el.scrollTo({ left: thumbnailLeft, behavior: 'smooth' })
-        } else if (thumbnailRight > visibleEnd) {
-            el.scrollTo({ left: thumbnailRight - el.clientWidth, behavior: 'smooth' })
+        if (thumbsSwiper && currentIndex !== undefined) {
+            thumbsSwiper.slideTo(currentIndex, 500) // Slide to current index with a duration
         }
-    }, [currentIndex])
+    }, [currentIndex, thumbsSwiper])
 
-    useEffect(() => {
-        const el = scrollRef.current
-        if (!el) return
+    // Função para checar a posição de scroll das miniaturas e controlar a visibilidade das setas
+    const checkThumbnailScrollPosition = (swiperInstance: any) => {
+        if (!swiperInstance) return
 
-        checkScrollPosition()
-
-        el.addEventListener('scroll', checkScrollPosition)
-        window.addEventListener('resize', checkScrollPosition)
-
-        return () => {
-            el.removeEventListener('scroll', checkScrollPosition)
-            window.removeEventListener('resize', checkScrollPosition)
-        }
-    }, [])
+        // Swiper possui propriedades para verificar o estado dos botões de navegação
+        setShowThumbnailLeftArrow(!swiperInstance.isBeginning)
+        setShowThumbnailRightArrow(!swiperInstance.isEnd)
+    }
 
     if (loading) {
         return <VehicleCarouselSkeleton />
@@ -119,76 +85,138 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
 
     return (
         <div className={styles.carousel}>
-            <div className={styles.mainImageContainer}>
-                {currentIndex !== 0 &&
-                    (<Image
-                        onClick={prevImage}
-                        src={'/assets/svg/arrow-left-bold.svg'}
-                        width={35}
-                        height={35}
-                        alt='arrow-left'
-                        className={styles.arrowLeft}
-                    />
-                    )}
-                <Zoom>
-                    {images[currentIndex] && (
-                        <img
-                            className={styles.mainImage}
-                            src={images[currentIndex]}
-                            alt={`Thumbnail ${currentIndex + 1}`}
-                        />
-                    )}
-                </Zoom>
-                {images.length > 1 &&
-                    (<Image
-                        onClick={nextImage}
-                        src={'/assets/svg/arrow-right-bold.svg'}
-                        width={35}
-                        height={35}
-                        alt='arrow-right'
-                        className={styles.arrowRight}
-                    />
-                    )}
-            </div>
+            {/* --------------------------- SWIPER PRINCIPAL --------------------------- */}
+            <Swiper
+                key={images.length} // Add key to force re-initialization on image count change
+                onSwiper={setMainSwiper}
+                style={{
+                    // @ts-ignore
+                    '--swiper-navigation-color': '#fff',
+                    '--swiper-pagination-color': '#fff',
+                }}
+                zoom={true}
+                {...(images.length > 1 && { // Conditionally pass navigation prop
+                    navigation: {
+                        nextEl: `.${styles.mainImageButtonNext}`,
+                        prevEl: `.${styles.mainImageButtonPrev}`,
+                    }
+                })}
+                // Sincroniza o Swiper principal com as miniaturas
+                {...(thumbsSwiper && { thumbs: { swiper: thumbsSwiper } })}
+                modules={[FreeMode, Navigation, Thumbs, Zoom]}
+                className={styles.mainImageSwiper}
+                onSlideChange={(swiper) => setCurrentIndex(swiper.activeIndex)}
+            >
+                {images.map((image, index) => (
+                    <SwiperSlide key={index}>
+                        <div className="swiper-zoom-container">
+                            <Image
+                                src={image}
+                                alt={`Vehicle image ${index + 1}`}
+                                layout="fill"
+                                objectFit="cover"
+                                className={styles.mainImage}
+                            />
+                        </div>
+                    </SwiperSlide>
+                ))}
 
-            <div className={styles.thumbnailContent}>
-                {showLeftArrow && (
-                    <Image
-                        onClick={scrollLeft}
-                        src={'/assets/svg/arrow-left-bold.svg'}
-                        width={25}
-                        height={25}
-                        alt='arrow-left'
-                        className={`${styles.arrowLeft} ${styles.arrowSmall}`}
-                    />
+                {/* Botões de Navegação Principal */}
+                {images.length > 1 && (
+                    <>
+                        <div className={`${styles.mainImageButtonPrev} ${currentIndex < 1 ? styles.mainImageButtonPrevDisabled : ''}`}>
+                            <Image
+                                src={'/assets/svg/arrow-left-bold.svg'}
+                                width={35}
+                                height={35}
+                                alt='arrow-left'
+                            />
+                        </div>
+                        <div className={`${styles.mainImageButtonNext} ${(currentIndex + 1) >= images.length ? styles.mainImageButtonNextDisabled : ''}`}>
+                            <Image
+                                src={'/assets/svg/arrow-right-bold.svg'}
+                                width={35}
+                                height={35}
+                                alt='arrow-right'
+                            />
+                        </div>
+                    </>
                 )}
+            </Swiper>
 
-                <ScrollContainer
-                    className={styles.thumbnailContainer}
-                    innerRef={scrollRef}
-                >
-                    {images.map((image, index) => (
+            {/* --------------------------- SWIPER THUMBNAIL --------------------------- */}
+            <Swiper
+                onSwiper={(swiper) => {
+                    setThumbsSwiper(swiper)
+                    // Inicializa a visibilidade das setas
+                    checkThumbnailScrollPosition(swiper)
+                }}
+                onSlideChange={(swiper) => checkThumbnailScrollPosition(swiper)} // Atualiza na mudança de slide
+                onResize={(swiper) => checkThumbnailScrollPosition(swiper)} // Atualiza no resize
+                spaceBetween={10}
+                // Definimos 4 como base, e o CSS garante o tamanho fixo
+                slidesPerView={'auto'} // Alterado para 'auto' para melhor ajuste
+                // Breakpoints para ajustar o número de miniaturas em telas maiores
+                breakpoints={{
+                    // Remove breakpoints específicos de slidesPerView para usar 'auto'
+                    // Eles ainda podem ser usados para spaceBetween ou outras configurações
+                    640: {
+                        spaceBetween: 10,
+                    },
+                    1024: {
+                        spaceBetween: 10,
+                    },
+                }}
+                freeMode={true}
+                watchSlidesProgress={true}
+                centeredSlides={false} // Centraliza a slide ativa
+                modules={[FreeMode, Navigation, Thumbs]}
+                className={styles.thumbnailSwiper}
+                navigation={{
+                    nextEl: `.${styles.thumbnailButtonNext}`,
+                    prevEl: `.${styles.thumbnailButtonPrev}`,
+                }}
+            >
+                {images.map((image, index) => (
+                    <SwiperSlide
+                        key={index}
+                        // Adicionando um className para fins de debug e garantir especificidade no CSS
+                        className={`${styles.thumbnailSlide} ${currentIndex === index ? styles.activeThumbnail : ''}`}
+                    >
+                        {/* Removido o onClick manual: o módulo Thumbs garante que o clique funcione */}
                         <img
-                            key={index}
                             src={image}
                             alt={`Thumbnail ${index + 1}`}
-                            className={currentIndex === index ? styles.activeThumbnail : ''}
-                            onClick={() => setCurrentIndex(index)}
+                            onClick={() => {
+                                if (mainSwiper) {
+                                    mainSwiper.slideTo(index)
+                                }
+                            }}
                         />
-                    ))}
-                </ScrollContainer>
-
-                {showRightArrow && (
-                    <Image
-                        onClick={scrollRight}
-                        src={'/assets/svg/arrow-right-bold.svg'}
-                        width={25}
-                        height={25}
-                        alt='arrow-right'
-                        className={`${styles.arrowRight} ${styles.arrowSmall}`}
-                    />
+                    </SwiperSlide>
+                ))}
+                {/* Botões de Navegação Thumbnail - Renderiza se houver mais de 4 para a navegação ser relevante */}
+                {images.length > 4 && (
+                    <>
+                        <div className={`${styles.thumbnailButtonPrev} ${!showThumbnailLeftArrow ? styles.thumbnailButtonPrevDisabled : ''}`}>
+                            <Image
+                                src={'/assets/svg/arrow-left-bold.svg'}
+                                width={25}
+                                height={25}
+                                alt='arrow-left-thumbnail'
+                            />
+                        </div>
+                        <div className={`${styles.thumbnailButtonNext} ${!showThumbnailRightArrow ? styles.thumbnailButtonNextDisabled : ''}`}>
+                            <Image
+                                src={'/assets/svg/arrow-right-bold.svg'}
+                                width={25}
+                                height={25}
+                                alt='arrow-right-thumbnail'
+                            />
+                        </div>
+                    </>
                 )}
-            </div>
+            </Swiper>
         </div>
     )
 }

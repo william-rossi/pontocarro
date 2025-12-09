@@ -5,83 +5,137 @@
     margin: auto;
 }
 
-.mainImageContainer {
-    position: relative;
-    width: 100%;
-}
-
-.arrowRight,
-.arrowLeft {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin-top: auto;
-    margin-bottom: auto;
-    padding: 3px;
-    background-color: rgba(255, 255, 255, 0.627);
-    border-radius: 50%;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.arrowRight:active,
-.arrowLeft:active {
-    transform: scale(0.97);
-}
-
-.arrowLeft {
-    left: 10px;
-}
-
-.arrowRight {
-    margin-left: auto;
-    right: 10px;
-}
-
-.arrowSmall {
-    background-color: rgba(0, 0, 0, 0.723) !important;
-    filter: brightness(50);
-}
-
-.mainImage {
+.mainImageSwiper {
     width: 100%;
     height: 350px;
     border-radius: 8px;
-    object-fit: cover;
-}
-
-.thumbnailContent {
     position: relative;
-    width: -webkit-fill-available;
+    /* Remove Swiper's default navigation size to use custom buttons */
+    --swiper-navigation-size: 0px;
 }
 
-.thumbnailContainer {
+.mainImageSwiper .swiper-slide {
     display: flex;
-    gap: 3px;
-    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.mainImage {
+    position: absolute !important;
     width: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.thumbnailContainer img {
-    width: 85px;
-    height: 85px;
-    border: 2px solid transparent;
-    border-radius: 10x;
-    cursor: pointer;
-    transition: border-color 0.3s;
+    height: 100%;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 8px;
 }
 
-.thumbnailContainer img.activeThumbnail {
-    border-color: var(--primary-color);
-    border-radius: 10x;
+/* ------------------ ESTILOS DE SETAS (PRINCIPAL) ------------------ */
+
+.mainImageButtonPrev,
+.mainImageButtonNext {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.627);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.mainImageButtonPrevDisabled,
+.mainImageButtonNextDisabled {
+    display: none;
+}
+
+.mainImageButtonPrev {
+    left: 10px;
+}
+
+.mainImageButtonNext {
+    right: 10px;
+}
+
+/* ------------------ SWIPER THUMBNAIL ------------------ */
+
+.thumbnailSwiper {
+    width: -webkit-fill-available;
+    margin-top: 10px;
+    position: relative;
+    /* Adiciona padding para dar espaço às setas de navegação */
+    padding: 0 40px;
+    --swiper-navigation-size: 0px;
+    /* Remove Swiper's default navigation size */
+}
+
+/* Corrigido: Garante tamanho fixo e uniforme para as miniaturas */
+.thumbnailSlide {
+    width: 85px !important;
+    height: 85px !important;
+    cursor: pointer;
+    border: 2px solid transparent;
+    /*opacity: 0.5;*/
+}
+
+/* Corrigido: Borda de seleção da imagem ativa */
+.activeThumbnail {
+    border: 2px solid var(--primary-color) !important;
+    border-radius: 10px !important;
+    /*opacity: 1;*/
+}
+
+.thumbnailSlide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: opacity 0.3s, border-color 0.3s;
+}
+
+/* ------------------ ESTILOS DE SETAS (THUMBNAIL) ------------------ */
+
+.thumbnailButtonPrev,
+.thumbnailButtonNext {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: opacity 0.3s;
+}
+
+.thumbnailButtonPrev {
+    left: 5px;
+}
+
+.thumbnailButtonNext {
+    right: 5px;
+}
+
+.thumbnailButtonPrev img,
+.thumbnailButtonNext img {
+    filter: invert(1);
+}
+
+.thumbnailButtonPrevDisabled,
+.thumbnailButtonNextDisabled {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
 }
 
 @media screen and (max-width: 1023px) {
-    .mainImage {
+    .mainImageSwiper {
         height: 250px;
     }
 }
