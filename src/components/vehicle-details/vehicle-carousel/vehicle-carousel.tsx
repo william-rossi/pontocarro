@@ -10,6 +10,10 @@ import VehicleCarouselSkeleton from './vehicle-carousel-skeleton'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { FreeMode, Navigation, Thumbs, Zoom } from 'swiper/modules'
 
+// Import Lightbox
+import Lightbox from 'yet-another-react-lightbox'
+import 'yet-another-react-lightbox/styles.css'
+
 // Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/free-mode'
@@ -26,6 +30,7 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
     const [thumbsSwiper, setThumbsSwiper] = useState<any>(null)
     const [mainSwiper, setMainSwiper] = useState<any>(null)
     const [currentIndex, setCurrentIndex] = useState(0)
+    const [lightboxOpen, setLightboxOpen] = useState(false) // Estado para controlar o Lightbox
 
     // Estados para controlar a visibilidade das setas das miniaturas
     const [showThumbnailLeftArrow, setShowThumbnailLeftArrow] = useState(false)
@@ -107,6 +112,14 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                 className={styles.mainImageSwiper}
                 onSlideChange={(swiper) => setCurrentIndex(swiper.activeIndex)}
             >
+                <Image
+                    width={32}
+                    height={32}
+                    src={'/assets/svg/fullscreen-white.svg'}
+                    alt='Fullscreen'
+                    className={styles.fullscreenIcon}
+                    onClick={() => setLightboxOpen(true)} // Abre o lightbox
+                />
                 {images.map((image, index) => (
                     <SwiperSlide key={index}>
                         <div className="swiper-zoom-container">
@@ -217,6 +230,14 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                     </>
                 )}
             </Swiper>
+
+            {/* Lightbox Component */}
+            <Lightbox
+                open={lightboxOpen}
+                close={() => setLightboxOpen(false)}
+                slides={images.map(image => ({ src: image }))}
+                index={currentIndex} // Correct prop for initial slide
+            />
         </div>
     )
 }

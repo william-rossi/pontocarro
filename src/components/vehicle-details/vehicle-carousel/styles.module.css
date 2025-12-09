@@ -14,12 +14,6 @@
     --swiper-navigation-size: 0px;
 }
 
-.mainImageSwiper .swiper-slide {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .mainImage {
     position: absolute !important;
     width: 100%;
@@ -132,6 +126,24 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s;
+}
+
+.fullscreenIcon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background-color: rgb(0, 0, 0);
+    padding: 6px;
+    border-radius: 5px;
+    z-index: 1;
+    opacity: 0.7;
+    transition: .2s;
+    cursor: pointer;
+}
+
+.fullscreenIcon:hover {
+    opacity: 1;
+    transform: scale(1.05);
 }
 
 @media screen and (max-width: 1023px) {

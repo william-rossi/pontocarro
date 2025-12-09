@@ -21,6 +21,7 @@
     "react-number-format": "^5.4.4",
     "react-toastify": "^11.0.5",
     "swiper": "^12.0.3",
+    "yet-another-react-lightbox": "^3.26.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {
