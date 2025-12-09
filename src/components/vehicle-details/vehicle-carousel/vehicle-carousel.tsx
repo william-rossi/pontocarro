@@ -123,11 +123,9 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                 {images.map((image, index) => (
                     <SwiperSlide key={index}>
                         <div className="swiper-zoom-container">
-                            <Image
+                            <img
                                 src={image}
                                 alt={`Vehicle image ${index + 1}`}
-                                layout="fill"
-                                objectFit="cover"
                                 className={styles.mainImage}
                             />
                         </div>
