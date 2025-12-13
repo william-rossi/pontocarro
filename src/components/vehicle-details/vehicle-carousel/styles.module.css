@@ -73,6 +73,7 @@
     border: 2px solid transparent;
     background-color: var(--background-color);
     border-radius: 10px !important;
+    margin-right: 5px !important;
     /*opacity: 0.5;*/
 }
 

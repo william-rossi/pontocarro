@@ -124,6 +124,7 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                                 src={image}
                                 alt={`Vehicle image ${index + 1}`}
                                 className={styles.mainImage}
+                                draggable={false}
                             />
                         </div>
                     </SwiperSlide>
@@ -195,6 +196,7 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                         <img
                             src={image}
                             alt={`Thumbnail ${index + 1}`}
+                            draggable={false}
                             onClick={() => {
                                 if (mainSwiper) {
                                     mainSwiper.slideTo(index)

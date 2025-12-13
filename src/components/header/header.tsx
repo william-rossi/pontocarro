@@ -70,7 +70,6 @@ export default function Header() {
     const handleLogout = () => {
         logout();
         setShowDropdown(false);
-        router.push('/'); // Redireciona para a página inicial após o logout
     };
 
     const handleAnnounceClick = () => {
@@ -81,6 +80,14 @@ export default function Header() {
             setCookie(null, 'callback', '/anunciar')
         }
     };
+
+    const renderUsername = () => {
+        if (!user) return 'Entrar'
+        const firstName = getFirstName(user.username)
+        if (window.innerWidth > window.innerHeight || firstName.length < 12)
+            return firstName
+        return 'Minha conta'
+    }
 
     useEffect(() => {
         setMounted(true);
@@ -134,8 +141,8 @@ export default function Header() {
                                 ref={userButtonRef}
                             >
                                 <Image src={'/assets/svg/user.svg'} width={21} height={21} alt='user' />
-                                {mounted ? ( // Renderiza o nome do usuário/Entrar apenas no lado do cliente
-                                    <span>{user ? getFirstName(user.username) : 'Entrar'}</span>
+                                {mounted ? (
+                                    <span>{renderUsername()}</span>
                                 ) : (
                                     // Opcional: placeholder para evitar mudanças de layout, se necessário
                                     <span style={{ minWidth: '50px' }}></span>

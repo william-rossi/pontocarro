@@ -19,6 +19,7 @@ const UserVehicleCard: React.FC<UserVehicleCardProps> = ({ vehicle, onDelete }) 
                 <img
                     src={vehicle.firstImageUrl}
                     alt={`${vehicle.brand} ${vehicle.vehicleModel}`}
+                    draggable={false}
                 />
             </div>
             <div className={styles.infoArea}>
