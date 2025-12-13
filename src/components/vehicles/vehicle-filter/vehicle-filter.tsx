@@ -224,7 +224,7 @@ export default function VehicleFilterComponent({
                     </div>
                     {/* Substitui os `Selects` de Estado e Cidade pelo componente `LocationSelect` */}
                     <LocationSelect
-                        className={styles.filterOptions}
+                        className={`${styles.filterOptions} ${styles.filterOptionsLocation}`}
                         selectedStateValue={filters.state || ""}
                         selectedCityValue={filters.city || ""}
                         onStateChange={(value) => handleInputChange('state', value)}
