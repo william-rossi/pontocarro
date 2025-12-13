@@ -294,7 +294,7 @@ export default function Vehicles() {
                             ?
                             <span className={styles.foundVehicles}>{totalVehicles} encontrados</span>
                             :
-                            <span className={styles.foundVehicles}>{totalVehicles} veículos</span>
+                            <span className={styles.foundVehicles}>Mais recentes</span>
                         :
                         totalVehicles <= 0 ? <div /> : <span className={styles.foundVehicles}>{totalVehicles} encontrado</span>
                 }
