@@ -29,8 +29,8 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     background-color: rgba(255, 255, 255, 0.627);
     border-radius: 50%;
     display: flex;
@@ -151,5 +151,10 @@
 @media screen and (max-width: 1023px) {
     .mainImageSwiper {
         height: 250px;
+    }
+
+    .thumbnailButtonPrev,
+    .thumbnailButtonNext {
+        display: none;
     }
 }

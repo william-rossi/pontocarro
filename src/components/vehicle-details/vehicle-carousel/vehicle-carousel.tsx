@@ -138,16 +138,16 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                         <div className={`${styles.mainImageButtonPrev} ${currentIndex < 1 ? styles.mainImageButtonPrevDisabled : ''}`}>
                             <Image
                                 src={'/assets/svg/arrow-left-bold.svg'}
-                                width={35}
-                                height={35}
+                                width={30}
+                                height={30}
                                 alt='arrow-left'
                             />
                         </div>
                         <div className={`${styles.mainImageButtonNext} ${(currentIndex + 1) >= images.length ? styles.mainImageButtonNextDisabled : ''}`}>
                             <Image
                                 src={'/assets/svg/arrow-right-bold.svg'}
-                                width={35}
-                                height={35}
+                                width={30}
+                                height={30}
                                 alt='arrow-right'
                             />
                         </div>
