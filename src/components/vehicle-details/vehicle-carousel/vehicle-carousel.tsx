@@ -12,6 +12,7 @@ import { FreeMode, Navigation, Thumbs, Zoom } from 'swiper/modules'
 
 // Import Lightbox
 import Lightbox from 'yet-another-react-lightbox'
+import ZoomPlugin from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
 
 // Import Swiper styles
@@ -235,6 +236,7 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                 close={() => setLightboxOpen(false)}
                 slides={images.map(image => ({ src: image }))}
                 index={currentIndex} // Correct prop for initial slide
+                plugins={[ZoomPlugin]}
             />
         </div>
     )
