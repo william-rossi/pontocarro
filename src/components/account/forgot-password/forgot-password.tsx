@@ -24,6 +24,7 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>
 export default function ForgotPassword({ moveTo }: Props) {
     const [message, setMessage] = useState<{ type: 'success' | 'error', message: string } | null>(null)
     const [cooldownActive, setCooldownActive] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     const [remainingTime, setRemainingTime] = useState(0)
     const {
         register,
@@ -36,6 +37,7 @@ export default function ForgotPassword({ moveTo }: Props) {
     const onSubmit = async (data: ForgotPasswordFormData) => {
         setMessage(null)
         try {
+            setIsLoading(true)
             const response = await forgotPassword(data.email)
             setMessage({ type: 'success', message: response.message })
             setCooldownActive(true)
@@ -43,6 +45,9 @@ export default function ForgotPassword({ moveTo }: Props) {
             localStorage.setItem('forgotPasswordCooldownEnd', (Date.now() + 300 * 1000).toString())
         } catch (error: unknown) {
             setMessage({ type: 'error', message: (error instanceof Error) ? error.message : 'Ocorreu um erro inesperado.' })
+        }
+        finally {
+            setIsLoading(false)
         }
     }
 
@@ -101,7 +106,7 @@ export default function ForgotPassword({ moveTo }: Props) {
                 error={errors.email?.message}
             />
             <Button
-                text={cooldownActive ? `Reenviar em ${formatTime(remainingTime)}` : 'Enviar link de recuperação'}
+                text={isLoading ? 'Enviando...' : cooldownActive ? `Reenviar em ${formatTime(remainingTime)}` : 'Enviar link de recuperação'}
                 svg='/assets/svg/email-white.svg'
                 className={styles.sendBtn}
                 type='submit'
