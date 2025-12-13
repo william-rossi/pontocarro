@@ -6,22 +6,18 @@ import Image from 'next/image'
 import { getVehicleImages } from '@/services/vehicles'
 import VehicleCarouselSkeleton from './vehicle-carousel-skeleton'
 
-// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { FreeMode, Navigation, Thumbs, Zoom } from 'swiper/modules'
 
-// Import Lightbox
 import Lightbox from 'yet-another-react-lightbox'
 import ZoomPlugin from 'yet-another-react-lightbox/plugins/zoom'
 import 'yet-another-react-lightbox/styles.css'
 
-// Import Swiper styles
 import 'swiper/css'
 import 'swiper/css/free-mode'
 import 'swiper/css/navigation'
 import 'swiper/css/thumbs'
 import 'swiper/css/zoom'
-
 
 interface VehicleCarouselProps {
     vehicleId: string
@@ -101,7 +97,7 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                     '--swiper-pagination-color': '#fff',
                 }}
                 zoom={true}
-                {...(images.length > 1 && { // Conditionally pass navigation prop
+                {...(images.length > 1 && {
                     navigation: {
                         nextEl: `.${styles.mainImageButtonNext}`,
                         prevEl: `.${styles.mainImageButtonPrev}`,
@@ -230,12 +226,11 @@ const VehicleCarousel = ({ vehicleId }: VehicleCarouselProps) => {
                 )}
             </Swiper>
 
-            {/* Lightbox Component */}
             <Lightbox
                 open={lightboxOpen}
                 close={() => setLightboxOpen(false)}
                 slides={images.map(image => ({ src: image }))}
-                index={currentIndex} // Correct prop for initial slide
+                index={currentIndex}
                 plugins={[ZoomPlugin]}
             />
         </div>
