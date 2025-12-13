@@ -60,11 +60,14 @@ export const getVehicleById = async (id: string): Promise<Vehicle> => {
 export const getVehicleImages = async (vehicleId: string): Promise<Image[]> => {
     const response = await cachedFetch(`${API_BASE_URL}/images/${vehicleId}`)
 
+    if (response.status === 404)
+        return []
+
     if (!response.ok)
         throw new Error(await getErrorMessage(response))
 
     const images: Image[] = await response.json()
-    return images.map(image => ({ ...image, imageUrl: `${process.env.NEXT_PUBLIC_API_URL}${image.imageUrl}` }))
+    return images.map(image => ({ ...image, imageUrl: image.imageUrl }))
 }
 
 export const getVehicleImageFirst = async (vehicleId: string): Promise<Image> => {
@@ -74,5 +77,5 @@ export const getVehicleImageFirst = async (vehicleId: string): Promise<Image> =>
         throw new Error(await getErrorMessage(response))
 
     const image: Image = await response.json()
-    return { ...image, imageUrl: `${process.env.NEXT_PUBLIC_API_URL}${image.imageUrl}` }
+    return { ...image, imageUrl: image.imageUrl }
 }

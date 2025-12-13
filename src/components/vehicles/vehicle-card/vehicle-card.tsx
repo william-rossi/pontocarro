@@ -12,12 +12,10 @@ interface VehicleCardProps {
 }
 
 export default function VehicleCard({ vehicle }: VehicleCardProps) {
-    const imageUrl = `${process.env.NEXT_PUBLIC_API_URL}${vehicle.firstImageUrl}`
-
     return (
         <Link href={`/veiculo/${vehicle._id}`} className={styles.container}>
             <div className={styles.imageArea}>
-                <img src={imageUrl} alt={vehicle.title} />
+                <img src={vehicle.firstImageUrl} alt={vehicle.title} />
                 <label>{formatPrice(vehicle.price)}</label>
             </div>
             <div className={styles.descriptionArea}>

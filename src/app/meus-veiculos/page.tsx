@@ -32,6 +32,7 @@ export default function MeusVeiculos() {
 
     const [vehicles, setVehicles] = useState<VehicleSummary[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingDelete, setLoadingDelete] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
@@ -184,6 +185,7 @@ export default function MeusVeiculos() {
         }
 
         try {
+            setLoadingDelete(true)
             await deleteVehicle(vehicleToDelete._id, accessToken, refreshAccessToken);
             toast.success("Veículo excluído com sucesso!");
 
@@ -213,6 +215,7 @@ export default function MeusVeiculos() {
         } finally {
             setShowDeleteModal(false);
             setVehicleToDelete(null);
+            setLoadingDelete(false)
         }
     };
 
@@ -314,7 +317,7 @@ export default function MeusVeiculos() {
                         <span>Tem certeza que deseja excluir <b>{vehicleToDelete?.year} {vehicleToDelete?.brand} {vehicleToDelete?.vehicleModel} {vehicleToDelete?.engine}</b>?</span>
                         <p>Esta ação não poderá ser desfeita.</p>
                         <div className={styles.modalActions}>
-                            <Button text="Confirmar" onClick={handleConfirmDelete} />
+                            <Button text={loadingDelete ? 'Excluindo...' : 'Confirmar'} disabled={loadingDelete} onClick={handleConfirmDelete} />
                             <Button text="Cancelar" onClick={handleCancelDelete} invert />
                         </div>
                     </div>

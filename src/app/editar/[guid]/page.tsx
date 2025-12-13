@@ -206,8 +206,8 @@ export default function Editar() {
                 <BackButtonAnnounce destination='/meus-veiculos' />
                 <div className={styles.errorState}>
                     <Image src={'/assets/svg/close.svg'} alt="Erro" width={80} height={80} />
-                    <h3>Ocorreu um erro</h3>
-                    <p>Não foi possível carregar o veículo: {error}</p>
+                    <h3>Não foi possível carregar o veículo</h3>
+                    <p>{error}</p>
                 </div>
             </section>
         );

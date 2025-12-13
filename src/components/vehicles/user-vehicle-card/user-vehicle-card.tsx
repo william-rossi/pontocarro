@@ -17,7 +17,7 @@ const UserVehicleCard: React.FC<UserVehicleCardProps> = ({ vehicle, onDelete }) 
         <div className={styles.card}>
             <div className={styles.imageArea}>
                 <img
-                    src={`${API_BASE_URL}${vehicle.firstImageUrl}`}
+                    src={vehicle.firstImageUrl}
                     alt={`${vehicle.brand} ${vehicle.vehicleModel}`}
                 />
             </div>

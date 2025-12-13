@@ -71,6 +71,8 @@
     height: 85px !important;
     cursor: pointer;
     border: 2px solid transparent;
+    background-color: var(--background-color);
+    border-radius: 10px !important;
     /*opacity: 0.5;*/
 }
 

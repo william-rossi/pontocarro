@@ -16,3 +16,17 @@
     font-size: var(--font-xlg);
     margin-top: 5px;
 }
+
+.errorState {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+    margin: 80px 0;
+}
+
+.errorState p {
+    opacity: 0.7;
+    font-size: var(--font-sm);
+}

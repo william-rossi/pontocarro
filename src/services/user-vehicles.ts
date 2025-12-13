@@ -46,7 +46,6 @@ export const uploadVehicleImages = async (vehicleId: string, images: FormData, t
     return response.json()
 }
 
-
 export const updateVehicle = async (id: string, vehicleData: Partial<Omit<Vehicle, '_id' | 'created_at'>>, token: string, refreshAccessToken: () => Promise<void>): Promise<Vehicle> => {
     const response = await fetchWithAuth(`${API_BASE_URL}/vehicles/${id}`, {
         method: 'PUT',

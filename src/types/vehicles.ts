@@ -16,7 +16,6 @@ export interface Vehicle {
     color: string
     description: string
     features?: string[]
-    images?: string[]
     announcerName: string;
     announcerEmail: string;
     announcerPhone: string;
