@@ -3,12 +3,10 @@
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 600px;
-    /* Adjust as needed */
 }
 
 .mainImageSkeleton {
-    width: 100%;
+    width: 645px;
     height: 350px;
     /* Adjust as needed */
     background-color: #f0f0f0;
@@ -30,7 +28,7 @@
 
 .thumbnailContainerSkeleton {
     display: flex;
-    gap: 10px;
+    gap: 7px;
     overflow: hidden;
 }
 
@@ -70,5 +68,6 @@
 @media screen and (max-width: 1023px) {
     .mainImageSkeleton {
         height: 250px;
+        width: 100%;
     }
 }
