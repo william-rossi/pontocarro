@@ -105,19 +105,12 @@ export default function ForgotPassword({ moveTo }: Props) {
                 {...register('email')}
                 error={errors.email?.message}
             />
-            {/* <Button
+            <Button
                 text={isLoading ? 'Enviando...' : cooldownActive ? `Reenviar em ${formatTime(remainingTime)}` : 'Enviar link de recuperação'}
                 svg='/assets/svg/email-white.svg'
                 className={styles.sendBtn}
                 type='submit'
                 disabled={isSubmitting || cooldownActive}
-            /> */}
-            <Button
-                text={'Indisponível no momento'}
-                svg='/assets/svg/email-white.svg'
-                className={styles.sendBtn}
-                type='submit'
-                disabled={true}
             />
             <Button
                 text='Voltar para o login'
